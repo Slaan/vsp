@@ -16,6 +16,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
+apply plugin: 'checkstyle'
 
 mainClassName = "vsp.Main"
 
@@ -34,6 +35,13 @@ targetCompatibility = 1.8
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     testCompile("junit:junit")
+}
+
+checkstyle {
+  ignoreFailures = false
+  configFile = new File(rootDir, "./doc/codingstyle/checkstyle.xml")
+  // List version explicit, since gradle pull an outdated version
+  toolVersion = "6.11.2"
 }
 
 task wrapper(type: Wrapper) {
