@@ -18,11 +18,11 @@ apply plugin: 'idea'
 apply plugin: 'spring-boot'
 apply plugin: 'checkstyle'
 
-mainClassName = "vsp.Main"
+mainClassName = "vsp.dice.Main"
 
 jar {
     baseName = 'gs-rest-service'
-    version =  '0.1.0'
+    version = '0.1.0'
 }
 
 repositories {
@@ -34,14 +34,13 @@ targetCompatibility = 1.8
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
-    testCompile("junit:junit")
 }
 
 checkstyle {
-  ignoreFailures = false
-  configFile = new File(rootDir, "./doc/codingstyle/checkstyle.xml")
-  // List version explicit, since gradle pull an outdated version
-  toolVersion = "6.11.2"
+    ignoreFailures = false
+    configFile = new File(rootDir, "./doc/codingstyle/checkstyle.xml")
+    // List version explicit, since gradle pull an outdated version
+    toolVersion = "6.11.2"
 }
 
 task wrapper(type: Wrapper) {
