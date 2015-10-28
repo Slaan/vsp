@@ -23,6 +23,9 @@ mainClassName = "vsp.dice.Main"
 jar {
     baseName = 'gs-rest-service'
     version = '0.1.0'
+    manifest {
+        attributes 'Main-Class': "vsp.dice.Main"
+    }
 }
 
 repositories {
