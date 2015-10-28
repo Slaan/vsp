@@ -13,6 +13,7 @@ public class Roll implements Serializable {
 
   public Roll(int number) {
     this.number = number;
+    System.out.println("Send back: " + this.number);
   }
 
   /**
