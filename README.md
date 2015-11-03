@@ -8,3 +8,8 @@ Verteilte Systeme Praktikum
 * Aufgabenblatt 3
 * Aufgabenblatt 4
 * [Kossakowski's Homepage: /~kpk](http://users.informatik.haw-hamburg.de/~kpk/verteiltesysteme.html)
+
+
+### Implementierte Services
+
+* Dice
