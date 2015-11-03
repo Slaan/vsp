@@ -20,7 +20,7 @@ apply plugin: 'spring-boot'
 apply plugin: 'checkstyle'
 apply plugin: 'gradle-one-jar'
 
-mainClassName = "vsp.dice.Main"
+mainClassName = "vsp.dice.MyMainClass"
 
 jar {
     baseName = 'gs-rest-service'
@@ -40,7 +40,7 @@ dependencies {
 
 checkstyle {
     ignoreFailures = false
-    configFile = new File(rootDir, "./doc/codingstyle/checkstyle.xml")
+    configFile = new File(rootDir, "./../doc/codingstyle/checkstyle.xml")
     // List version explicit, since gradle pull an outdated version
     toolVersion = "6.11.2"
 }
