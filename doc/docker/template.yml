@@ -1,0 +1,9 @@
+  FROM java:8
+  MAINTAINER abr131
+  WORKDIR /usr/local/lib
+  COPY . /usr/local/lib
+  
+  EXPOSE 4567
+  # -Dserver.port=5000
+  CMD [ "java", "-cp", "./jarname.jar", "-jar", "jarname.jar"]  
+
