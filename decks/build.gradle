@@ -1,0 +1,64 @@
+/**
+ * Alex   Mantel
+ * Daniel Hofmeister
+ */
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.7.RELEASE")
+        classpath("com.github.rholder:gradle-one-jar:1.0.4")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+apply plugin: 'checkstyle'
+apply plugin: 'gradle-one-jar'
+
+mainClassName = "vsp.decks.MyMainClass"
+
+jar {
+    baseName = 'gs-rest-service'
+    version = '0.1.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+
+    testCompile('org.assertj:assertj-core:3.1.0')
+    testCompile('org.testng:testng:6.9.6')
+    testCompile('com.jayway.restassured:rest-assured:2.4.1')
+}
+
+checkstyle {
+    ignoreFailures = false
+    configFile = new File(rootDir, "./../doc/codingstyle/checkstyle.xml")
+    // List version explicit, since gradle pull an outdated version
+    toolVersion = "6.11.2"
+}
+
+test {
+    // enable TestNG support (default is JUnit)
+    useTestNG()
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}
+
+task buildFatJar(type: OneJar) {
+    mainClass = mainClassName
+    archiveName = 'dice_service.jar'
+}
