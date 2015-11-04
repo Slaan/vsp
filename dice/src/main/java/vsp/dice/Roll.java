@@ -12,6 +12,7 @@ public class Roll implements Serializable {
   private final int number;
 
   public Roll(int number) {
+    System.out.println("Rolled: " + number);
     this.number = number;
   }
 
