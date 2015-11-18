@@ -50,7 +50,7 @@ checkstyle {
 }
 
 test {
-    // enable TestNG support (default is JUnit)
+    // enable TestNG support (default is JUnit)1
     useTestNG()
 }
 
