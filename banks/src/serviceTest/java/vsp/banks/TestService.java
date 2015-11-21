@@ -11,6 +11,9 @@ import static org.testng.Assert.assertEquals;
 @Test
 public class TestService {
 
+  int port = 4567;
+  String host = "localhost" + port;
+
   @Test
   public void test() {
 

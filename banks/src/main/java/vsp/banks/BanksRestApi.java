@@ -1,14 +1,24 @@
 package vsp.banks;
 
+import vsp.banks.core.interfaces.IAccount;
+import vsp.banks.core.interfaces.IBankLogic;
+
 import static spark.Spark.get;
 import static spark.Spark.post;
 
 /**
  * Created by alex on 11/18/15.
  */
-public class BanksController {
+public class BanksRestApi {
 
-  public BanksController() {
+  private IBankLogic bankServiceLogic;
+
+  private final static int ok = 200;
+  private final static int created = 201;
+  private final static int forbidden = 403;
+
+  public BanksRestApi(IBankLogic logic) {
+    this.bankServiceLogic = logic;
     bindAllMethods();
   }
 
@@ -29,8 +39,14 @@ public class BanksController {
    */
   public void bindPostBankPlayer() {
     post("/banks/:gameId/players", (request, response) -> {
-      response.status(404);
-      return "No Impl";
+      String gameId = request.params(":gameId");
+      String playerId = request.body();
+      if (bankServiceLogic.registerPlayerForGame(gameId, playerId)) {
+        response.status(created);
+        return "";
+      }
+      response.status(forbidden);
+      return "";
     });
   }
 
@@ -40,8 +56,11 @@ public class BanksController {
    */
   public void bindGetBankPlayer() {
     get("/banks/:gameId/players/:playerId", (request, response) -> {
-      response.status(404);
-      return "No Impl";
+      String gameId = request.params(":gameId");
+      String playerId = request.params(":playerId");
+      IAccount account = bankServiceLogic.getAccount(gameId, playerId);
+      response.status(ok);
+      return "" + account.getBalance();
     });
   }
 

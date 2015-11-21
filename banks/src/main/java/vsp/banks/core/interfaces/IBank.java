@@ -1,4 +1,4 @@
-package vsp.banks.interfaces;
+package vsp.banks.core.interfaces;
 
 /**
  * Created by alex on 11/18/15.

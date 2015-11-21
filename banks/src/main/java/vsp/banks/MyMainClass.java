@@ -1,10 +1,11 @@
 package vsp.banks;
 
-import static spark.Spark.*;
+import vsp.banks.core.BanksLogic;
 
 public class MyMainClass {
 
   public static void main(String[] args) {
-    BanksController banksController = new BanksController();
+    BanksLogic serviceLogic = new BanksLogic();
+    BanksRestApi banksController = new BanksRestApi(serviceLogic);
   }
 }

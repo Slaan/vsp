@@ -14,7 +14,7 @@ public class Money {
   }
 
   public Money(Money money) {
-
+    this.amount = money.getAmount();
   }
 
   public int getAmount() {
@@ -63,5 +63,10 @@ public class Money {
   @Override
   public int hashCode() {
     return amount;
+  }
+
+  @Override
+  public String toString() {
+    return "" + amount;
   }
 }
