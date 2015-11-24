@@ -1,91 +1,79 @@
 package vsp.banks.core;
 
-import vsp.banks.core.entities.Account;
-import vsp.banks.core.interfaces.IAccount;
 import vsp.banks.core.interfaces.IBankLogic;
+import vsp.banks.values.*;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by alex on 11/19/15.
  */
 public class BanksLogic implements IBankLogic {
 
-  private Map<String, Set<Account>> gameToAccounts;
+  Set<Bank> banks;
 
-  public final static int startMoney = 1490;
-
-  public BanksLogic() {
-    this.gameToAccounts = new HashMap<>();
+  public void setGame(Game game) {
+    for (Bank bank : banks) {
+      if (bank.hasGameId(game)) {
+        bank.setGame(game);
+        return;
+      }
+    }
+    Bank bank = new Bank(game);
+    banks.add(bank);
   }
 
-  /**
-   * Registers a player to a game.
-   * @param gameId   to register player.
-   * @param playerId of player to register.
-   * @return true if and only if player wasn't registered and has been registered.
-   */
-  public boolean registerPlayerForGame(String gameId, String playerId) {
-    if (!gameToAccounts.containsKey(gameId)) {
-      gameToAccounts.put(gameId, new HashSet<>());
-    }
-    if (findAccountByGameAndPlayer(gameId, playerId) == null) {
-      Account newAccount = new Account(playerId, startMoney);
-      // register account
-      Set<Account> accounts = gameToAccounts.get(gameId);
-      accounts.add(newAccount);
-      gameToAccounts.put(gameId, accounts);
-      return true;
-    }
+  public boolean registerPlayerForGame(String gameId, Account playerAccount) {
+    // get game
+    // when no game; return false
+    // check if account exists
+    // when no account exists, create one and return true!
+
+    // else return false
     return false;
   }
 
-  public IAccount getAccount(String gameId, String playerId) {
-    return findAccountByGameAndPlayer(gameId, playerId);
-  }
-
-  public Object getEventsOfPlayer(String gameId, String playerId) {
-    Account player = findAccountByGameAndPlayer(gameId, playerId);
-    if (player == null) {
+  public Account getAccount(String gameId, String playerId) {
+    Bank bank = findBankByGameId(gameId);
+    if (bank == null) {
       return null;
     }
+    return bank.getAccountByPlayerId(playerId);
+  }
+
+  public List<Account> getAccounts(String gameId) {
+    return null; //findGameByGameId(gameId);
+  }
+
+  public synchronized boolean withdrawMoneyFromPlayer(String gameId, Transfer transfer) {
+    return false;
+  }
+
+  public synchronized void giveMoneyToPlayer(String gameId, Transfer transfer) {
+
+  }
+
+  public synchronized boolean transferFromPlayerToPlayer(String gameId, Transfer transfer) {
+    return false;
+  }
+
+  public List<Event> getEventsOfPlayer(String gameId, String playerId) {
     return null;
   }
 
-  public synchronized boolean withdrawMoneyFromPlayer(String gameId, String sponsor, Money amount,
-      String reason) {
-    Account account = findAccountByGameAndPlayer(gameId, sponsor);
-    return account.withdraw(amount);
-  }
-
-  public synchronized void giveMoneyToPlayer(String gameId, String receiver, Money amount,
-      String reason) {
-    Account account = findAccountByGameAndPlayer(gameId, receiver);
-    account.deposit(amount);
-  }
-
-  public synchronized boolean transferFromPlayerToPlayer(String gameId, String sender,
-      String receiver, Money amount, String reason) {
-    Account senderAccount = findAccountByGameAndPlayer(gameId, sender);
-    Account receiverAccount = findAccountByGameAndPlayer(gameId, receiver);
-    if (senderAccount.withdraw(amount)) {
-      receiverAccount.deposit(amount);
-      return true;
-    }
-    return false;
-  }
-
   /**
-   * @return null when not found.
+   * @return bank whose game has the same id as given. When no bank found, null returned.
    */
-  private Account findAccountByGameAndPlayer(String gameId, String playerId) {
-    Set<Account> accounts = gameToAccounts.get(gameId);
-    for (Account account : accounts) {
-      String accountPlayerId = account.getPlayerId();
-      if (accountPlayerId.equals(playerId)) {
-        return account;
+  private Bank findBankByGameId(String gameId) {
+    for (Bank bank : this.banks) {
+      if (bank.hasGameId(gameId)) {
+        return bank;
       }
     }
     return null;
   }
+
 }

@@ -2,7 +2,7 @@ package vsp.banks;
 
 import org.testng.annotations.Test;
 import vsp.banks.core.BanksLogic;
-import vsp.banks.core.entities.Account;
+import vsp.banks.values.Account;
 import vsp.banks.core.interfaces.IBankLogic;
 
 import static org.testng.Assert.assertEquals;

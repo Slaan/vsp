@@ -1,6 +1,7 @@
 package vsp.banks.values;
 
 import static vsp.banks.helper.ObjectHelper.*;
+import static vsp.banks.helper.StringHelper.*;
 
 /**
  * Created by alex on 11/20/15.
@@ -17,8 +18,11 @@ public class Player {
 
   private int position;
 
-  public Player(String id, String name, String uri, Place place, int position) {
-    checkNotNull(id);
+  private boolean ready;
+
+  public Player(String id, String name, String uri, Place place, int position, boolean ready) {
+    checkNotNull(id, place);
+    checkNotEmpty(id);
     this.id = id;
     this.name = name;
     this.uri = uri;
@@ -46,15 +50,22 @@ public class Player {
     return position;
   }
 
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean isReady() {
+    return ready;
+  }
+
+  public boolean equals(Object object) {
+    if (this == object) {
       return true;
     }
-    if (!(o instanceof Player)) {
+    if (!(object instanceof Player)) {
       return false;
     }
-    Player player = (Player) o;
+    Player player = (Player) object;
     if (position != player.position) {
+      return false;
+    }
+    if (ready != player.ready) {
       return false;
     }
     if (id != null ? !id.equals(player.id) : player.id != null) {
@@ -75,6 +86,7 @@ public class Player {
     result = 31 * result + (uri != null ? uri.hashCode() : 0);
     result = 31 * result + (place != null ? place.hashCode() : 0);
     result = 31 * result + position;
+    result = 31 * result + (ready ? 1 : 0);
     return result;
   }
 }

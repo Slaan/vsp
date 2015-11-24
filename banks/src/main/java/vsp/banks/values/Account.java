@@ -1,14 +1,11 @@
-package vsp.banks.core.entities;
-
-import vsp.banks.core.interfaces.IAccount;
-import vsp.banks.values.Player;
+package vsp.banks.values;
 
 import static vsp.banks.helper.ObjectHelper.checkNotNull;
 
 /**
  * Created by alex on 11/18/15.
  */
-public class Account implements IAccount {
+public class Account {
 
   private Player player;
 
@@ -28,32 +25,34 @@ public class Account implements IAccount {
     return this.player;
   }
 
-  public boolean withdraw(int money) {
+  public Account withdraw(int money) {
     int newSaldo = this.saldo - money;
     if (newSaldo > 0) {
-      this.saldo = newSaldo;
-      return true;
+      return new Account(player, newSaldo);
     }
-    return false;
+    return null;
   }
 
-  public void deposit(int money) {
-    this.saldo = this.saldo + money;
+  public Account deposit(int money) {
+    return new Account(player, this.getSaldo() + money);
   }
 
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean equals(Object object) {
+    if (this == object) {
       return true;
     }
-    if (!(o instanceof Account)) {
+    if (!(object instanceof Account)) {
       return false;
     }
-    Account account = (Account) o;
+    Account account = (Account) object;
     if (saldo != account.saldo) {
       return false;
     }
     return !(player != null ? !player.equals(account.player) : account.player != null);
+  }
 
+  public boolean isPlayerId(String playerId) {
+    return this.player.getId().equals(playerId);
   }
 
   public int hashCode() {
