@@ -4,7 +4,6 @@ import org.testng.annotations.Test;
 import vsp.banks.core.BanksLogic;
 import vsp.banks.core.entities.Account;
 import vsp.banks.core.interfaces.IBankLogic;
-import vsp.banks.values.Money;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;

@@ -5,6 +5,7 @@ import vsp.banks.core.interfaces.IBankLogic;
 
 import static spark.Spark.get;
 import static spark.Spark.post;
+import static spark.Spark.put;
 
 /**
  * Created by alex on 11/18/15.
@@ -34,6 +35,68 @@ public class BanksRestApi {
   }
 
   /**
+   * Fetches all banks
+   * <code>GET /banks</code>
+   */
+  public void bindGetBanks() {
+
+  }
+
+  /**
+   * Creates a new bank for a game.
+   * The game itself is in body.
+   * <code>PUT /banks/{gameId}</code>
+   */
+  public void bindPutBank() {
+    put("/banks/:gameId", (request, response) -> {
+      return "";
+    });
+  }
+
+  /**
+   * Fetch transfer with given transferId
+   * <code>GET /banks/{gameId}/transfers/{transferId}</code>
+   */
+  public void bindGetTransfer() {
+    get("banks/:gameId/transfers/:transferId", (request, response) -> {
+      return "";
+    });
+  }
+
+  /**
+   * Transfers an amount of money from bank to player.
+   * <code>post /banks/{gameid}/transfer/to/{to}/{amount}</code>
+   */
+  public void bindPostBankTransferTo() {
+    post("/banks/:gameId/transfer/to/:to/:amount", (request, response) -> {
+      response.status(404);
+      return "No Impl";
+    });
+  }
+
+  /**
+   * Tranfers an amount of money from player to another player.
+   * <code>post /banks/{gameid}/transfer/from/{from}/to/{to}/{amount}</code>
+   */
+  public void bindPostBankTransferFromTo() {
+    post("/banks/:gameId/transfer/from/:from/to/:to/:amount", (request, response) -> {
+      response.status(404);
+      return "No Impl";
+    });
+  }
+
+  /**
+   * Transfers an amount of money from player to bank.
+   * <code>post /banks/{gameid}/transfer/from/{from}/{amount}</code>
+   */
+  public void bindPostBankTransferFrom() {
+    post("/banks/:gameId/transfer/from/:from/:amount", (request, response) -> {
+      response.status(404);
+      return "No Impl";
+    });
+  }
+
+  /**
    * Creates a new account for player.
    * <code>POST /banks/{gameId}/players.</code>
    */
@@ -60,40 +123,7 @@ public class BanksRestApi {
       String playerId = request.params(":playerId");
       IAccount account = bankServiceLogic.getAccount(gameId, playerId);
       response.status(ok);
-      return "" + account.getBalance();
-    });
-  }
-
-  /**
-   * Transfers an amount of money from bank to player.
-   * <code>post /banks/{gameid}/transfer/to/{to}/{amount}</code>
-   */
-  public void bindPostBankTransferTo() {
-    post("/banks/:gameId/transfer/to/:to/:amount", (request, response) -> {
-      response.status(404);
-      return "No Impl";
-    });
-  }
-
-  /**
-   * Transfers an amount of money from player to bank.
-   * <code>post /banks/{gameid}/transfer/from/{from}/{amount}</code>
-   */
-  public void bindPostBankTransferFrom() {
-    post("/banks/:gameId/transfer/from/:from/:amount", (request, response) -> {
-      response.status(404);
-      return "No Impl";
-    });
-  }
-
-  /**
-   * Tranfers an amount of money from player to another player.
-   * <code>post /banks/{gameid}/transfer/from/{from}/to/{to}/{amount}</code>
-   */
-  public void bindPostBankTransferFromTo() {
-    post("/banks/:gameId/transfer/from/:from/to/:to/:amount", (request, response) -> {
-      response.status(404);
-      return "No Impl";
+      return "" + account.getSaldo();
     });
   }
 }

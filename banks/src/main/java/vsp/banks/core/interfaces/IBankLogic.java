@@ -1,10 +1,5 @@
 package vsp.banks.core.interfaces;
 
-import vsp.banks.values.Event;
-import vsp.banks.values.Money;
-
-import java.util.List;
-
 /**
  * Created by alex on 11/18/15.
  */
@@ -73,5 +68,5 @@ public interface IBankLogic {
    * @param playerId of player the events are retrieved.
    * @return a list of all events a player happened.
    */
-  public List<Event> getEventsOfPlayer(String gameId, String playerId);
+  public Object getEventsOfPlayer(String gameId, String playerId);
 }

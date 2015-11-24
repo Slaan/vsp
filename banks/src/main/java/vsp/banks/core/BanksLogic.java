@@ -3,8 +3,6 @@ package vsp.banks.core;
 import vsp.banks.core.entities.Account;
 import vsp.banks.core.interfaces.IAccount;
 import vsp.banks.core.interfaces.IBankLogic;
-import vsp.banks.values.Event;
-import vsp.banks.values.Money;
 
 import java.util.*;
 
@@ -15,7 +13,7 @@ public class BanksLogic implements IBankLogic {
 
   private Map<String, Set<Account>> gameToAccounts;
 
-  public final static Money startMoney = new Money(1490);
+  public final static int startMoney = 1490;
 
   public BanksLogic() {
     this.gameToAccounts = new HashMap<>();
@@ -46,12 +44,12 @@ public class BanksLogic implements IBankLogic {
     return findAccountByGameAndPlayer(gameId, playerId);
   }
 
-  public List<Event> getEventsOfPlayer(String gameId, String playerId) {
+  public Object getEventsOfPlayer(String gameId, String playerId) {
     Account player = findAccountByGameAndPlayer(gameId, playerId);
     if (player == null) {
       return null;
     }
-    return player.getEvents();
+    return null;
   }
 
   public synchronized boolean withdrawMoneyFromPlayer(String gameId, String sponsor, Money amount,

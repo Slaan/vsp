@@ -9,6 +9,10 @@ public final class ObjectHelper {
 
   }
 
+  /**
+   * Ensures all given arguments aren't null.
+   * When one is null, an IllegalArgumentException will be thrown.
+   */
   public static void checkNotNull(Object firstObject, Object ... objects) {
     // separate firstObject from array, so we force at lease one object.
     if (firstObject == null) {
