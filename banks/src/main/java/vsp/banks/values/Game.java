@@ -1,6 +1,9 @@
 package vsp.banks.values;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static vsp.banks.helper.ObjectHelper.*;
 import static vsp.banks.helper.StringHelper.*;
@@ -13,11 +16,14 @@ public class Game {
 
   private String uri;
 
-  private List<Player> players;
+  private Set<Player> players;
 
   private Components components;
 
-  public Game(String gameId, String uri, List<Player> players, Components components) {
+  /**
+   * Game is a immutable object.
+   */
+  public Game(String gameId, String uri, Set<Player> players, Components components) {
     checkNotNull(gameId);
     checkNotEmpty(gameId);
     this.gameId = gameId;
@@ -34,14 +40,15 @@ public class Game {
     return uri;
   }
 
-  public List<Player> getPlayers() {
-    return players;
+  public Set<Player> getPlayers() {
+    return new HashSet<>(players);
   }
 
   public Components getComponents() {
     return components;
   }
 
+  @Override
   public boolean equals(Object object) {
     if (this == object) {
       return true;
@@ -60,9 +67,9 @@ public class Game {
       return false;
     }
     return !(components != null ? !components.equals(game.components) : game.components != null);
-
   }
 
+  @Override
   public int hashCode() {
     int result = gameId != null ? gameId.hashCode() : 0;
     result = 31 * result + (uri != null ? uri.hashCode() : 0);

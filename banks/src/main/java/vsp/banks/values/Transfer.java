@@ -7,7 +7,7 @@ import static vsp.banks.helper.ObjectHelper.*;
  */
 public class Transfer {
 
-  private static final String bankName = "BANK";
+  public static final String bankName = "BANK";
 
   private String from;
 
@@ -63,6 +63,7 @@ public class Transfer {
     return event;
   }
 
+  @Override
   public boolean equals(Object object) {
     if (this == object) {
       return true;
@@ -87,6 +88,7 @@ public class Transfer {
 
   }
 
+  @Override
   public int hashCode() {
     int result = from != null ? from.hashCode() : 0;
     result = 31 * result + (to != null ? to.hashCode() : 0);

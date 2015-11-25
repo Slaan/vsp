@@ -21,6 +21,9 @@ public class Components {
 
   private String events;
 
+  /**
+   * This is a collection of the component URIs in restoploy.
+   */
   public Components(String game, String dice, String board, String bank, String broker,
       String decks, String events) {
     checkNotNull(game, dice, board, bank, broker, decks, events);
@@ -62,6 +65,7 @@ public class Components {
     return events;
   }
 
+  @Override
   public boolean equals(Object object) {
     if (this == object) {
       return true;
@@ -92,6 +96,7 @@ public class Components {
 
   }
 
+  @Override
   public int hashCode() {
     int result = game != null ? game.hashCode() : 0;
     result = 31 * result + (dice != null ? dice.hashCode() : 0);

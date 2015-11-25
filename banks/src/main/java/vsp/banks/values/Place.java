@@ -10,6 +10,10 @@ public class Place {
 
   public String name;
 
+  /**
+   * Place is the current location of the players position.
+   * @param name of the location.
+   */
   public Place(String name) {
     checkNotNull(name);
     checkNotEmpty(name);
@@ -20,6 +24,7 @@ public class Place {
     return name;
   }
 
+  @Override
   public boolean equals(Object object) {
     if (this == object) {
       return true;
@@ -31,6 +36,7 @@ public class Place {
     return !(name != null ? !name.equals(place.name) : place.name != null);
   }
 
+  @Override
   public int hashCode() {
     return name != null ? name.hashCode() : 0;
   }

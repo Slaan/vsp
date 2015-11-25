@@ -1,5 +1,6 @@
 package vsp.banks.values;
 
+import static vsp.banks.helper.ObjectHelper.checkNotNull;
 /**
  * Created by alex on 11/24/15.
  */
@@ -15,7 +16,11 @@ public class Event {
 
   private Player player;
 
+  /**
+   * TODO: add java-doc :).
+   */
   public Event(String type, String name, String reason, String resource, Player player) {
+    checkNotNull(type, name, reason, resource);
     this.type = type;
     this.name = name;
     this.reason = reason;
@@ -43,36 +48,23 @@ public class Event {
     return player;
   }
 
-  public boolean equals(Object object) {
-    if (this == object) {
-      return true;
-    }
-    if (!(object instanceof Event)) {
-      return false;
-    }
-    Event event = (Event) object;
-    if (type != null ? !type.equals(event.type) : event.type != null) {
-      return false;
-    }
-    if (name != null ? !name.equals(event.name) : event.name != null) {
-      return false;
-    }
-    if (reason != null ? !reason.equals(event.reason) : event.reason != null) {
-      return false;
-    }
-    if (resource != null ? !resource.equals(event.resource) : event.resource != null) {
-      return false;
-    }
-    return !(player != null ? !player.equals(event.player) : event.player != null);
-
+  public void setType(String type) {
+    this.type = type;
   }
 
-  public int hashCode() {
-    int result = type != null ? type.hashCode() : 0;
-    result = 31 * result + (name != null ? name.hashCode() : 0);
-    result = 31 * result + (reason != null ? reason.hashCode() : 0);
-    result = 31 * result + (resource != null ? resource.hashCode() : 0);
-    result = 31 * result + (player != null ? player.hashCode() : 0);
-    return result;
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setReason(String reason) {
+    this.reason = reason;
+  }
+
+  public void setResource(String resource) {
+    this.resource = resource;
+  }
+
+  public void setPlayer(Player player) {
+    this.player = player;
   }
 }

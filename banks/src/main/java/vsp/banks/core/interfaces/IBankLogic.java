@@ -1,11 +1,12 @@
 package vsp.banks.core.interfaces;
 
-import vsp.banks.values.Account;
+import vsp.banks.core.entities.Account;
 import vsp.banks.values.Event;
 import vsp.banks.values.Game;
 import vsp.banks.values.Transfer;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by alex on 11/18/15.
@@ -43,31 +44,20 @@ public interface IBankLogic {
    * @param gameId in which accounts are.
    * @return player accounts.
    */
-  public List<Account> getAccounts(String gameId);
+  public Set<Account> getAccounts(String gameId);
 
   /**
-   * Takes money from player account and puts it into banks account.
-   * <p>This is a transaction. It has to run isolated!</p>
+   * Takes an amount of money from one account and puts it into another.
+   * Both accounts are found in transfer, same as the amount.
+   *
+   * <p>An transfer has to run isolated from other transfers.</p>
    *
    * @param gameId  in which player is.
+   * @param transfer contains the information about the transfer, e.g. both accounts.
    * @return true if and only if enough money was on account and money has been withdrawn.
    */
-  public boolean withdrawMoneyFromPlayer(String gameId, Transfer transfer);
+  public boolean applyTransferInGame(String gameId, Transfer transfer);
 
-  /**
-   * Gives money to player from bank.
-   * <p>This is a transaction. It has to run isolated!</p>
-   *
-   */
-  public void giveMoneyToPlayer(String gameId, Transfer transfer);
-
-  /**
-   * Transfers an amount of money from sender to receiver.
-   * <p>This is a transaction. It has to run isolated!</p>
-   *
-   * @return true if and only if enough money was on account and money has been withdrawn.
-   */
-  public boolean transferFromPlayerToPlayer(String gameId, Transfer transfer);
 
   /**
    * Get all events of a player.

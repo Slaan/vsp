@@ -1,12 +1,11 @@
 package vsp.banks.core;
 
+import vsp.banks.core.entities.Account;
+import vsp.banks.core.entities.Bank;
 import vsp.banks.core.interfaces.IBankLogic;
 import vsp.banks.values.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by alex on 11/19/15.
@@ -15,6 +14,7 @@ public class BanksLogic implements IBankLogic {
 
   Set<Bank> banks;
 
+  @Override
   public void setGame(Game game) {
     for (Bank bank : banks) {
       if (bank.hasGameId(game)) {
@@ -26,16 +26,16 @@ public class BanksLogic implements IBankLogic {
     banks.add(bank);
   }
 
+  @Override
   public boolean registerPlayerForGame(String gameId, Account playerAccount) {
-    // get game
-    // when no game; return false
-    // check if account exists
-    // when no account exists, create one and return true!
-
-    // else return false
-    return false;
+    Bank bank = findBankByGameId(gameId);
+    if (bank == null) {
+      // how to handle dis?
+    }
+    return bank.registerAccount(playerAccount);
   }
 
+  @Override
   public Account getAccount(String gameId, String playerId) {
     Bank bank = findBankByGameId(gameId);
     if (bank == null) {
@@ -44,22 +44,19 @@ public class BanksLogic implements IBankLogic {
     return bank.getAccountByPlayerId(playerId);
   }
 
-  public List<Account> getAccounts(String gameId) {
-    return null; //findGameByGameId(gameId);
+  @Override
+  public Set<Account> getAccounts(String gameId) {
+    Bank bank = findBankByGameId(gameId);
+    return bank.getAccounts();
   }
 
-  public synchronized boolean withdrawMoneyFromPlayer(String gameId, Transfer transfer) {
-    return false;
+  @Override
+  public boolean applyTransferInGame(String gameId, Transfer transfer) {
+    Bank bank = findBankByGameId(gameId);
+    return bank.applyTransfer(transfer);
   }
 
-  public synchronized void giveMoneyToPlayer(String gameId, Transfer transfer) {
-
-  }
-
-  public synchronized boolean transferFromPlayerToPlayer(String gameId, Transfer transfer) {
-    return false;
-  }
-
+  @Override
   public List<Event> getEventsOfPlayer(String gameId, String playerId) {
     return null;
   }

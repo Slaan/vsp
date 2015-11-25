@@ -1,32 +1,36 @@
 package vsp.banks;
 
 import com.google.gson.Gson;
-import vsp.banks.values.Account;
+import vsp.banks.core.entities.Account;
 import vsp.banks.core.interfaces.IBankLogic;
 import vsp.banks.values.Event;
 import vsp.banks.values.Game;
 import vsp.banks.values.Transfer;
 
 import java.util.List;
+import java.util.Set;
 
-import static spark.Spark.get;
-import static spark.Spark.post;
-import static spark.Spark.put;
+import static spark.Spark.*;
 
 /**
  * Created by alex on 11/18/15.
  */
 public class BanksRestApi {
 
+  private static final int ok = 200;
+  private static final int created = 201;
+  private static final int forbidden = 403;
+  private static final int conflict = 409;
+
   private IBankLogic bankServiceLogic;
 
   private Gson converter;
 
-  private final static int ok = 200;
-  private final static int created = 201;
-  private final static int forbidden = 403;
-  private final static int conflict = 409;
 
+  /**
+   * Creates the RESTful API for banks.
+   * @param logic is the business logic of this application.
+   */
   public BanksRestApi(IBankLogic logic) {
     this.bankServiceLogic = logic;
     this.converter = new Gson();
@@ -74,7 +78,7 @@ public class BanksRestApi {
   }
 
   /**
-   * Fetch transfer with given transferId
+   * Fetch transfer with given transferId.
    * <code>GET /banks/{gameId}/transfers/{transferId}</code>
    */
   public void bindGetTransfer() {
@@ -94,7 +98,7 @@ public class BanksRestApi {
       String fromPlayerId = request.params(":to");
       int amount = Integer.parseInt(request.params(":amount"));
       String reason = request.body();
-      this.bankServiceLogic.giveMoneyToPlayer(gameId, null);
+      this.bankServiceLogic.applyTransferInGame(gameId, null);
       List<Event> events = this.bankServiceLogic.getEventsOfPlayer(gameId, fromPlayerId);
       return this.converter.toJson(events);
     });
@@ -111,7 +115,8 @@ public class BanksRestApi {
       String toPlayerId = request.params(":to");
       int amount = Integer.parseInt(request.params(":amount"));
       String reason = request.body();
-      if (this.bankServiceLogic.transferFromPlayerToPlayer(gameId, null)) {
+      Transfer transfer = new Transfer(fromPlayerId, toPlayerId, amount, reason, "");
+      if (this.bankServiceLogic.applyTransferInGame(gameId, transfer)) {
         List<Event> events = this.bankServiceLogic.getEventsOfPlayer(gameId, fromPlayerId);
         response.status(ok);
         return this.converter.toJson(events);
@@ -132,7 +137,7 @@ public class BanksRestApi {
       int amount = Integer.parseInt(request.params(":amount"));
       String reason = request.body();
       Transfer transfer = Transfer.initTransferFromPlayer(fromId, amount, reason, "");
-      if (this.bankServiceLogic.withdrawMoneyFromPlayer(gameId, transfer)) {
+      if (this.bankServiceLogic.applyTransferInGame(gameId, transfer)) {
         List<Event> events = this.bankServiceLogic.getEventsOfPlayer(gameId, fromId);
         response.status(ok);
         return this.converter.toJson(events);
@@ -142,10 +147,14 @@ public class BanksRestApi {
     });
   }
 
+  /**
+   * Fetches all accounts in game.
+   * <code>GET /banks/{gameId}/players</code>
+   */
   public void bindGetBankPlayers() {
     get("/banks/:gameId/players", (request, response) -> {
       String gameId = request.params(":gameId");
-      List<Account> accounts = this.bankServiceLogic.getAccounts(gameId);
+      Set<Account> accounts = this.bankServiceLogic.getAccounts(gameId);
       String accountsAsJson = this.converter.toJson(accounts);
       return accountsAsJson;
     });

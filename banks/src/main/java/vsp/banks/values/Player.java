@@ -20,6 +20,9 @@ public class Player {
 
   private boolean ready;
 
+  /**
+   * This immutable object stores information about the player.
+   */
   public Player(String id, String name, String uri, Place place, int position, boolean ready) {
     checkNotNull(id, place);
     checkNotEmpty(id);
@@ -54,6 +57,7 @@ public class Player {
     return ready;
   }
 
+  @Override
   public boolean equals(Object object) {
     if (this == object) {
       return true;
@@ -62,31 +66,17 @@ public class Player {
       return false;
     }
     Player player = (Player) object;
-    if (position != player.position) {
-      return false;
-    }
-    if (ready != player.ready) {
-      return false;
-    }
     if (id != null ? !id.equals(player.id) : player.id != null) {
       return false;
     }
-    if (name != null ? !name.equals(player.name) : player.name != null) {
-      return false;
-    }
-    if (uri != null ? !uri.equals(player.uri) : player.uri != null) {
-      return false;
-    }
-    return !(place != null ? !place.equals(player.place) : player.place != null);
+    return !(name != null ? !name.equals(player.name) : player.name != null);
+
   }
 
+  @Override
   public int hashCode() {
     int result = id != null ? id.hashCode() : 0;
     result = 31 * result + (name != null ? name.hashCode() : 0);
-    result = 31 * result + (uri != null ? uri.hashCode() : 0);
-    result = 31 * result + (place != null ? place.hashCode() : 0);
-    result = 31 * result + position;
-    result = 31 * result + (ready ? 1 : 0);
     return result;
   }
 }
