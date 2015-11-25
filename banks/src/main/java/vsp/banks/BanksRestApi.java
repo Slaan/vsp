@@ -11,16 +11,11 @@ import java.util.List;
 import java.util.Set;
 
 import static spark.Spark.*;
-
+import static vsp.banks.values.StatusCodes.*;
 /**
  * Created by alex on 11/18/15.
  */
 public class BanksRestApi {
-
-  private static final int ok = 200;
-  private static final int created = 201;
-  private static final int forbidden = 403;
-  private static final int conflict = 409;
 
   private IBankLogic bankServiceLogic;
 
@@ -95,11 +90,12 @@ public class BanksRestApi {
   public void bindPostBankTransferTo() {
     post("/banks/:gameId/transfer/to/:to/:amount", (request, response) -> {
       String gameId = request.params(":gameId");
-      String fromPlayerId = request.params(":to");
+      String toPlayer = request.params(":to");
       int amount = Integer.parseInt(request.params(":amount"));
       String reason = request.body();
-      this.bankServiceLogic.applyTransferInGame(gameId, null);
-      List<Event> events = this.bankServiceLogic.getEventsOfPlayer(gameId, fromPlayerId);
+      Transfer transfer = Transfer.initTransferToPlayer(toPlayer, amount, reason, null);
+      this.bankServiceLogic.applyTransferInGame(gameId, transfer);
+      List<Event> events = this.bankServiceLogic.getEventsOfPlayer(gameId, toPlayer);
       return this.converter.toJson(events);
     });
   }

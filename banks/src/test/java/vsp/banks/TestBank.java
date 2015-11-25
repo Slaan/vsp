@@ -6,11 +6,12 @@ import vsp.banks.core.entities.Bank;
 import vsp.banks.core.exceptions.PlayerNotFoundException;
 import vsp.banks.values.Game;
 import vsp.banks.values.Place;
-import vsp.banks.values.Player;
+import vsp.banks.core.entities.Player;
 import vsp.banks.values.Transfer;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -105,6 +106,15 @@ public class TestBank {
     assertEquals(player1.getSaldo(), 0);
     Account player2 = bank.getAccountByPlayerId("player2");
     assertEquals(player2.getSaldo(), 4000);
+  }
+
+  @Test
+  public void test_bank_setGame() {
+    Bank bank = setUp();
+    assertTrue(bank.registerAccount(new Account(player1, 2000)));
+    assertTrue(bank.registerAccount(new Account(player2, 2000)));
+    Set<Player> players = new HashSet<>();
+    Game game = new Game("TESTGAME", "localhost/GAMES/TESTGAME", players, null);
   }
 
 }

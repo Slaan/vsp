@@ -53,7 +53,7 @@ public interface IBankLogic {
    *
    * <p>An transfer has to run isolated from other transfers.</p>
    *
-   * @param gameId  in which player is.
+   * @param gameId   in which player is.
    * @param transfer contains the information about the transfer, e.g. both accounts.
    * @return true if and only if enough money was on account and money has been withdrawn.
    */

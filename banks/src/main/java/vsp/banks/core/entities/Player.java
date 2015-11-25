@@ -1,4 +1,6 @@
-package vsp.banks.values;
+package vsp.banks.core.entities;
+
+import vsp.banks.values.Place;
 
 import static vsp.banks.helper.ObjectHelper.*;
 import static vsp.banks.helper.StringHelper.*;
@@ -55,6 +57,14 @@ public class Player {
 
   public boolean isReady() {
     return ready;
+  }
+
+  public void setPlace(Place place) {
+    this.place = place;
+  }
+
+  public void setPosition(int position) {
+    this.position = position;
   }
 
   @Override

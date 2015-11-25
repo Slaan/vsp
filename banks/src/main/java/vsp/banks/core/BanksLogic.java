@@ -15,6 +15,10 @@ public class BanksLogic implements IBankLogic {
 
   private Set<Bank> banks;
 
+  public BanksLogic() {
+    this.banks = new HashSet<>();
+  }
+
   @Override
   public void setGame(Game game) {
     for (Bank bank : banks) {

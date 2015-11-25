@@ -227,6 +227,15 @@ task serviceTest(type: Test, dependsOn: [setupApplicationLandscape]) {
 }
 
 /**
+ * Executes service test without starting docker container.
+ */
+task apiTest(type: Test, dependsOn: [build]) {
+    useTestNG()
+    testClassesDir = sourceSets.serviceTest.output.classesDir
+    classpath = sourceSets.serviceTest.runtimeClasspath
+}
+
+/**
  * This task executes all Consumer Driven Tests. The supporting Netflix services
  * are required to start our own services, so it is made sure these are available and properly started.
  */

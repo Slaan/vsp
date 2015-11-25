@@ -1,5 +1,7 @@
 package vsp.banks.values;
 
+import vsp.banks.core.entities.Player;
+
 import static vsp.banks.helper.ObjectHelper.checkNotNull;
 /**
  * Created by alex on 11/24/15.

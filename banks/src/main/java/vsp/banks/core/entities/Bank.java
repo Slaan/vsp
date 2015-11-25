@@ -2,11 +2,9 @@ package vsp.banks.core.entities;
 
 import vsp.banks.core.exceptions.PlayerNotFoundException;
 import vsp.banks.values.Game;
-import vsp.banks.values.Player;
 import vsp.banks.values.Transfer;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,7 +34,6 @@ public class Bank {
   /**
    * Registers an player account.
    *
-   * @param accountToRegister will be
    * @return true if and only if account has been added.
    */
   public boolean registerAccount(Account accountToRegister) {
@@ -64,14 +61,16 @@ public class Bank {
    * Checks if gameId of given game is equals to banks games.
    */
   public boolean hasGameId(Game game) {
-    return this.game.getGameId().equals(game.getGameId());
+    String ownId = this.game.getGameid();
+    String otherId = game.getGameid();
+    return ownId.equals(otherId);
   }
 
   /**
    * Checks if given gameId is equals to banks games.
    */
   public boolean hasGameId(String game) {
-    return this.game.getGameId().equals(game);
+    return this.game.getGameid().equals(game);
   }
 
   /**

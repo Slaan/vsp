@@ -1,8 +1,8 @@
 package vsp.banks.values;
 
-import java.util.ArrayList;
+import vsp.banks.core.entities.Player;
+
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static vsp.banks.helper.ObjectHelper.*;
@@ -12,7 +12,7 @@ import static vsp.banks.helper.StringHelper.*;
  */
 public class Game {
 
-  private String gameId;
+  private String gameid;
 
   private String uri;
 
@@ -23,17 +23,17 @@ public class Game {
   /**
    * Game is a immutable object.
    */
-  public Game(String gameId, String uri, Set<Player> players, Components components) {
-    checkNotNull(gameId);
-    checkNotEmpty(gameId);
-    this.gameId = gameId;
+  public Game(String gameid, String uri, Set<Player> players, Components components) {
+    checkNotNull(gameid);
+    checkNotEmpty(gameid);
+    this.gameid = gameid;
     this.uri = uri;
     this.players = players;
     this.components = components;
   }
 
-  public String getGameId() {
-    return gameId;
+  public String getGameid() {
+    return gameid;
   }
 
   public String getUri() {
@@ -57,7 +57,7 @@ public class Game {
       return false;
     }
     Game game = (Game) object;
-    if (gameId != null ? !gameId.equals(game.gameId) : game.gameId != null) {
+    if (gameid != null ? !gameid.equals(game.gameid) : game.gameid != null) {
       return false;
     }
     if (uri != null ? !uri.equals(game.uri) : game.uri != null) {
@@ -71,10 +71,20 @@ public class Game {
 
   @Override
   public int hashCode() {
-    int result = gameId != null ? gameId.hashCode() : 0;
+    int result = gameid != null ? gameid.hashCode() : 0;
     result = 31 * result + (uri != null ? uri.hashCode() : 0);
     result = 31 * result + (players != null ? players.hashCode() : 0);
     result = 31 * result + (components != null ? components.hashCode() : 0);
     return result;
+  }
+
+  @Override
+  public String toString() {
+    return "Game{"
+        + "gameid='" + gameid + '\''
+        + ", uri='" + uri + '\''
+        + ", players=" + players
+        + ", components=" + components
+        + '}';
   }
 }
