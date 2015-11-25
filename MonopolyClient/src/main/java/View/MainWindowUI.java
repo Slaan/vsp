@@ -24,16 +24,16 @@ public class MainWindowUI {
         getGamesButton = new JButton("Available Games");
         createGameButton = new JButton("Create New Game");
         gamesLabel = new JLabel("All available Games (id): ");
-        gamesTextField = new JLabel("Check available Games!");
+        joinedGamesTextField = new JLabel("Check available Games!");
         myGamesLabel = new JLabel("My Games (id):  ");
-        joinedGamesTextField = new JLabel("Join a Game mate!");
+        gamesTextField = new JLabel("Join a Game mate!");
 
         mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         container.setLayout(new GridLayout(0, 2));
         container.add(gamesLabel);
-        container.add(gamesTextField);
-        container.add(myGamesLabel);
         container.add(joinedGamesTextField);
+        container.add(myGamesLabel);
+        container.add(gamesTextField);
         container.add(getGamesButton);
         container.add(createGameButton);
         container.add(joinGameButton);

@@ -11,7 +11,7 @@ import java.util.List;
 @JsonIgnoreProperties
 public class Game {
 
-    private int gameid;
+    private String gameid;
     private List<Player> players;
     private Components components;
 
@@ -21,11 +21,11 @@ public class Game {
         players.add(player);
     }
 
-    public int getGameid() {
+    public String getGameid() {
         return gameid;
     }
 
-    public void setGameid(int gameid) {
+    public void setGameid(String gameid) {
         this.gameid = gameid;
     }
 
@@ -54,24 +54,26 @@ public class Game {
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Game)) return false;
+  @Override public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
 
-        Game game = (Game) o;
+    Game game = (Game) o;
 
-        if (gameid != game.gameid) return false;
-        if (players != null ? !players.equals(game.players) : game.players != null) return false;
-        return !(components != null ? !components.equals(game.components) : game.components != null);
+    if (gameid != null ? !gameid.equals(game.gameid) : game.gameid != null)
+      return false;
+    if (players != null ? !players.equals(game.players) : game.players != null)
+      return false;
+    return !(components != null ? !components.equals(game.components) : game.components != null);
 
-    }
+  }
 
-    @Override
-    public int hashCode() {
-        int result = gameid;
-        result = 31 * result + (players != null ? players.hashCode() : 0);
-        result = 31 * result + (components != null ? components.hashCode() : 0);
-        return result;
-    }
+  @Override public int hashCode() {
+    int result = gameid != null ? gameid.hashCode() : 0;
+    result = 31 * result + (players != null ? players.hashCode() : 0);
+    result = 31 * result + (components != null ? components.hashCode() : 0);
+    return result;
+  }
 }

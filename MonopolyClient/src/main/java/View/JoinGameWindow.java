@@ -26,9 +26,9 @@ public class JoinGameWindow {
         ui.getOkButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int id = Integer.parseInt(ui.getIdTextField().getText());
+                String id = ui.getIdTextField().getText();
                 restController.registerPlayerForID(id);
-                if (mainWindowUI.getGamesTextField().getText().equals("Check available Games!")) {
+                if (mainWindowUI.getGamesTextField().getText().equals("Join a Game mate!")) {
                     mainWindowUI.getGamesTextField().setText(id+"");
                 } else {
                     mainWindowUI.getGamesTextField().setText(mainWindowUI.getGamesTextField().getText() +", " +
