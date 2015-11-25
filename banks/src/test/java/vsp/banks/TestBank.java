@@ -85,4 +85,26 @@ public class TestBank {
     bank.applyTransfer(transfer);
   }
 
+  @Test
+  public void test_bank_getAccountByPlayerId() throws PlayerNotFoundException {
+    Bank bank = setUp();
+    Account account = new Account(player1, 2000);
+    assertTrue(bank.registerAccount(account));
+    Account received = bank.getAccountByPlayerId("player1");
+    assertEquals(received, account);
+  }
+
+  @Test
+  public void test_bank_Transfer_FromPlayerToPlayer_enoughMoney() throws PlayerNotFoundException {
+    Bank bank = setUp();
+    assertTrue(bank.registerAccount(new Account(player1, 2000)));
+    assertTrue(bank.registerAccount(new Account(player2, 2000)));
+    Transfer transfer = new Transfer("player1", "player2", 2000, "haus", "EVENT3");
+    assertTrue(bank.applyTransfer(transfer));
+    Account player1 = bank.getAccountByPlayerId("player1");
+    assertEquals(player1.getSaldo(), 0);
+    Account player2 = bank.getAccountByPlayerId("player2");
+    assertEquals(player2.getSaldo(), 4000);
+  }
+
 }

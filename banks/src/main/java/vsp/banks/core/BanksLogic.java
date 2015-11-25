@@ -13,7 +13,7 @@ import java.util.*;
  */
 public class BanksLogic implements IBankLogic {
 
-  Set<Bank> banks;
+  private Set<Bank> banks;
 
   @Override
   public void setGame(Game game) {
