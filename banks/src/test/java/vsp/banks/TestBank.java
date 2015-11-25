@@ -4,10 +4,10 @@ import org.testng.annotations.Test;
 import vsp.banks.core.entities.Account;
 import vsp.banks.core.entities.Bank;
 import vsp.banks.core.exceptions.PlayerNotFoundException;
-import vsp.banks.values.Game;
-import vsp.banks.values.Place;
+import vsp.banks.core.values.Game;
+import vsp.banks.core.values.Place;
 import vsp.banks.core.entities.Player;
-import vsp.banks.values.Transfer;
+import vsp.banks.core.values.Transfer;
 
 import java.util.Arrays;
 import java.util.HashSet;

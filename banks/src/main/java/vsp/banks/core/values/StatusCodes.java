@@ -1,4 +1,4 @@
-package vsp.banks.values;
+package vsp.banks.core.values;
 
 /**
  * Created by alex on 11/25/15.

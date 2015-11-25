@@ -3,8 +3,8 @@ package vsp.banks;
 import org.testng.annotations.Test;
 import vsp.banks.core.BanksLogic;
 import vsp.banks.core.interfaces.IBankLogic;
-import vsp.banks.values.Game;
-import vsp.banks.values.Place;
+import vsp.banks.core.values.Game;
+import vsp.banks.core.values.Place;
 import vsp.banks.core.entities.Player;
 
 import java.util.Arrays;

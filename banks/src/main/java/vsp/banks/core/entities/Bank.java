@@ -1,12 +1,11 @@
 package vsp.banks.core.entities;
 
 import vsp.banks.core.exceptions.PlayerNotFoundException;
-import vsp.banks.values.Game;
-import vsp.banks.values.Transfer;
+import vsp.banks.core.values.Event;
+import vsp.banks.core.values.Game;
+import vsp.banks.core.values.Transfer;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static vsp.banks.helper.ObjectHelper.*;
 
@@ -19,7 +18,9 @@ public class Bank {
 
   private Set<Account> accounts;
 
-  private Map<Account, Transfer> transferMap;
+  private List<Transfer> transfers;
+
+  private Map<Account, List<Event>> events;
 
   /**
    * The bank is matched exactly one game. It administrates
@@ -29,6 +30,7 @@ public class Bank {
     checkNotNull(game);
     this.game = game;
     accounts = new HashSet<>();
+    transfers = new ArrayList<>();
   }
 
   /**
@@ -90,6 +92,20 @@ public class Bank {
   }
 
   /**
+   * Appends the transfer to transfer list.
+   */
+  private void noteTransfer(Transfer transfer) {
+    this.transfers.add(transfer);
+  }
+
+  /**
+   * @return a new instance of all transfers happened in this bank.
+   */
+  public List<Transfer> getTransfers() {
+    return new ArrayList<>(this.transfers);
+  }
+
+  /**
    * Transfers an amount of money from one account to another.
    *
    * @param transfer contains the information about the accounts and amount.
@@ -110,7 +126,7 @@ public class Bank {
       Account accountTo = this.getAccountByPlayerId(to);
       accountTo.deposit(amount);
     }
-    // note event
+    noteTransfer(transfer);
     return true;
   }
 }

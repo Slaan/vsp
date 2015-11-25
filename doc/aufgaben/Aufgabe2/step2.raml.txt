@@ -1,0 +1,515 @@
+#%RAML 0.8
+title: RESTopoly
+version: 0.2
+baseUri: http://localhost:4567
+schemas:
+  - place: |
+      {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "id": "place",
+        "required": true,
+        "properties": {
+          "name": { "type": "string",  "required": true  }
+        }
+      }
+  - player: |
+      {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "id": "player",
+        "required": true,
+        "properties": {
+          "id":  { "type": "string", "required": true  },
+          "name":{ "type": "string" },
+          "uri":{ "type": "string" },
+          "place": { "$ref":"place" },
+          "position": { "type": "int" }
+        }
+      }
+  - game: |
+      {
+         "type": "object",
+          "$schema": "http://json-schema.org/draft-03/schema",
+          "id": "game",
+          "properties": {
+              "gameid": { "type": "string", "required": true},
+              "players":{ "type": "array", "items":{"$ref": "player"} },
+              "components": { "$ref": "components" }
+            }
+      }
+  - components: |
+      {
+         "type": "object",
+          "$schema": "http://json-schema.org/draft-03/schema",
+          "id": "components",
+          "description": "game components as full, absolute url",
+          "properties": {
+              "game": {"type": "string", "required": true},
+              "dice": {"type": "string", "required": true},
+              "board": {"type": "string", "required": true},
+              "bank": {"type": "string", "required": true},
+              "broker": {"type": "string", "required": true},
+              "decks": {"type": "string", "required": true}, 
+              "events": {"type": "string", "required": true}
+              }
+      }
+  - roll: |
+      {
+         "type": "object",
+          "$schema": "http://json-schema.org/draft-03/schema",
+          "id":"roll",
+          "properties": {
+              "number": {"type": "int"}
+            },
+          "required": ["number"]
+      }
+  - throw: |
+      {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "id": "throw",
+        "required": true,
+        "properties": {
+          "roll1": {
+            "$ref": "roll",
+            "required": true
+          },
+          "roll2": {
+            "$ref": "roll",
+            "required": true
+          }
+        }
+      }
+  - field: |
+      {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "id": "field",
+        "required": true,
+        "properties": {
+          "place": { "$ref":"place",  "required": true  },
+          "players":  { "$ref":"player",  "required": true  }
+        }
+      }
+  - board: |
+      {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "id": "board",
+        "required": true,
+        "properties": {
+          "fields": { "type": "array", "items": {"$ref": "field" }, "required": true  },
+          "positions":  { "type": "object", "properties": { "{playerid}":"int" },  "required": true  }
+        }
+      }
+  - bank: |
+      {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "id": "bank",
+        "properties": {
+        }
+      }
+  - transfer: |
+      {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "id": "transfer",
+        "properties": {
+          "from": { "type": "string", "description":"{playerid} or bank", "required": true  },
+          "to":   { "type": "string", "description":"{playerid} or bank", "required": true  },
+          "reason": { "type": "string", "required": true  },
+          "event":{ "type": "string", "required": false  }
+        }
+      }
+  - account: |
+      {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "id": "account",
+        "properties": {
+          "player": {"$ref":"player", "required":"true"},
+          "saldo": {"type":"int", "required":"true"}
+        }
+      }
+  - card: |
+      {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "id": "card",
+        "properties": {
+          "name": { "type": "string", "required": true  },
+          "text": { "type": "string", "required": true  }
+        }
+      }
+  - event:  |
+      {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "id": "event",
+        "properties": {
+          "type": { "type": "string", "required": true  },
+          "name": { "type": "string", "required": true  },
+          "reason": { "type": "string", "required": true  },
+          "resource": {"type": "string", "description": "the uri of the resource related to this event" },
+          "player": { "$ref": "player", "description": "The player issued this event" }
+        }
+      }
+  - events: |
+      {
+        "type": "array",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "id": "events",
+        "items": { "$ref": "event" }
+      }
+resourceTypes:
+  - list:
+      get:
+        description: List of available <<resourcePathName>>
+        responses:
+          200:
+            body:
+              application/json:
+                schema: |
+                  {
+                    "type": "array",
+                    "$schema": "http://json-schema.org/draft-03/schema",
+                    "id": "http://jsonschema.net",
+                    "required": true,
+                    "items": {"$ref": "<<schema>>" }
+                  }
+                example: <<example>>  
+  - item:  
+      get:
+        description: Gets a <<resourcePathName>>
+        responses:
+          200:
+            body:
+              application/json:
+                schema: <<schema>>
+                example: <<example>>
+      put:
+        description: places a <<resourcePathName>>
+        body:
+          application/json:
+            schema: <<schema>>
+            example: <<example>>
+  - collection:
+      type: 
+        list:
+          schema: <<schema>>
+          example: <<getexample>>
+      post:
+        description: creates a new <<resourcePathName>
+        body:
+          application/json:
+            schema: <<schema>>
+            example: <<postexample>>
+            
+traits:
+  - gcomp:
+      displayName: GameComponent
+      queryParameters:
+        gameid: 
+          description: The id of the game
+          example: 42
+          required: true
+/dice:
+  get:
+    protocols: [HTTP] 
+    description: Gives you a single dice roll
+    responses:
+      200:
+        body:
+          application/json:
+            schema: "roll"
+            example: |
+              { "number": 4 }
+# New in Step 2
+/games:
+  type: { collection: { schema: "game", "getexample":'[ {gameid: 42, players: {id: "mario", name:"Mario"} } ]', "postexample":'' } }
+  get:
+    description: returns all available games
+  post: 
+    description: creates a new game
+    responses:
+      201:
+        body:
+          application/json:
+            schema: "game"
+            example: |
+              { gameid: 42 } 
+  /{gameid}:
+    get:
+      description: returns the current game status
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {"gameid":"42",
+                 "players":[{"id":"mario","name":"Mario","uri":"http://localhost:4567/player/mario","ready":false}],
+                 "started":false
+                 }
+  /{gameid}/players:
+    type: 
+      list:
+        schema: "player"
+        example: |
+          [{ id:mario, name:"Mario", uri:"http://localhost:4567/player/mario", ready:false }]
+    get:
+      description: returns all joined players
+    /{playerid}:
+      type:
+        item:
+          schema: "player"
+          example: |
+            {"id":"mario","name":"Mario","uri":"http://localhost:4567/player/mario","ready":false}
+      put: 
+        description: joins the player to the game
+        queryParameters:
+          name:
+            displayName: Playername
+            type: string
+            description: Name of the player
+            example: Mario
+            required: false
+          uri:
+            displayName: Playeruri
+            type: string
+            description: Resource identification (uri) of the player service
+            example: http://localhost:4567/player/mario
+            required: false
+        body:
+          application/json:
+            schema:
+            example:
+      delete:
+        description: "Removes the player from the game"
+      /ready:
+        put:
+          description: signals that the player is ready to start the game / is finished with his turn
+        get: 
+          description: tells if the player is ready to start the game
+          responses:
+            200:
+              body:
+                application/json:
+                  example: "true"
+    /current:
+      get:
+        description: gets the currently active player that shall take action
+        responses:
+          200:
+            body:
+              application/json:
+                schema: "player"
+                example: |
+                        { id:mario, name:"Mario", uri:"http://localhost:4567/player/mario", ready:false }
+    /turn:
+      type: { item: { schema: "player", "example":"" } }
+      get:
+        description: gets the player holding the turn mutex
+      put:
+        description: tries to aquire the turn mutex
+        responses:
+          200:
+            description: already holding the mutex
+          201:
+            description: aquired the mutex
+          409:
+            description: already aquired by an other player
+      delete:
+        description: releases the mutex
+      
+/boards:
+  type: 
+    list:
+      schema: "game"
+      example: |
+        [{"gameid":"0"}]
+  get:
+    description: returns all active games (both running and joinable)              
+  /{gameid}:
+    type:
+      item:
+        schema: "board"
+        example: |
+          {
+            "fields":[
+              {"place": "/boards/42/places/0" ,"players":[]},
+              {"place": "/boards/42/places/1" ,"players":[]},
+              {"place": "/boards/42/places/2" ,"players":[]},
+              {"place": "/boards/42/places/3" ,"players":[]},
+              {"place":{"name":"Einkommensteuer"},"players":[{"id":"Mario","place":"/boards/42/places/2", "position":4}]}
+            ]
+          }
+    put:
+      description: makes shure there is a board for the gameid
+      body:
+        application/json:
+          schema:
+          example:
+    get:
+      description: gets the board belonging to the game
+    delete:
+      description: deletes the board to the game, effectivly ending the game
+    /players:
+      type: 
+        list:
+          schema: "player"
+          example: |
+            [{"id":"Mario","place":{"name":"Einkommensteuer"}, "position":4}]
+      get:
+        description: returns a list of all player positions
+      /{playerid}:
+        put:
+          description: puts a player on the board. Does nothing if already placed
+        delete:
+          description: removes a player from the board
+        type:
+          item:
+            schema: "player"
+            example: |
+              {"id":"Mario"}
+        
+      /{playerid}/roll:
+        post: 
+          description: gives a throw of dice from the player to the board
+          body:
+            application/json:
+              schema: "throw"
+              example: |
+                {
+                  "roll1": {"number":21 }, 
+                  "roll2": {"number":42 }
+                }
+          responses:
+            200:
+              description: Successful move. Returns the new board state and possible options to take
+              body:
+                application/json:
+                  schema: |
+                    {
+                      "player": { "type": "array", "items": {"$ref": "player" } },
+                      "board": { "$ref": "board" }
+                    }
+                  example: |
+                    { player: {"id":"Mario","place":{"name":"Einkommensteuer"}, "position":4}, 
+                      board: {
+                        "fields":[
+                          {"place":{"name":"Los"},"players":[]},
+                          {"place":{"name":"Badstrasse"},"players":[]},
+                          {"place":{"name":"Gemeinschaftsfeld"},"players":[]},
+                          {"place":{"name":"Turmstrasse"},"players":[]},
+                          {"place":{"name":"Einkommensteuer"},"players":[{"id":"Mario","place":{"name":"Einkommensteuer"}}]}
+                        ]
+                      }
+                    }
+    /places:
+      type: 
+        list: { schema: "place", example: '[{ "name":"Los" }, {"name":"Badstrasse"}]' }
+      /{place}:
+        type: { item: {schema: "place", "example":'{"name":"Los"}'} }  
+/banks/{gameid}:
+  type: { item: { schema: "bank", "example":"" } }
+  put:
+    body:
+      application/json:
+        schema: game
+  /transfers:
+    type: { list: { schema: "transfer", "example":"" } }
+    /{transferid}:
+      get:
+        description: Gets a <<resourcePathName>>
+        responses:
+          200:
+            body:
+              application/json:
+                schema: transfer
+                example: |
+                  {}
+  /transfer/from/{from}/to/{to}/{amount}:
+    post:
+      description: creates a new bank transfer
+      body:
+        application/json:
+          schema: '{"type":"string", "required":true}'
+          example: Rent for Badstrasse
+      responses:
+        201:
+          description: A new bank transfer has been created
+          body:
+            application/json:
+              schema: events
+        403:
+          description: insufficient fonds
+  /transfer/to/{to}/{amount}:
+    post:
+      description: creates a new bank transfer from the bank itself
+      body:
+        application/json:
+          schema: '{"type":"string", "required":true}'
+          example: Starting Money
+      responses:
+        201:
+          description: A new bank transfer has been created
+          body:
+            application/json:
+              schema: events
+  /transfer/from/{from}/{amount}:
+    post:
+      description: creates a new bank transfer to the bank itself
+      body:
+        application/json:
+          schema: '{"type":"string", "required":true}'
+          example: Starting Money
+      responses:
+        201:
+          description: A new bank transfer has been created
+          body:
+            application/json:
+              schema: events
+        403:
+          description: insufficient fonds
+  /players:
+    type: { collection: { schema: "account", "getexample":"", "postexample":"" } }
+    post: 
+      description: creates a bank account
+      responses:
+        201:
+          description: bank account has been created
+        409:
+          description: player already got a bank account
+  /players/{playerid}:
+    get:
+      description: returns the saldo of the player
+      responses:
+        200:
+          body: 
+            application/json: 
+              schema:  |
+                {"type": "int", "required": true}
+              example: "200"
+/decks/{gameid}:
+  /chance:
+    get: 
+      description: Gets a chance card
+      responses:
+        200:
+          body:
+            application/json:
+              schema: card
+              example: |
+                { "name": "Go to Jail", "text":"Go to jail, do not travel across 'go' and don't receive $200 "}
+  /community:
+    get:
+      description: Gets a community card
+      responses:
+        200:
+          body:
+            application/json:
+              schema: card
+              example: |
+                { "name": "Go to Jail", "text":"Go to jail, do not travel across 'go' and don't receive $200 "}

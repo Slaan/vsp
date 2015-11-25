@@ -8,4 +8,5 @@ public class MyMainClass {
     BanksLogic serviceLogic = new BanksLogic();
     BanksRestApi banksController = new BanksRestApi(serviceLogic);
   }
+
 }

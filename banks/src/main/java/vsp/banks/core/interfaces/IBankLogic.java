@@ -2,9 +2,9 @@ package vsp.banks.core.interfaces;
 
 import vsp.banks.core.entities.Account;
 import vsp.banks.core.exceptions.PlayerNotFoundException;
-import vsp.banks.values.Event;
-import vsp.banks.values.Game;
-import vsp.banks.values.Transfer;
+import vsp.banks.core.values.Event;
+import vsp.banks.core.values.Game;
+import vsp.banks.core.values.Transfer;
 
 import java.util.List;
 import java.util.Set;
@@ -19,7 +19,7 @@ public interface IBankLogic {
    *
    * @param game to store.
    */
-  public void setGame(Game game);
+  void setGame(Game game);
 
   /**
    * Registers a player.
@@ -28,7 +28,7 @@ public interface IBankLogic {
    * @param playerAccount to register.
    * @return true if and only if player wasn't already registered.
    */
-  public boolean registerPlayerForGame(String gameId, Account playerAccount);
+  boolean registerPlayerForGame(String gameId, Account playerAccount);
 
   /**
    * Returns player account.
@@ -37,7 +37,7 @@ public interface IBankLogic {
    * @param playerId of account.
    * @return player account.
    */
-  public Account getAccount(String gameId, String playerId) throws PlayerNotFoundException;
+  Account getAccount(String gameId, String playerId) throws PlayerNotFoundException;
 
   /**
    * Returns all player accounts.
@@ -45,7 +45,7 @@ public interface IBankLogic {
    * @param gameId in which accounts are.
    * @return player accounts.
    */
-  public Set<Account> getAccounts(String gameId);
+  Set<Account> getAccounts(String gameId);
 
   /**
    * Takes an amount of money from one account and puts it into another.
@@ -57,8 +57,7 @@ public interface IBankLogic {
    * @param transfer contains the information about the transfer, e.g. both accounts.
    * @return true if and only if enough money was on account and money has been withdrawn.
    */
-  public boolean applyTransferInGame(String gameId, Transfer transfer)
-      throws PlayerNotFoundException;
+  boolean applyTransferInGame(String gameId, Transfer transfer) throws PlayerNotFoundException;
 
 
   /**
@@ -68,5 +67,13 @@ public interface IBankLogic {
    * @param playerId of player the events are retrieved.
    * @return a list of all events a player happened.
    */
-  public List<Event> getEventsOfPlayer(String gameId, String playerId);
+  List<Event> getEventsOfPlayer(String gameId, String playerId);
+
+  /**
+   * Returns all transfers of given game.
+   *
+   * @param gameId of game in bank.
+   * @return list of transfers happened in bank.
+   */
+  List<Transfer> getTransfersOfBank(String gameId);
 }

@@ -4,7 +4,7 @@ import vsp.banks.core.entities.Account;
 import vsp.banks.core.entities.Bank;
 import vsp.banks.core.exceptions.PlayerNotFoundException;
 import vsp.banks.core.interfaces.IBankLogic;
-import vsp.banks.values.*;
+import vsp.banks.core.values.*;
 
 import java.util.*;
 
@@ -65,6 +65,11 @@ public class BanksLogic implements IBankLogic {
   @Override
   public List<Event> getEventsOfPlayer(String gameId, String playerId) {
     return null;
+  }
+
+  @Override public List<Transfer> getTransfersOfBank(String gameId) {
+    Bank bank = findBankByGameId(gameId);
+    return bank.getTransfers();
   }
 
   /**

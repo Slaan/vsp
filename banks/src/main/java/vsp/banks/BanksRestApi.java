@@ -3,15 +3,15 @@ package vsp.banks;
 import com.google.gson.Gson;
 import vsp.banks.core.entities.Account;
 import vsp.banks.core.interfaces.IBankLogic;
-import vsp.banks.values.Event;
-import vsp.banks.values.Game;
-import vsp.banks.values.Transfer;
+import vsp.banks.core.values.Event;
+import vsp.banks.core.values.Game;
+import vsp.banks.core.values.Transfer;
 
 import java.util.List;
 import java.util.Set;
 
 import static spark.Spark.*;
-import static vsp.banks.values.StatusCodes.*;
+import static vsp.banks.core.values.StatusCodes.*;
 /**
  * Created by alex on 11/18/15.
  */
@@ -77,9 +77,10 @@ public class BanksRestApi {
    * <code>GET /banks/{gameId}/transfers/{transferId}</code>
    */
   public void bindGetTransfer() {
-    get("banks/:gameId/transfers/:transferId", (request, response) -> {
-      // no op
-      return "";
+    get("banks/:gameId/transfers", (request, response) -> {
+      String gameId = request.params(":gameId");
+      List<Transfer> transfers = this.bankServiceLogic.getTransfersOfBank(gameId);
+      return this.converter.toJson(transfers);
     });
   }
 

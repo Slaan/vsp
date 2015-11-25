@@ -1,4 +1,4 @@
-package vsp.banks.values;
+package vsp.banks.core.values;
 
 import vsp.banks.core.entities.Player;
 
