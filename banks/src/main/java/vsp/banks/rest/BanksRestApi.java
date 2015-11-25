@@ -1,4 +1,4 @@
-package vsp.banks;
+package vsp.banks.rest;
 
 import com.google.gson.Gson;
 import vsp.banks.core.entities.Account;
