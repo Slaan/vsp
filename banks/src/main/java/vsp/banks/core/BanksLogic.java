@@ -2,6 +2,7 @@ package vsp.banks.core;
 
 import vsp.banks.core.entities.Account;
 import vsp.banks.core.entities.Bank;
+import vsp.banks.core.exceptions.PlayerNotFoundException;
 import vsp.banks.core.interfaces.IBankLogic;
 import vsp.banks.values.*;
 
@@ -36,7 +37,7 @@ public class BanksLogic implements IBankLogic {
   }
 
   @Override
-  public Account getAccount(String gameId, String playerId) {
+  public Account getAccount(String gameId, String playerId) throws PlayerNotFoundException {
     Bank bank = findBankByGameId(gameId);
     if (bank == null) {
       return null;
@@ -51,7 +52,8 @@ public class BanksLogic implements IBankLogic {
   }
 
   @Override
-  public boolean applyTransferInGame(String gameId, Transfer transfer) {
+  public boolean applyTransferInGame(String gameId, Transfer transfer)
+      throws PlayerNotFoundException {
     Bank bank = findBankByGameId(gameId);
     return bank.applyTransfer(transfer);
   }

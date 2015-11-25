@@ -1,6 +1,7 @@
 package vsp.banks.core.interfaces;
 
 import vsp.banks.core.entities.Account;
+import vsp.banks.core.exceptions.PlayerNotFoundException;
 import vsp.banks.values.Event;
 import vsp.banks.values.Game;
 import vsp.banks.values.Transfer;
@@ -36,7 +37,7 @@ public interface IBankLogic {
    * @param playerId of account.
    * @return player account.
    */
-  public Account getAccount(String gameId, String playerId);
+  public Account getAccount(String gameId, String playerId) throws PlayerNotFoundException;
 
   /**
    * Returns all player accounts.
@@ -56,7 +57,8 @@ public interface IBankLogic {
    * @param transfer contains the information about the transfer, e.g. both accounts.
    * @return true if and only if enough money was on account and money has been withdrawn.
    */
-  public boolean applyTransferInGame(String gameId, Transfer transfer);
+  public boolean applyTransferInGame(String gameId, Transfer transfer)
+      throws PlayerNotFoundException;
 
 
   /**

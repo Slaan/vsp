@@ -1,5 +1,6 @@
 package vsp.banks.core.entities;
 
+import vsp.banks.core.exceptions.PlayerNotFoundException;
 import vsp.banks.values.Game;
 import vsp.banks.values.Player;
 import vsp.banks.values.Transfer;
@@ -29,6 +30,7 @@ public class Bank {
   public Bank(Game game) {
     checkNotNull(game);
     this.game = game;
+    accounts = new HashSet<>();
   }
 
   /**
@@ -75,13 +77,13 @@ public class Bank {
   /**
    * @return account with playerId. When not found, null will be returned.
    */
-  public Account getAccountByPlayerId(String playerId) {
+  public Account getAccountByPlayerId(String playerId) throws PlayerNotFoundException {
     for (Account account : this.accounts) {
       if (account.isPlayerId(playerId)) {
         return account;
       }
     }
-    return null;
+    throw new PlayerNotFoundException("Did not found player with id: '" + playerId + "'.");
   }
 
   public Set<Account> getAccounts() {
@@ -95,7 +97,7 @@ public class Bank {
    * @return true when successfully transferred from A to B. When A has not enough money, he isn't
    *         able to transfer and false will be returned.
    */
-  public synchronized boolean applyTransfer(Transfer transfer) {
+  public synchronized boolean applyTransfer(Transfer transfer) throws PlayerNotFoundException {
     int amount = transfer.getAmount();
     String from = transfer.getFrom();
     if (!from.equals(Transfer.bankName)) {

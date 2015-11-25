@@ -38,7 +38,7 @@ public class Account {
    */
   public boolean withdraw(int money) {
     int newSaldo = this.saldo - money;
-    if (newSaldo > 0) {
+    if (newSaldo >= 0) {
       this.saldo = newSaldo;
       return true;
     }
