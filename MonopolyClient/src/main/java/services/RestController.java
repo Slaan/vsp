@@ -31,7 +31,7 @@ public class RestController  {
     public RestController()  {
       this.restTemplate = new RestTemplate();
       restTemplate.setErrorHandler(new OurRestErrorHandler());
-      callRestQuote();
+      //callRestQuote();
     }
 
     public void callRestQuote() throws ClientException, ServerException{
