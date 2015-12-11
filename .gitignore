@@ -13,3 +13,7 @@ hs_err_pid*
 
 # All build files
 */build/*
+
+# IntelliJ
+.idea/*
+*.iml
