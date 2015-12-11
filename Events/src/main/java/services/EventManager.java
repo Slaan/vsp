@@ -13,7 +13,6 @@ import java.util.Map;
 /**
  * Created by Daniel Hofmeister on 11.12.2015.
  */
-@Component
 public class EventManager {
 
 

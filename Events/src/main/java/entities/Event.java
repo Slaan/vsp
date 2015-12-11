@@ -17,8 +17,9 @@ public class Event {
     private String resource;
     private Player player;
 
-    public Event(int id, String type, String name, String reason, String resource, Player player) {
-        this.id = id;
+    public Event() {}
+
+    public Event(String type, String name, String reason, String resource, Player player) {
         this.type = type;
         this.name = name;
         this.reason = reason;
