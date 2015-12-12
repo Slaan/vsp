@@ -16,12 +16,12 @@ public class Event {
 
   private String resource;
 
-  private Player player;
+  private String player;
 
   /**
    * TODO: add java-doc :).
    */
-  public Event(String type, String name, String reason, String resource, Player player) {
+  public Event(String type, String name, String reason, String resource, String player) {
     checkNotNull(type, name, reason, resource);
     this.type = type;
     this.name = name;
@@ -46,7 +46,7 @@ public class Event {
     return resource;
   }
 
-  public Player getPlayer() {
+  public String getPlayer() {
     return player;
   }
 
@@ -64,9 +64,5 @@ public class Event {
 
   public void setResource(String resource) {
     this.resource = resource;
-  }
-
-  public void setPlayer(Player player) {
-    this.player = player;
   }
 }

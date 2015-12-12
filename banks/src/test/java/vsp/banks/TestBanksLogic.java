@@ -25,10 +25,10 @@ public class TestBanksLogic {
 
 
   Place place = new Place("Wacholderallee");
-  Player player1 = new Player("player1", "bob", "localhost/player/", place, 3, true);
-  Player player2 = new Player("player2", "alice", "localhost/player/", place, 3, true);
-  Player player3 = new Player("player3", "hans", "localhost/player/", place, 3, true);
-  Player notInGame = new Player("notInGame", "hans", "localhost/player/", place, 3, true);
+  Player player1 = new Player("player1", "bob", "localhost/player/");
+  Player player2 = new Player("player2", "alice", "localhost/player/");
+  Player player3 = new Player("player3", "hans", "localhost/player/");
+  Player notInGame = new Player("notInGame", "hans", "localhost/player/");
 
   private IBankLogic setUpLogic() {
     return new BanksLogic();

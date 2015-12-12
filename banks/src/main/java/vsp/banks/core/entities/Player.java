@@ -16,23 +16,15 @@ public class Player {
 
   private String uri;
 
-  private Place place;
-
-  private int position;
-
-  private boolean ready;
-
   /**
    * This immutable object stores information about the player.
    */
-  public Player(String id, String name, String uri, Place place, int position, boolean ready) {
-    checkNotNull(id, place);
+  public Player(String id, String name, String uri) {
+    checkNotNull(id);
     checkNotEmpty(id);
     this.id = id;
     this.name = name;
     this.uri = uri;
-    this.place = place;
-    this.position = position;
   }
 
   public String getId() {
@@ -47,25 +39,6 @@ public class Player {
     return uri;
   }
 
-  public Place getPlace() {
-    return place;
-  }
-
-  public int getPosition() {
-    return position;
-  }
-
-  public boolean isReady() {
-    return ready;
-  }
-
-  public void setPlace(Place place) {
-    this.place = place;
-  }
-
-  public void setPosition(int position) {
-    this.position = position;
-  }
 
   @Override
   public boolean equals(Object object) {
@@ -80,7 +53,6 @@ public class Player {
       return false;
     }
     return !(name != null ? !name.equals(player.name) : player.name != null);
-
   }
 
   @Override

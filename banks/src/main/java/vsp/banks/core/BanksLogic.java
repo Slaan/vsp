@@ -35,7 +35,7 @@ public class BanksLogic implements IBankLogic {
   public boolean registerPlayerForGame(String gameId, Account playerAccount) {
     Bank bank = findBankByGameId(gameId);
     if (bank == null) {
-      // how to handle dis?
+      return false;
     }
     return bank.registerAccount(playerAccount);
   }

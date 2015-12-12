@@ -94,7 +94,7 @@ public class BanksRestApi {
       String toPlayer = request.params(":to");
       int amount = Integer.parseInt(request.params(":amount"));
       String reason = request.body();
-      Transfer transfer = Transfer.initTransferToPlayer(toPlayer, amount, reason, null);
+      Transfer transfer = Transfer.bankToPlayer(toPlayer, amount, reason, null);
       this.bankServiceLogic.applyTransferInGame(gameId, transfer);
       List<Event> events = this.bankServiceLogic.getEventsOfPlayer(gameId, toPlayer);
       return this.converter.toJson(events);
@@ -133,7 +133,7 @@ public class BanksRestApi {
       String fromId = request.params(":from");
       int amount = Integer.parseInt(request.params(":amount"));
       String reason = request.body();
-      Transfer transfer = Transfer.initTransferFromPlayer(fromId, amount, reason, "");
+      Transfer transfer = Transfer.playerToBank(fromId, amount, reason, "");
       if (this.bankServiceLogic.applyTransferInGame(gameId, transfer)) {
         List<Event> events = this.bankServiceLogic.getEventsOfPlayer(gameId, fromId);
         response.status(ok);

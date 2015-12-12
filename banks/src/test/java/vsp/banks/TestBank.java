@@ -24,10 +24,10 @@ import static org.testng.Assert.assertTrue;
 public class TestBank {
 
   Place place = new Place("Wacholderallee");
-  Player player1 = new Player("player1", "bob", "localhost/player/", place, 3, true);
-  Player player2 = new Player("player2", "alice", "localhost/player/", place, 3, true);
-  Player player3 = new Player("player3", "hans", "localhost/player/", place, 3, true);
-  Player notInGame = new Player("notInGame", "hans", "localhost/player/", place, 3, true);
+  Player player1 = new Player("player1", "bob", "localhost/player/");
+  Player player2 = new Player("player2", "alice", "localhost/player/");
+  Player player3 = new Player("player3", "hans", "localhost/player/");
+  Player notInGame = new Player("notInGame", "hans", "localhost/player/");
 
   private Bank setUp() {
     Game game = new Game("TESTGAME", "localhost/GAMES/TESTGAME",
@@ -54,7 +54,7 @@ public class TestBank {
     Bank bank = setUp();
     Account account = new Account(player1, 2000);
     assertTrue(bank.registerAccount(account));
-    Transfer transfer = Transfer.initTransferFromPlayer("player1", 2000, "haus", "EVENT3");
+    Transfer transfer = Transfer.playerToBank("player1", 2000, "haus", "EVENT3");
     assertTrue(bank.applyTransfer(transfer));
     assertEquals(account.getSaldo(), 0);
   }
@@ -64,7 +64,7 @@ public class TestBank {
     Bank bank = setUp();
     Account account = new Account(player1, 2000);
     assertTrue(bank.registerAccount(account));
-    Transfer transfer = Transfer.initTransferFromPlayer("player1", 2001, "haus", "EVENT3");
+    Transfer transfer = Transfer.playerToBank("player1", 2001, "haus", "EVENT3");
     assertFalse(bank.applyTransfer(transfer));
     assertEquals(account.getSaldo(), 2000);
   }
@@ -74,7 +74,7 @@ public class TestBank {
     Bank bank = setUp();
     Account account = new Account(player1, 2000);
     assertTrue(bank.registerAccount(account));
-    Transfer transfer = Transfer.initTransferToPlayer("player1", 2001, "haus", "EVENT3");
+    Transfer transfer = Transfer.bankToPlayer("player1", 2001, "haus", "EVENT3");
     assertTrue(bank.applyTransfer(transfer));
     assertEquals(account.getSaldo(), 4001);
   }
@@ -82,7 +82,7 @@ public class TestBank {
   @Test(expectedExceptions = PlayerNotFoundException.class)
   public void test_bank_Transfer_PlayerNotFound() throws PlayerNotFoundException {
     Bank bank = setUp();
-    Transfer transfer = Transfer.initTransferToPlayer("player1", 2001, "haus", "EVENT3");
+    Transfer transfer = Transfer.bankToPlayer("player1", 2001, "haus", "EVENT3");
     bank.applyTransfer(transfer);
   }
 

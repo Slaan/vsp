@@ -7,7 +7,13 @@ import static vsp.banks.helper.ObjectHelper.*;
  */
 public class Transfer {
 
-  public static final String bankName = "BANK";
+  enum TransferType {
+    playerToPlayer,
+    playerToBank,
+    bankToPlayer
+  }
+
+  private transient TransferType type;
 
   private String from;
 
@@ -19,28 +25,53 @@ public class Transfer {
 
   private String event;
 
-  public static Transfer initTransferFromPlayer(String from, int amount, String reason, String ev) {
-    return new Transfer(from, bankName, amount, reason, ev);
-  }
-
-  public static Transfer initTransferToPlayer(String to, int amount, String reason, String event) {
-    return new Transfer(bankName, to, amount, reason, event);
+  /**
+   * Checks invariant of this
+   */
+  private void checkInvariant() {
+    if (type.equals(TransferType.bankToPlayer) && from.isEmpty() && !to.isEmpty()) {
+      throw new RuntimeException();
+    }
+    if (type.equals(TransferType.playerToBank) && !from.isEmpty() && to.isEmpty()) {
+      throw new RuntimeException();
+    }
   }
 
   /**
-   * @param from     of the money.
-   * @param to       of the money.
-   * @param amount   of money to transfer.
-   * @param reason   of transfer. Reason can't be null nor empty.
+   * Creates a bank to player transfer.
+   */
+  public static Transfer playerToBank(String from, int amount, String reason, String ev) {
+    return new Transfer(TransferType.playerToBank, from, "", amount, reason, ev);
+  }
+
+  /**
+   * Creates a bank to player transfer.
+   */
+  public static Transfer bankToPlayer(String to, int amount, String reason, String event) {
+    return new Transfer(TransferType.bankToPlayer, "", to, amount, reason, event);
+  }
+
+  /**
+   * Creates a player to player transfer.
    */
   public Transfer(String from, String to, int amount, String reason, String event) {
+    this(TransferType.playerToPlayer, from, to, amount, reason, event);
+  }
+
+  /**
+   * Private constructor.
+   */
+  private Transfer(TransferType type, String from, String to, int amount, String reason,
+      String event) {
     checkNotNull(from, to, reason);
-    checkNotEmpty(from, to, reason);
+    checkNotEmpty(reason);
+    this.type = type;
     this.from = from;
     this.to = to;
     this.amount = amount;
     this.reason = reason;
     this.event = event;
+    checkInvariant();
   }
 
   public String getFrom() {
@@ -61,6 +92,18 @@ public class Transfer {
 
   public String getEvent() {
     return event;
+  }
+
+  public boolean isPlayerToPlayer() {
+    return this.type.equals(TransferType.playerToPlayer);
+  }
+
+  public boolean isBankToPlayer() {
+    return this.type.equals(TransferType.bankToPlayer);
+  }
+
+  public boolean isPlayerToBank() {
+    return this.type.equals(TransferType.playerToBank);
   }
 
   @Override

@@ -109,20 +109,20 @@ public class Bank {
    * Transfers an amount of money from one account to another.
    *
    * @param transfer contains the information about the accounts and amount.
-   * @return true when successfully transferred from A to B. When A has not enough money, he isn't
+   * @return true when successfully transferred from A to B. When A has not enough money, it isn't
    *         able to transfer and false will be returned.
    */
   public synchronized boolean applyTransfer(Transfer transfer) throws PlayerNotFoundException {
     int amount = transfer.getAmount();
     String from = transfer.getFrom();
-    if (!from.equals(Transfer.bankName)) {
+    if (!transfer.isBankToPlayer()) {
       Account accountFrom = this.getAccountByPlayerId(from);
       if (!accountFrom.withdraw(amount)) {
         return false;
       }
     }
     String to = transfer.getTo();
-    if (!to.equals(Transfer.bankName)) {
+    if (!transfer.isPlayerToBank()) {
       Account accountTo = this.getAccountByPlayerId(to);
       accountTo.deposit(amount);
     }
