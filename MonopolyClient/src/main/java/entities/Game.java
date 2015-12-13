@@ -2,7 +2,6 @@ package entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,6 +11,7 @@ import java.util.List;
 public class Game {
 
     private String gameid;
+    private String uri;
     private List<Player> players;
     private Components components;
 
@@ -45,35 +45,44 @@ public class Game {
         this.components = components;
     }
 
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
     @Override
     public String toString() {
         return "Game{" +
-                "gameid=" + gameid +
+                "gameid='" + gameid + '\'' +
+                ", uri='" + uri + '\'' +
                 ", players=" + players +
                 ", components=" + components +
                 '}';
     }
 
-  @Override public boolean equals(Object o) {
-    if (this == o)
-      return true;
-    if (o == null || getClass() != o.getClass())
-      return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Game)) return false;
 
-    Game game = (Game) o;
+        Game game = (Game) o;
 
-    if (gameid != null ? !gameid.equals(game.gameid) : game.gameid != null)
-      return false;
-    if (players != null ? !players.equals(game.players) : game.players != null)
-      return false;
-    return !(components != null ? !components.equals(game.components) : game.components != null);
+        if (gameid != null ? !gameid.equals(game.gameid) : game.gameid != null) return false;
+        if (uri != null ? !uri.equals(game.uri) : game.uri != null) return false;
+        if (players != null ? !players.equals(game.players) : game.players != null) return false;
+        return !(components != null ? !components.equals(game.components) : game.components != null);
 
-  }
+    }
 
-  @Override public int hashCode() {
-    int result = gameid != null ? gameid.hashCode() : 0;
-    result = 31 * result + (players != null ? players.hashCode() : 0);
-    result = 31 * result + (components != null ? components.hashCode() : 0);
-    return result;
-  }
+    @Override
+    public int hashCode() {
+        int result = gameid != null ? gameid.hashCode() : 0;
+        result = 31 * result + (uri != null ? uri.hashCode() : 0);
+        result = 31 * result + (players != null ? players.hashCode() : 0);
+        result = 31 * result + (components != null ? components.hashCode() : 0);
+        return result;
+    }
 }
