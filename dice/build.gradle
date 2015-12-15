@@ -53,8 +53,7 @@ import com.bmuschko.gradle.docker.tasks.container.DockerRemoveContainer
  * Define the name and version of the resulting jar file
  */
 jar {
-    baseName = 'dice'
-    version = '0.0.1-SNAPSHOT'
+    baseName = 'vsp_abq342'
 }
 
 checkstyle {

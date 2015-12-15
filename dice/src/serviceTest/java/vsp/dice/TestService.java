@@ -16,7 +16,6 @@ public class TestService {
   public void testDiceBetween() {
     expect().statusCode(200)
         .given().when()
-        .get("http://localhost:8080/dice");
+        .get("http://localhost:4567/dice");
   }
-
 }
