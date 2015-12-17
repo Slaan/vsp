@@ -12,20 +12,20 @@ public class YellowPageRegisterThread implements Runnable {
 
   private static final Logger log = LoggerFactory.getLogger(MyMainClass.class);
   private static String yellowPageUrl =
-      "http://vs-docker.informatik.haw-hamburg.de/ports/8053/services";
+      "http://vs-docker.informatik.haw-hamburg.de:8053/services";
 
 
   @Override public void run() {
     log.info("trying to register YellowPages, waiting 10s for spring to start up");
     try {
-      Thread.sleep(10000);
+      Thread.sleep(1000);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
     RestTemplate template = new RestTemplate();
-    Service diceService = new Service("BoardsService", "Service managing Boards", "BoardsService",
+    Service boardsService = new Service("abq342_Boards", "Service managing Boards", "BoardsService",
         "https://vs-docker/ports/13420/boards");
-    template.postForEntity(yellowPageUrl, null, null, diceService);
+    String result = template.postForObject(yellowPageUrl, boardsService, String.class);
     log.info("Docker YP Env Var = " + System.getenv("DIRECTORY_SERVICE_URL"));
     log.info("Trying to register at Yellow Pages");
 
