@@ -29,9 +29,9 @@ public class EventManager {
   }
 
   /**
-   * Adds an event to a GameId.
+   * Adds an event for a Game.
    *
-   * @param gameid gameId the event shall be added
+   * @param gameid Id of the game the event shall be added
    * @param event  event to be added
    * @return returns id of event
    */
@@ -49,6 +49,7 @@ public class EventManager {
     events.add(event);
     allEvents.add(event);
     eventMap.put(gameid, events);
+    subscriptionManager.informAboutEvent(gameid, event);
     return counter;
   }
 

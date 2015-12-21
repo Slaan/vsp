@@ -1,16 +1,16 @@
 package services;
 
-import org.springframework.web.bind.annotation.*;
+import services.Adapters.GamesServiceAdapter;
 
 /**
  * Created by slaan on 25.11.15.
  */
 public class MainController {
 
-  private RestController restController;
+  private GamesServiceAdapter gamesServiceAdapter;
 
   public MainController() {
-    restController = new RestController();
+    gamesServiceAdapter = new GamesServiceAdapter();
   }
 
 

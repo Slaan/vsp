@@ -1,4 +1,4 @@
-package View;
+package View.GUI;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

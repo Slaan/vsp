@@ -1,6 +1,6 @@
-package View;
+package View.GUI;
 
-import services.RestController;
+import services.Adapters.GamesServiceAdapter;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,12 +10,12 @@ import java.awt.event.ActionListener;
  */
 public class JoinGameWindow {
 
-    private RestController restController;
+    private GamesServiceAdapter gamesServiceAdapter;
     private JoinGameWindowUI ui;
     private MainWindowUI mainWindowUI;
 
-    public JoinGameWindow(RestController rc, MainWindowUI mainWindowUI) {
-        restController = rc;
+    public JoinGameWindow(GamesServiceAdapter rc, MainWindowUI mainWindowUI) {
+        gamesServiceAdapter = rc;
         this.mainWindowUI = mainWindowUI;
         ui = new JoinGameWindowUI();
         registerUIActions();
@@ -27,7 +27,7 @@ public class JoinGameWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String id = ui.getIdTextField().getText();
-                restController.registerPlayerForID(id);
+                gamesServiceAdapter.registerPlayerForID(id);
                 if (mainWindowUI.getGamesTextField().getText().equals("Join a Game mate!")) {
                     mainWindowUI.getGamesTextField().setText(id+"");
                 } else {

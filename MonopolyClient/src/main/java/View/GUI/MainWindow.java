@@ -1,9 +1,9 @@
-package View;
+package View.GUI;
 
 import entities.Game;
 import services.Exception.ClientException;
 import services.Exception.ServerException;
-import services.RestController;
+import services.Adapters.GamesServiceAdapter;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,11 +15,11 @@ import java.util.List;
  */
 public class MainWindow {
 
-    private RestController restController;
+    private GamesServiceAdapter gamesServiceAdapter;
     private MainWindowUI mainWindowUI;
 
-    public MainWindow(RestController rc) {
-        restController = rc;
+    public MainWindow(GamesServiceAdapter rc) {
+        gamesServiceAdapter = rc;
         mainWindowUI = new MainWindowUI();
         registerUIActions();
         mainWindowUI.showWindow();
@@ -30,7 +30,7 @@ public class MainWindow {
         mainWindowUI.getJoinGameButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                new JoinGameWindow(restController, mainWindowUI);
+                new JoinGameWindow(gamesServiceAdapter, mainWindowUI);
             }
         });
 
@@ -44,7 +44,7 @@ public class MainWindow {
         mainWindowUI.getCreateGameButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Game game = restController.createGame();
+                Game game = gamesServiceAdapter.createGame();
                 updateAvailableGames(game);
             }
         });
@@ -54,7 +54,7 @@ public class MainWindow {
             public void actionPerformed(ActionEvent e) {
               List<Game> games = new ArrayList<>();
               try {
-                games = restController.getAllGames();
+                games = gamesServiceAdapter.getAllGames();
               } catch (ClientException ce) {
                 handleClientException();
               } catch (ServerException se) {

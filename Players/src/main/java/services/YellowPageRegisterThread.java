@@ -27,7 +27,6 @@ public class YellowPageRegisterThread implements Runnable {
         "Service connecting the Client to our docker env",
         "playerService", "https://vs-docker/ports/13421/player");
     String result = template.postForObject(yellowPageUrl, playerService, String.class);
-    log.info("Docker YP Env Var = " + System.getenv("DIRECTORY_SERVICE_URL"));
     log.info("Trying to register at Yellow Pages");
 
   }

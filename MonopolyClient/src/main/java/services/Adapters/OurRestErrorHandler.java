@@ -1,4 +1,4 @@
-package services;
+package services.Adapters;
 
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;

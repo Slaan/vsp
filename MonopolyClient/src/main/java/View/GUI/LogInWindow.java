@@ -1,7 +1,7 @@
-package View;
+package View.GUI;
 
 import entities.Player;
-import services.RestController;
+import services.Adapters.GamesServiceAdapter;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,11 +11,11 @@ import java.awt.event.ActionListener;
  */
 public class LogInWindow {
 
-    private RestController restController;
+    private GamesServiceAdapter gamesServiceAdapter;
     private LogInWindowUI ui;
 
-    public LogInWindow(RestController restController) {
-        this.restController = restController;
+    public LogInWindow(GamesServiceAdapter gamesServiceAdapter) {
+        this.gamesServiceAdapter = gamesServiceAdapter;
         ui = new LogInWindowUI();
         registerUIActions();
         ui.showWindow();
@@ -29,8 +29,8 @@ public class LogInWindow {
                 player.setId(ui.getIdTextField().getText());
                 player.setName(ui.getNameTextField().getText());
                 player.setUri("http://127.0.0.1:4267/jippie");
-                restController.setOwnPlayer(player);
-                new MainWindow(restController);
+                gamesServiceAdapter.setOwnPlayer(player);
+                new MainWindow(gamesServiceAdapter);
                 ui.closeWindow();
             }
         });

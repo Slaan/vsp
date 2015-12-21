@@ -15,34 +15,48 @@ import java.util.Map;
  */
 public class PlayerManager {
 
-    private Player ourPlayer;
-    private static final Logger log = LoggerFactory.getLogger(PlayerManager.class);
-    private static String yellowPageUrl = "https://vs-docker.informatik.haw-hamburg.de/ports/8053/services";
+  private Player ourPlayer;
+  private static final Logger log = LoggerFactory.getLogger(PlayerManager.class);
+  private static String yellowPageUrl =
+      "https://vs-docker.informatik.haw-hamburg.de/ports/8053/services";
 
-    public PlayerManager() {
-        registerYellowPages();
+  public PlayerManager() {
+    registerYellowPages();
+  }
+
+  private void registerYellowPages() {
+    RestTemplate template = new RestTemplate();
+    Service playerService =
+        new Service("PlayerService", "Service connecting the Client to our docker env",
+            "playerService", "https://vs-docker/ports/10343/player");
+    template.postForEntity(yellowPageUrl, null, null, playerService);
+    log.info("Trying to register at Yellow Pages");
+  }
+
+  public void setOurPlayer(Player player) {
+    this.ourPlayer = player;
+  }
+
+  public Player getOurPlayer() {
+    return ourPlayer;
+  }
+
+  public void informOurTurn() {
+    ourPlayer.setReady(true);
+    //TODO inform client
+  }
+
+  public void informNewEvent(Event event) {
+    log.info("An event happened! Type: " + event.getType() +", Reason: " + event.getReason());
+    //TODO inform client about new event
+  }
+
+  public boolean deletePlayer(String id, String pw) {
+    if (this.ourPlayer.getId().equals(id) && this.ourPlayer.getPassword().equals(pw)) {
+      ourPlayer = null;
+      return true;
+    } else {
+      return false;
     }
-
-    private void registerYellowPages() {
-        RestTemplate template = new RestTemplate();
-        Service playerService = new Service("PlayerService", "Service connecting the Client to our docker env",
-                "playerService", "https://vs-docker/ports/10343/player");
-        template.postForEntity(yellowPageUrl, null, null, playerService);
-        log.info("Docker YP Env Var = " + System.getenv("DIRECTORY_SERVICE_URL"));
-        log.info("Trying to register at Yellow Pages");
-    }
-
-
-    public Player getOurPlayer() {
-        return ourPlayer;
-    }
-
-    public void informOurTurn() {
-        ourPlayer.setReady(true);
-        //TODO inform client
-    }
-
-    public void informNewEvent(Event event) {
-        //TODO inform client about new event
-    }
+  }
 }
