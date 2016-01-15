@@ -1,8 +1,8 @@
 package vsp.banks;
 
-import vsp.banks.core.BanksLogic;
-import vsp.banks.discovery.YellowPages;
-import vsp.banks.rest.BanksRestApi;
+import vsp.banks.business.BanksLogic;
+import vsp.banks.business.discovery.YellowPages;
+import vsp.banks.access.BanksRestApi;
 
 public class MyMainClass {
 

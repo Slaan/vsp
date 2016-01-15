@@ -1,11 +1,11 @@
 package vsp.banks;
 
 import org.testng.annotations.Test;
-import vsp.banks.core.BanksLogic;
-import vsp.banks.core.interfaces.IBankLogic;
-import vsp.banks.core.values.Game;
-import vsp.banks.core.values.Place;
-import vsp.banks.core.entities.Player;
+import vsp.banks.business.BanksLogic;
+import vsp.banks.access.interfaces.IBankLogic;
+import vsp.banks.data.values.Game;
+import vsp.banks.data.values.Place;
+import vsp.banks.access.entities.Player;
 
 import java.util.Arrays;
 import java.util.HashSet;

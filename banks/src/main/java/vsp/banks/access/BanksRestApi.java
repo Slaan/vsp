@@ -1,17 +1,17 @@
-package vsp.banks.rest;
+package vsp.banks.access;
 
 import com.google.gson.Gson;
-import vsp.banks.core.entities.Account;
-import vsp.banks.core.interfaces.IBankLogic;
-import vsp.banks.core.values.Event;
-import vsp.banks.core.values.Game;
-import vsp.banks.core.values.Transfer;
+import vsp.banks.access.entities.Account;
+import vsp.banks.access.interfaces.IBankLogic;
+import vsp.banks.data.values.Event;
+import vsp.banks.data.values.Game;
+import vsp.banks.data.values.Transfer;
 
 import java.util.List;
 import java.util.Set;
 
 import static spark.Spark.*;
-import static vsp.banks.core.values.StatusCodes.*;
+import static vsp.banks.data.values.StatusCodes.*;
 /**
  * Created by alex on 11/18/15.
  */

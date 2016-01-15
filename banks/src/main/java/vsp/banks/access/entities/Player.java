@@ -1,6 +1,4 @@
-package vsp.banks.core.entities;
-
-import vsp.banks.core.values.Place;
+package vsp.banks.access.entities;
 
 import static vsp.banks.helper.ObjectHelper.*;
 import static vsp.banks.helper.StringHelper.*;

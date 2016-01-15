@@ -1,4 +1,4 @@
-package vsp.banks.core.entities;
+package vsp.banks.access.entities;
 
 import static vsp.banks.helper.ObjectHelper.checkNotNull;
 

@@ -1,13 +1,13 @@
 package vsp.banks;
 
 import org.testng.annotations.Test;
-import vsp.banks.core.entities.Account;
-import vsp.banks.core.entities.Bank;
-import vsp.banks.core.exceptions.PlayerNotFoundException;
-import vsp.banks.core.values.Game;
-import vsp.banks.core.values.Place;
-import vsp.banks.core.entities.Player;
-import vsp.banks.core.values.Transfer;
+import vsp.banks.access.entities.Account;
+import vsp.banks.access.entities.Bank;
+import vsp.banks.access.exceptions.PlayerNotFoundException;
+import vsp.banks.data.values.Game;
+import vsp.banks.data.values.Place;
+import vsp.banks.access.entities.Player;
+import vsp.banks.data.values.Transfer;
 
 import java.util.Arrays;
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package vsp.banks.core.values;
+package vsp.banks.data.values;
 
 import static vsp.banks.helper.StringHelper.*;
 import static vsp.banks.helper.ObjectHelper.*;

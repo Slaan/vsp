@@ -1,4 +1,4 @@
-package vsp.banks.core.exceptions;
+package vsp.banks.access.exceptions;
 
 /**
  * Created by alex on 11/25/15.

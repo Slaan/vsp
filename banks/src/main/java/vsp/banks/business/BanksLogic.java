@@ -1,10 +1,10 @@
-package vsp.banks.core;
+package vsp.banks.business;
 
-import vsp.banks.core.entities.Account;
-import vsp.banks.core.entities.Bank;
-import vsp.banks.core.exceptions.PlayerNotFoundException;
-import vsp.banks.core.interfaces.IBankLogic;
-import vsp.banks.core.values.*;
+import vsp.banks.access.entities.Account;
+import vsp.banks.access.entities.Bank;
+import vsp.banks.access.exceptions.PlayerNotFoundException;
+import vsp.banks.access.interfaces.IBankLogic;
+import vsp.banks.data.values.*;
 
 import java.util.*;
 

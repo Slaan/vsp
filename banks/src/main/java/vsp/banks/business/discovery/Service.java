@@ -1,4 +1,4 @@
-package vsp.banks.discovery;
+package vsp.banks.business.discovery;
 
 import static vsp.banks.helper.ObjectHelper.*;
 /**

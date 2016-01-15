@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 import static com.jayway.restassured.RestAssured.given;
 import static org.testng.Assert.assertEquals;
 
-import static vsp.banks.core.values.StatusCodes.*;
+import static vsp.banks.data.values.StatusCodes.*;
 
 /**
  * Created by alex on 04.11.15.

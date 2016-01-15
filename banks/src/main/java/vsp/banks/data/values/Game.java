@@ -1,6 +1,6 @@
-package vsp.banks.core.values;
+package vsp.banks.data.values;
 
-import vsp.banks.core.entities.Player;
+import vsp.banks.access.entities.Player;
 
 import java.util.HashSet;
 import java.util.Set;

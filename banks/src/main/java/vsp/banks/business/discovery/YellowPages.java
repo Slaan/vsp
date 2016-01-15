@@ -1,11 +1,9 @@
-package vsp.banks.discovery;
+package vsp.banks.business.discovery;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by alex on 25.11.15.

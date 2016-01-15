@@ -1,10 +1,10 @@
-package vsp.banks.core.interfaces;
+package vsp.banks.access.interfaces;
 
-import vsp.banks.core.entities.Account;
-import vsp.banks.core.exceptions.PlayerNotFoundException;
-import vsp.banks.core.values.Event;
-import vsp.banks.core.values.Game;
-import vsp.banks.core.values.Transfer;
+import vsp.banks.access.entities.Account;
+import vsp.banks.access.exceptions.PlayerNotFoundException;
+import vsp.banks.data.values.Event;
+import vsp.banks.data.values.Game;
+import vsp.banks.data.values.Transfer;
 
 import java.util.List;
 import java.util.Set;
