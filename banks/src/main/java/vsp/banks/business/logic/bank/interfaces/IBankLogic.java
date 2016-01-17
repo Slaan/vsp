@@ -1,7 +1,8 @@
-package vsp.banks.business.interfaces;
+package vsp.banks.business.logic.bank.interfaces;
 
+import vsp.banks.business.logic.twophasecommit.interfaces.IBankLogicImmutable;
 import vsp.banks.data.entities.Account;
-import vsp.banks.business.exceptions.PlayerNotFoundException;
+import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
 import vsp.banks.data.values.Event;
 import vsp.banks.data.values.Game;
 import vsp.banks.data.values.Transfer;
@@ -12,7 +13,7 @@ import java.util.Set;
 /**
  * Created by alex on 11/18/15.
  */
-public interface IBankLogic {
+public interface IBankLogic extends IBankLogicImmutable{
 
   /**
    * Saves a game. When game exists, it will be overwritten.
@@ -30,22 +31,6 @@ public interface IBankLogic {
    */
   boolean registerPlayerForGame(String gameId, Account playerAccount);
 
-  /**
-   * Returns player account.
-   *
-   * @param gameId   in which player is.
-   * @param playerId of account.
-   * @return player account.
-   */
-  Account getAccount(String gameId, String playerId) throws PlayerNotFoundException;
-
-  /**
-   * Returns all player accounts.
-   *
-   * @param gameId in which accounts are.
-   * @return player accounts.
-   */
-  Set<Account> getAccounts(String gameId);
 
   /**
    * Takes an amount of money from one account and puts it into another.
@@ -59,21 +44,14 @@ public interface IBankLogic {
    */
   boolean applyTransferInGame(String gameId, Transfer transfer) throws PlayerNotFoundException;
 
+  boolean transferIsPossible(String gameId, Transfer transfer) throws PlayerNotFoundException;
 
   /**
-   * Get all events of a player.
    *
-   * @param gameId   in which player is.
-   * @param playerId of player the events are retrieved.
-   * @return a list of all events a player happened.
+   * @param gameId
+   * @return
    */
-  List<Event> getEventsOfPlayer(String gameId, String playerId);
+  boolean lock(String gameId);
 
-  /**
-   * Returns all transfers of given game.
-   *
-   * @param gameId of game in bank.
-   * @return list of transfers happened in bank.
-   */
-  List<Transfer> getTransfersOfBank(String gameId);
+  boolean unlock(String gameId);
 }

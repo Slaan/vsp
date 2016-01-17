@@ -1,8 +1,8 @@
 package vsp.banks;
 
 import org.testng.annotations.Test;
-import vsp.banks.business.BanksLogic;
-import vsp.banks.business.interfaces.IBankLogic;
+import vsp.banks.business.logic.bank.BanksLogic;
+import vsp.banks.business.logic.bank.interfaces.IBankLogic;
 import vsp.banks.data.values.Game;
 import vsp.banks.data.values.Place;
 import vsp.banks.data.entities.Player;

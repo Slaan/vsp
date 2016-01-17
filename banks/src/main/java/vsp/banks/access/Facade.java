@@ -1,8 +1,10 @@
 package vsp.banks.access;
 
 import com.google.gson.Gson;
+import vsp.banks.business.logic.twophasecommit.interfaces.IBankLogicImmutable;
+import vsp.banks.business.logic.twophasecommit.interfaces.ITwoPhaseCommit;
 import vsp.banks.data.entities.Account;
-import vsp.banks.business.interfaces.IBankLogic;
+import vsp.banks.business.logic.bank.interfaces.IBankLogic;
 import vsp.banks.data.values.Event;
 import vsp.banks.data.values.Game;
 import vsp.banks.data.values.Transfer;
@@ -15,26 +17,23 @@ import static vsp.banks.data.values.StatusCodes.*;
 /**
  * Created by alex on 11/18/15.
  */
-public class BanksRestApi {
+public class Facade extends AbstractFacade {
 
-  private IBankLogic bankServiceLogic;
+  private IBankLogicImmutable bankServiceLogic;
 
-  private Gson converter;
-
+  private ITwoPhaseCommit twoPhaseCommit;
 
   /**
    * Creates the RESTful API for banks.
    * @param logic is the business logic of this application.
    */
-  public BanksRestApi(IBankLogic logic) {
+  public Facade(IBankLogic logic, ITwoPhaseCommit twoPhaseCommit) {
     this.bankServiceLogic = logic;
-    this.converter = new Gson();
+    this.twoPhaseCommit = twoPhaseCommit;
     bindAllMethods();
   }
 
-  /**
-   * Binds all REST api calls.
-   */
+  @Override
   public void bindAllMethods() {
     bindGetBanks();
     bindPutBank();
@@ -65,7 +64,7 @@ public class BanksRestApi {
    */
   public void bindPutBank() {
     put("/banks/:gameId", (request, response) -> {
-      Game game = this.converter.fromJson(request.body(), Game.class);
+      Game game = this.jsonConverter.fromJson(request.body(), Game.class);
       this.bankServiceLogic.setGame(game);
       response.status(ok);
       return "";
@@ -80,7 +79,7 @@ public class BanksRestApi {
     get("banks/:gameId/transfers", (request, response) -> {
       String gameId = request.params(":gameId");
       List<Transfer> transfers = this.bankServiceLogic.getTransfersOfBank(gameId);
-      return this.converter.toJson(transfers);
+      return this.jsonConverter.toJson(transfers);
     });
   }
 
@@ -95,9 +94,13 @@ public class BanksRestApi {
       int amount = Integer.parseInt(request.params(":amount"));
       String reason = request.body();
       Transfer transfer = Transfer.bankToPlayer(toPlayer, amount, reason, null);
+      if (this.bankServiceLogic.transferIsPossible(gameId, transfer)) {
+        //
+      }
+
       this.bankServiceLogic.applyTransferInGame(gameId, transfer);
       List<Event> events = this.bankServiceLogic.getEventsOfPlayer(gameId, toPlayer);
-      return this.converter.toJson(events);
+      return this.jsonConverter.toJson(events);
     });
   }
 
@@ -116,7 +119,7 @@ public class BanksRestApi {
       if (this.bankServiceLogic.applyTransferInGame(gameId, transfer)) {
         List<Event> events = this.bankServiceLogic.getEventsOfPlayer(gameId, fromPlayerId);
         response.status(ok);
-        return this.converter.toJson(events);
+        return this.jsonConverter.toJson(events);
       }
       response.status(forbidden);
       return "";
@@ -137,7 +140,7 @@ public class BanksRestApi {
       if (this.bankServiceLogic.applyTransferInGame(gameId, transfer)) {
         List<Event> events = this.bankServiceLogic.getEventsOfPlayer(gameId, fromId);
         response.status(ok);
-        return this.converter.toJson(events);
+        return this.jsonConverter.toJson(events);
       }
       response.status(forbidden);
       return "";
@@ -152,7 +155,7 @@ public class BanksRestApi {
     get("/banks/:gameId/players", (request, response) -> {
       String gameId = request.params(":gameId");
       Set<Account> accounts = this.bankServiceLogic.getAccounts(gameId);
-      String accountsAsJson = this.converter.toJson(accounts);
+      String accountsAsJson = this.jsonConverter.toJson(accounts);
       return accountsAsJson;
     });
   }
@@ -164,7 +167,7 @@ public class BanksRestApi {
   public void bindPostBankPlayer() {
     post("/banks/:gameId/players", (request, response) -> {
       String gameId = request.params(":gameId");
-      Account account = converter.fromJson(request.body(), Account.class);
+      Account account = jsonConverter.fromJson(request.body(), Account.class);
       if (bankServiceLogic.registerPlayerForGame(gameId, account)) {
         response.status(created);
         return "";

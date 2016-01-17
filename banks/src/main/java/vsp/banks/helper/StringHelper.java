@@ -5,6 +5,10 @@ package vsp.banks.helper;
  */
 public final class StringHelper {
 
+  private StringHelper() {
+    // prohibit instance
+  }
+
   /**
    * Ensures the given strings aren't empty.
    */

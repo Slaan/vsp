@@ -29,15 +29,23 @@ public class Account {
   }
 
   /**
+   * Checks if given amount can be withdrawn from this account.
+   * @param money to check.
+   * @return true, if and only if enough money is on account.
+   */
+  public boolean canWithdraw(int money) {
+     return 0 < this.saldo - money;
+  }
+
+  /**
    * Takes away money from this account. Saldo will be reduced!
    * @param money to take away from saldo.
    * @return true if and only if enough saldo is there. When money is bigger then saldo, false
    *         will be returned. Since saldo can't be less then zero.
    */
   public boolean withdraw(int money) {
-    int newSaldo = this.saldo - money;
-    if (newSaldo >= 0) {
-      this.saldo = newSaldo;
+    if (canWithdraw(money)) {
+      this.saldo -= money;
       return true;
     }
     return false;

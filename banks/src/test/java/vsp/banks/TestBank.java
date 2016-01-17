@@ -3,7 +3,7 @@ package vsp.banks;
 import org.testng.annotations.Test;
 import vsp.banks.data.entities.Account;
 import vsp.banks.data.entities.Bank;
-import vsp.banks.business.exceptions.PlayerNotFoundException;
+import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
 import vsp.banks.data.values.Game;
 import vsp.banks.data.values.Place;
 import vsp.banks.data.entities.Player;

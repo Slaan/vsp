@@ -1,8 +1,8 @@
 package vsp.banks;
 
-import vsp.banks.business.BanksLogic;
+import vsp.banks.business.logic.bank.BanksLogic;
 import vsp.banks.business.discovery.YellowPages;
-import vsp.banks.access.BanksRestApi;
+import vsp.banks.access.Facade;
 
 public class MyMainClass {
 
@@ -25,7 +25,7 @@ public class MyMainClass {
     }
     // Dependency Injections
     BanksLogic serviceLogic = new BanksLogic();
-    BanksRestApi banksController = new BanksRestApi(serviceLogic);
+    Facade banksController = new Facade(serviceLogic);
   }
 
 }

@@ -6,7 +6,7 @@ package vsp.banks.helper;
 public final class ObjectHelper {
 
   private ObjectHelper() {
-
+    // prohibit instance
   }
 
   /**

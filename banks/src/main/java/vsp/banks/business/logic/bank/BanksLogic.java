@@ -1,9 +1,9 @@
-package vsp.banks.business;
+package vsp.banks.business.logic.bank;
 
 import vsp.banks.data.entities.Account;
 import vsp.banks.data.entities.Bank;
-import vsp.banks.business.exceptions.PlayerNotFoundException;
-import vsp.banks.business.interfaces.IBankLogic;
+import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
+import vsp.banks.business.logic.bank.interfaces.IBankLogic;
 import vsp.banks.data.values.*;
 
 import java.util.*;
@@ -63,11 +63,19 @@ public class BanksLogic implements IBankLogic {
   }
 
   @Override
+  public boolean transferIsPossible(String gameId, Transfer transfer)
+      throws PlayerNotFoundException {
+    Bank bank = findBankByGameId(gameId);
+    return bank.canBeApplied(transfer);
+  }
+
+  @Override
   public List<Event> getEventsOfPlayer(String gameId, String playerId) {
     return null;
   }
 
-  @Override public List<Transfer> getTransfersOfBank(String gameId) {
+  @Override
+  public List<Transfer> getTransfersOfBank(String gameId) {
     Bank bank = findBankByGameId(gameId);
     return bank.getTransfers();
   }

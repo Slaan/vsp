@@ -1,6 +1,6 @@
 package vsp.banks.data.entities;
 
-import vsp.banks.business.exceptions.PlayerNotFoundException;
+import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
 import vsp.banks.data.values.Event;
 import vsp.banks.data.values.Game;
 import vsp.banks.data.values.Transfer;
@@ -103,6 +103,24 @@ public class Bank {
    */
   public List<Transfer> getTransfers() {
     return new ArrayList<>(this.transfers);
+  }
+
+
+  /**
+   * Checks if given transfer can be applied to account which holds the 'from' id.
+   *
+   * @param transfer to check.
+   * @return true, if and only if given transfers 'from' id is a bank or player has enough money.
+   * @throws PlayerNotFoundException when play
+   */
+  public boolean canBeApplied(Transfer transfer) throws PlayerNotFoundException {
+    if (!transfer.isBankToPlayer()) {
+      int amount = transfer.getAmount();
+      String playerId = transfer.getFrom();
+      Account player = this.getAccountByPlayerId(playerId);
+      return player.canWithdraw(amount);
+    }
+    return true;
   }
 
   /**

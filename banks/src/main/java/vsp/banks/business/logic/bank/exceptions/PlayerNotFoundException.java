@@ -1,4 +1,4 @@
-package vsp.banks.business.exceptions;
+package vsp.banks.business.logic.bank.exceptions;
 
 /**
  * Created by alex on 11/25/15.
