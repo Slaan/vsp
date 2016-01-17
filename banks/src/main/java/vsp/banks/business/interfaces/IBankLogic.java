@@ -1,7 +1,7 @@
-package vsp.banks.access.interfaces;
+package vsp.banks.business.interfaces;
 
-import vsp.banks.access.entities.Account;
-import vsp.banks.access.exceptions.PlayerNotFoundException;
+import vsp.banks.data.entities.Account;
+import vsp.banks.business.exceptions.PlayerNotFoundException;
 import vsp.banks.data.values.Event;
 import vsp.banks.data.values.Game;
 import vsp.banks.data.values.Transfer;

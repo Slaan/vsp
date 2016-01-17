@@ -2,24 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="55e820c9-6449-48f1-b350-1c5681692c8d" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/core/BanksLogic.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/business/BanksLogic.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/core/entities/Account.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/access/entities/Account.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/core/entities/Bank.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/access/entities/Bank.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/core/entities/Player.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/access/entities/Player.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/core/exceptions/PlayerNotFoundException.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/access/exceptions/PlayerNotFoundException.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/core/interfaces/IBankLogic.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/access/interfaces/IBankLogic.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/core/values/Components.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/data/values/Components.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/core/values/Event.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/data/values/Event.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/core/values/Game.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/data/values/Game.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/core/values/Place.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/data/values/Place.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/core/values/StatusCodes.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/data/values/StatusCodes.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/core/values/Transfer.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/data/values/Transfer.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/discovery/Service.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/business/discovery/Service.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/discovery/YellowPages.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/business/discovery/YellowPages.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/rest/BanksRestApi.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/access/BanksRestApi.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/MyMainClass.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/MyMainClass.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/serviceTest/java/vsp/banks/TestService.java" afterPath="$PROJECT_DIR$/src/serviceTest/java/vsp/banks/TestService.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/business/adapter/TwoPhaseCommit.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/access/entities/Account.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/data/entities/Account.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/access/entities/Bank.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/data/entities/Bank.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/access/entities/Player.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/data/entities/Player.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/access/exceptions/PlayerNotFoundException.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/business/exceptions/PlayerNotFoundException.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/access/interfaces/IBankLogic.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/business/interfaces/IBankLogic.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/access/BanksRestApi.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/access/BanksRestApi.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/business/BanksLogic.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/business/BanksLogic.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/data/values/Game.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/data/values/Game.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/vsp/banks/TestBank.java" afterPath="$PROJECT_DIR$/src/test/java/vsp/banks/TestBank.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/vsp/banks/TestBanksLogic.java" afterPath="$PROJECT_DIR$/src/test/java/vsp/banks/TestBanksLogic.java" />
     </list>
@@ -138,43 +129,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="YellowPages.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="YellowPages.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/business/discovery/YellowPages.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
+            <state vertical-scroll-proportion="0.44984487">
               <caret line="32" column="6" selection-start-line="32" selection-start-column="6" selection-end-line="32" selection-end-column="6" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MyMainClass.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/MyMainClass.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4188211">
-              <caret line="27" column="4" selection-start-line="27" selection-start-column="4" selection-end-line="27" selection-end-column="4" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BanksLogic.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/business/BanksLogic.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="25" column="16" selection-start-line="25" selection-start-column="16" selection-end-line="25" selection-end-column="16" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Bank.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/access/entities/Bank.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="81" column="28" selection-start-line="81" selection-start-column="28" selection-end-line="81" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -766,6 +725,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -797,18 +757,6 @@
               <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="banks" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -824,7 +772,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="serviceTest" />
+              <option name="myItemId" value="main" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -861,11 +809,78 @@
               <option name="myItemId" value="banks" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="banks" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="banks" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="banks" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="business" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="banks" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="banks" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="banks" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="business" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="adapter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
       <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="PackagesPane" />
     </panes>
   </component>
@@ -1349,8 +1364,8 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32997987" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.58472806" sideWeight="0.85544556" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.41422594" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5711297" sideWeight="0.85544556" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.42782426" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -1415,13 +1430,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/access/entities/Account.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="21" selection-start-line="12" selection-start-column="21" selection-end-line="12" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/business/BanksLogic.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1452,7 +1460,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/access/entities/Player.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/data/entities/Player.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="26" column="3" selection-start-line="26" selection-start-column="3" selection-end-line="26" selection-end-column="3" />
@@ -1469,7 +1477,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/access/entities/Account.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/data/entities/Account.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
@@ -1492,7 +1500,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/access/entities/Player.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/data/entities/Player.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="26" column="3" selection-start-line="26" selection-start-column="3" selection-end-line="26" selection-end-column="3" />
@@ -1534,7 +1542,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/access/interfaces/IBankLogic.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/business/interfaces/IBankLogic.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="20" column="17" selection-start-line="20" selection-start-column="17" selection-end-line="20" selection-end-column="17" />
@@ -1592,7 +1600,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/access/interfaces/IBankLogic.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/business/interfaces/IBankLogic.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -1645,20 +1653,17 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.328125">
           <caret line="14" column="33" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/access/exceptions/PlayerNotFoundException.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/business/exceptions/PlayerNotFoundException.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.421875">
           <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/access/entities/Account.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/data/entities/Account.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.5203125">
           <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
@@ -1679,7 +1684,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/access/interfaces/IBankLogic.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/business/interfaces/IBankLogic.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.12436548">
           <caret line="59" column="10" selection-start-line="59" selection-start-column="10" selection-end-line="59" selection-end-column="10" />
@@ -1701,7 +1706,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="72" column="3" selection-start-line="72" selection-start-column="3" selection-end-line="72" selection-end-column="3" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1709,7 +1713,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.42295083">
           <caret line="56" column="10" selection-start-line="56" selection-start-column="10" selection-end-line="56" selection-end-column="10" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1717,15 +1720,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-1.3705584">
           <caret line="31" column="21" selection-start-line="31" selection-start-column="21" selection-end-line="31" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/business/discovery/YellowPages.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="32" column="6" selection-start-line="32" selection-start-column="6" selection-end-line="32" selection-end-column="6" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1733,11 +1727,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.8095238">
           <caret line="66" column="3" selection-start-line="66" selection-start-column="3" selection-end-line="66" selection-end-column="3" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/access/entities/Player.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/data/entities/Player.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="58" column="25" selection-start-line="58" selection-start-column="25" selection-end-line="58" selection-end-column="25" />
@@ -1775,7 +1768,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.35714287">
           <caret line="15" column="21" selection-start-line="15" selection-start-column="21" selection-end-line="15" selection-end-column="21" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1783,22 +1775,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="104" column="8" selection-start-line="104" selection-start-column="8" selection-end-line="104" selection-end-column="8" />
-          <folding>
-            <element signature="e#2112#2113#0" expanded="true" />
-            <element signature="e#2174#2175#0" expanded="true" />
-            <element signature="e#2211#2212#0" expanded="true" />
-            <element signature="e#2271#2272#0" expanded="true" />
-            <element signature="e#2308#2309#0" expanded="true" />
-            <element signature="e#2368#2369#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/access/BanksRestApi.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="114" column="36" selection-start-line="114" selection-start-column="36" selection-end-line="114" selection-end-column="36" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1812,10 +1788,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/access/entities/Bank.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/data/entities/Bank.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="81" column="28" selection-start-line="81" selection-start-column="28" selection-end-line="81" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/business/adapter/TwoPhaseCommit.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="5" column="27" selection-start-line="5" selection-start-column="27" selection-end-line="5" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/access/BanksRestApi.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.0548087">
+          <caret line="136" column="67" selection-start-line="136" selection-start-column="67" selection-end-line="136" selection-end-column="67" />
           <folding />
         </state>
       </provider>
@@ -1827,6 +1819,14 @@
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/business/discovery/YellowPages.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.44984487">
+          <caret line="32" column="6" selection-start-line="32" selection-start-column="6" selection-end-line="32" selection-end-column="6" />
+          <folding />
         </state>
       </provider>
     </entry>

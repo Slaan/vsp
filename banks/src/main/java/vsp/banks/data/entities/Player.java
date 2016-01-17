@@ -1,4 +1,4 @@
-package vsp.banks.access.entities;
+package vsp.banks.data.entities;
 
 import static vsp.banks.helper.ObjectHelper.*;
 import static vsp.banks.helper.StringHelper.*;

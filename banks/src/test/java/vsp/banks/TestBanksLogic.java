@@ -2,10 +2,10 @@ package vsp.banks;
 
 import org.testng.annotations.Test;
 import vsp.banks.business.BanksLogic;
-import vsp.banks.access.interfaces.IBankLogic;
+import vsp.banks.business.interfaces.IBankLogic;
 import vsp.banks.data.values.Game;
 import vsp.banks.data.values.Place;
-import vsp.banks.access.entities.Player;
+import vsp.banks.data.entities.Player;
 
 import java.util.Arrays;
 import java.util.HashSet;

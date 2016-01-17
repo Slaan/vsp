@@ -1,8 +1,8 @@
 package vsp.banks.access;
 
 import com.google.gson.Gson;
-import vsp.banks.access.entities.Account;
-import vsp.banks.access.interfaces.IBankLogic;
+import vsp.banks.data.entities.Account;
+import vsp.banks.business.interfaces.IBankLogic;
 import vsp.banks.data.values.Event;
 import vsp.banks.data.values.Game;
 import vsp.banks.data.values.Transfer;

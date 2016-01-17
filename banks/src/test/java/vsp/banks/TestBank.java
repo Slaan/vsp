@@ -1,12 +1,12 @@
 package vsp.banks;
 
 import org.testng.annotations.Test;
-import vsp.banks.access.entities.Account;
-import vsp.banks.access.entities.Bank;
-import vsp.banks.access.exceptions.PlayerNotFoundException;
+import vsp.banks.data.entities.Account;
+import vsp.banks.data.entities.Bank;
+import vsp.banks.business.exceptions.PlayerNotFoundException;
 import vsp.banks.data.values.Game;
 import vsp.banks.data.values.Place;
-import vsp.banks.access.entities.Player;
+import vsp.banks.data.entities.Player;
 import vsp.banks.data.values.Transfer;
 
 import java.util.Arrays;
