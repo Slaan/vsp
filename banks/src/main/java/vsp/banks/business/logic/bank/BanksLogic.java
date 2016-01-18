@@ -1,5 +1,6 @@
 package vsp.banks.business.logic.bank;
 
+import vsp.banks.business.logic.bank.exceptions.BankNotFoundException;
 import vsp.banks.data.entities.Account;
 import vsp.banks.data.entities.Bank;
 import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
@@ -32,51 +33,47 @@ public class BanksLogic implements IBanksLogic {
   }
 
   @Override
-  public boolean registerPlayerForGame(String gameId, Account playerAccount) {
+  public boolean registerPlayerForGame(String gameId, Account playerAccount)
+      throws BankNotFoundException {
     Bank bank = findBankByGameId(gameId);
-    if (bank == null) {
-      return false;
-    }
     return bank.registerAccount(playerAccount);
   }
 
   @Override
-  public Account getAccount(String gameId, String playerId) throws PlayerNotFoundException {
+  public Account getAccount(String gameId, String playerId)
+      throws PlayerNotFoundException, BankNotFoundException {
     Bank bank = findBankByGameId(gameId);
-    if (bank == null) {
-      return null;
-    }
     return bank.getAccountByPlayerId(playerId);
   }
 
   @Override
-  public Set<Account> getAccounts(String gameId) {
+  public Set<Account> getAccounts(String gameId) throws BankNotFoundException {
     Bank bank = findBankByGameId(gameId);
     return bank.getAccounts();
   }
 
   @Override
   public boolean applyTransferInGame(String gameId, Transfer transfer)
-      throws PlayerNotFoundException {
+      throws PlayerNotFoundException, BankNotFoundException {
     Bank bank = findBankByGameId(gameId);
     return bank.applyTransfer(transfer);
   }
 
   @Override
-  public boolean lock(String gameId) {
+  public synchronized boolean lock(String gameId) throws BankNotFoundException {
     Bank bank = findBankByGameId(gameId);
     return bank.lock();
   }
 
   @Override
-  public boolean unlock(String gameId) {
+  public boolean unlock(String gameId) throws BankNotFoundException {
     Bank bank = findBankByGameId(gameId);
     return bank.unlock();
   }
 
   @Override
   public boolean transferIsPossible(String gameId, Transfer transfer)
-      throws PlayerNotFoundException {
+      throws PlayerNotFoundException, BankNotFoundException {
     Bank bank = findBankByGameId(gameId);
     return bank.canBeApplied(transfer);
   }
@@ -91,7 +88,7 @@ public class BanksLogic implements IBanksLogic {
   }
 
   @Override
-  public List<Transfer> getTransfersOfBank(String gameId) {
+  public List<Transfer> getTransfersOfBank(String gameId) throws BankNotFoundException {
     Bank bank = findBankByGameId(gameId);
     return bank.getTransfers();
   }
@@ -99,13 +96,13 @@ public class BanksLogic implements IBanksLogic {
   /**
    * @return bank whose game has the same id as given. When no bank found, null returned.
    */
-  private Bank findBankByGameId(String gameId) {
+  private Bank findBankByGameId(String gameId) throws BankNotFoundException {
     for (Bank bank : this.banks) {
       if (bank.hasGameId(gameId)) {
         return bank;
       }
     }
-    return null;
+    throw new BankNotFoundException("Bank with gameId '" + gameId + "' not found.");
   }
 
 }

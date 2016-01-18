@@ -71,16 +71,23 @@ public class Bank {
     return ownId.equals(otherId);
   }
 
-  public boolean isLocked() {
+  public synchronized boolean isLocked() {
     return isLocked;
   }
 
-  public boolean lock() {
-    return this.isLocked = true;
+  public synchronized boolean lock() {
+    if (!isLocked()) {
+      this.isLocked = true;
+      return true;
+    }
+    return false;
   }
 
-  public boolean unlock() {
-    this.isLocked = false;
+  public synchronized boolean unlock() {
+    if (isLocked()) {
+      this.isLocked = false;
+      return true;
+    }
     return false;
   }
 

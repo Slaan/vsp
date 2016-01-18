@@ -1,5 +1,6 @@
 package vsp.banks.business.logic.bank.interfaces;
 
+import vsp.banks.business.logic.bank.exceptions.BankNotFoundException;
 import vsp.banks.data.entities.Account;
 import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
 import vsp.banks.data.values.Game;
@@ -15,12 +16,12 @@ public interface IBanksLogic extends IBanksLogicImmutable, IBanksLogicMutable {
    * @param gameId
    * @return
    */
-  boolean lock(String gameId);
+  boolean lock(String gameId) throws BankNotFoundException;
 
   /**
    *
    * @param gameId
    * @return
    */
-  boolean unlock(String gameId);
+  boolean unlock(String gameId) throws BankNotFoundException;
 }

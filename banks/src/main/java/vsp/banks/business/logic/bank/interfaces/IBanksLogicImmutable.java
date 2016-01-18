@@ -1,5 +1,6 @@
 package vsp.banks.business.logic.bank.interfaces;
 
+import vsp.banks.business.logic.bank.exceptions.BankNotFoundException;
 import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
 import vsp.banks.data.entities.Account;
 import vsp.banks.data.values.Event;
@@ -21,7 +22,8 @@ public interface IBanksLogicImmutable {
    * @param playerId of account.
    * @return player account.
    */
-  Account getAccount(String gameId, String playerId) throws PlayerNotFoundException;
+  Account getAccount(String gameId, String playerId)
+      throws PlayerNotFoundException, BankNotFoundException;
 
   /**
    * Returns all player accounts.
@@ -29,7 +31,7 @@ public interface IBanksLogicImmutable {
    * @param gameId in which accounts are.
    * @return player accounts.
    */
-  Set<Account> getAccounts(String gameId);
+  Set<Account> getAccounts(String gameId) throws BankNotFoundException;
 
 
   /**
@@ -55,8 +57,9 @@ public interface IBanksLogicImmutable {
    * @param gameId of game in bank.
    * @return list of transfers happened in bank.
    */
-  List<Transfer> getTransfersOfBank(String gameId);
+  List<Transfer> getTransfersOfBank(String gameId) throws BankNotFoundException;
 
 
-  boolean transferIsPossible(String gameId, Transfer transfer) throws PlayerNotFoundException;
+  boolean transferIsPossible(String gameId, Transfer transfer)
+      throws PlayerNotFoundException, BankNotFoundException;
 }
