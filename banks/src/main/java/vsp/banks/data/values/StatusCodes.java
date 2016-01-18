@@ -14,6 +14,7 @@ public final class StatusCodes {
   public static final int noContent = 204;
 
   public static final int forbidden = 403;
+  public static final int notFound = 404;
   public static final int conflict = 409;
 
 }

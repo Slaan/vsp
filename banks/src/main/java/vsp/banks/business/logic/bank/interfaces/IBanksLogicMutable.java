@@ -1,6 +1,7 @@
 package vsp.banks.business.logic.bank.interfaces;
 
 import vsp.banks.business.logic.bank.exceptions.BankNotFoundException;
+import vsp.banks.business.logic.bank.exceptions.NotFoundException;
 import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
 import vsp.banks.data.entities.Account;
 import vsp.banks.data.values.Game;
@@ -38,6 +39,6 @@ public interface IBanksLogicMutable {
    * @return true if and only if enough money was on account and money has been withdrawn.
    */
   boolean applyTransferInGame(String gameId, Transfer transfer)
-      throws PlayerNotFoundException, BankNotFoundException;
+      throws NotFoundException;
 
 }

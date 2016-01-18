@@ -1,5 +1,7 @@
 package vsp.banks.access;
 
+import vsp.banks.business.logic.bank.exceptions.BankNotFoundException;
+import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
 import vsp.banks.business.logic.bank.interfaces.IBanksLogic;
 import vsp.banks.business.logic.bank.interfaces.IBanksLogicImmutable;
 import vsp.banks.business.logic.twophasecommit.interfaces.ITwoPhaseCommit;
@@ -41,7 +43,7 @@ public class Facade extends AbstractFacade {
     bindPostBankTransferFromTo();
     bindPostBankTransferFrom();
     bindGetBankPlayers();
-    bindPostBankPlayer();
+    bindPostBankAccount();
     bindGetBankPlayer();
   }
 
@@ -113,7 +115,15 @@ public class Facade extends AbstractFacade {
       int amount = Integer.parseInt(request.params(":amount"));
       String reason = request.body();
       Transfer transfer = Transfer.bankToPlayer(toPlayer, amount, reason, null);
-      this.twoPhaseCommit.applyTransferInGame(gameId, transfer);
+      try {
+        if (this.twoPhaseCommit.applyTransferInGame(gameId, transfer)) {
+          response.status(forbidden);
+          return "";
+        }
+      } catch (BankNotFoundException | PlayerNotFoundException exception) {
+        response.status(notFound);
+        return "";
+      }
       List<Event> events = this.bankLogic.getEventsOfPlayer(gameId, toPlayer);
       return this.jsonConverter.toJson(events);
     });
@@ -178,7 +188,7 @@ public class Facade extends AbstractFacade {
    * Creates a new account for player.
    * <code>POST /banks/{gameId}/players.</code>
    */
-  public void bindPostBankPlayer() {
+  public void bindPostBankAccount() {
     post("/banks/:gameId/players", (request, response) -> {
       String gameId = request.params(":gameId");
       Account account = jsonConverter.fromJson(request.body(), Account.class);

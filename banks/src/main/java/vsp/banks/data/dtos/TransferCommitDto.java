@@ -1,11 +1,12 @@
-package vsp.banks.data.values;
+package vsp.banks.data.dtos;
 
-import static vsp.banks.helper.StringHelper.*;
-import static vsp.banks.helper.ObjectHelper.*;
+import static vsp.banks.helper.ObjectHelper.checkNotNull;
+import static vsp.banks.helper.StringHelper.checkNotEmpty;
+
 /**
  * Created by alex on 11/22/15.
  */
-public class Transfer {
+public class TransferCommitDto {
 
   enum TransferType {
     playerToPlayer,
@@ -13,7 +14,7 @@ public class Transfer {
     bankToPlayer
   }
 
-  private transient TransferType type;
+  private TransferType type;
 
   private String from;
 
@@ -29,40 +30,39 @@ public class Transfer {
    * Checks invariant of this
    */
   private void checkInvariant() {
-    RuntimeException exception = new RuntimeException(this.toString());
     if (type.equals(TransferType.bankToPlayer) && (!from.isEmpty() || to.isEmpty())) {
-      throw exception;
+      throw new RuntimeException();
     }
     if (type.equals(TransferType.playerToBank) && (from.isEmpty() || !to.isEmpty())) {
-      throw exception;
+      throw new RuntimeException();
     }
   }
 
   /**
    * Creates a bank to player transfer.
    */
-  public static Transfer playerToBank(String from, int amount, String reason, String ev) {
-    return new Transfer(TransferType.playerToBank, from, "", amount, reason, ev);
+  public static TransferCommitDto playerToBank(String from, int amount, String reason, String ev) {
+    return new TransferCommitDto(TransferType.playerToBank, from, "", amount, reason, ev);
   }
 
   /**
    * Creates a bank to player transfer.
    */
-  public static Transfer bankToPlayer(String to, int amount, String reason, String event) {
-    return new Transfer(TransferType.bankToPlayer, "", to, amount, reason, event);
+  public static TransferCommitDto bankToPlayer(String to, int amount, String reason, String event) {
+    return new TransferCommitDto(TransferType.bankToPlayer, "", to, amount, reason, event);
   }
 
   /**
    * Creates a player to player transfer.
    */
-  public Transfer(String from, String to, int amount, String reason, String event) {
+  public TransferCommitDto(String from, String to, int amount, String reason, String event) {
     this(TransferType.playerToPlayer, from, to, amount, reason, event);
   }
 
   /**
    * Private constructor.
    */
-  private Transfer(TransferType type, String from, String to, int amount, String reason,
+  private TransferCommitDto(TransferType type, String from, String to, int amount, String reason,
       String event) {
     checkNotNull(from, to, reason);
     checkNotEmpty(reason);
@@ -112,10 +112,10 @@ public class Transfer {
     if (this == object) {
       return true;
     }
-    if (!(object instanceof Transfer)) {
+    if (!(object instanceof TransferCommitDto)) {
       return false;
     }
-    Transfer transfer = (Transfer) object;
+    TransferCommitDto transfer = (TransferCommitDto) object;
     if (amount != transfer.amount) {
       return false;
     }
@@ -144,7 +144,7 @@ public class Transfer {
 
   @Override
   public String toString() {
-    return "Transfer{" +
+    return "TransferCommitDto{" +
         "type=" + type +
         ", from='" + from + '\'' +
         ", to='" + to + '\'' +

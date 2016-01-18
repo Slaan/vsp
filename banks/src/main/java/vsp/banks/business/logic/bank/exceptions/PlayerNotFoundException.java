@@ -3,7 +3,7 @@ package vsp.banks.business.logic.bank.exceptions;
 /**
  * Created by alex on 11/25/15.
  */
-public class PlayerNotFoundException extends Exception {
+public class PlayerNotFoundException extends NotFoundException {
 
   public PlayerNotFoundException() {
     super();
