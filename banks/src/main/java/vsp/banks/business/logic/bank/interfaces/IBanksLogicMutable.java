@@ -1,19 +1,14 @@
 package vsp.banks.business.logic.bank.interfaces;
 
-import vsp.banks.business.logic.twophasecommit.interfaces.IBankLogicImmutable;
-import vsp.banks.data.entities.Account;
 import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
-import vsp.banks.data.values.Event;
+import vsp.banks.data.entities.Account;
 import vsp.banks.data.values.Game;
 import vsp.banks.data.values.Transfer;
 
-import java.util.List;
-import java.util.Set;
-
 /**
- * Created by alex on 11/18/15.
+ * Created by alex on 1/17/16.
  */
-public interface IBankLogic extends IBankLogicImmutable{
+public interface IBanksLogicMutable {
 
   /**
    * Saves a game. When game exists, it will be overwritten.
@@ -31,7 +26,6 @@ public interface IBankLogic extends IBankLogicImmutable{
    */
   boolean registerPlayerForGame(String gameId, Account playerAccount);
 
-
   /**
    * Takes an amount of money from one account and puts it into another.
    * Both accounts are found in transfer, same as the amount.
@@ -44,14 +38,4 @@ public interface IBankLogic extends IBankLogicImmutable{
    */
   boolean applyTransferInGame(String gameId, Transfer transfer) throws PlayerNotFoundException;
 
-  boolean transferIsPossible(String gameId, Transfer transfer) throws PlayerNotFoundException;
-
-  /**
-   *
-   * @param gameId
-   * @return
-   */
-  boolean lock(String gameId);
-
-  boolean unlock(String gameId);
 }

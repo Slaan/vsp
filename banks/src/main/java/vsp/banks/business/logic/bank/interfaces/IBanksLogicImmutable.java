@@ -1,4 +1,4 @@
-package vsp.banks.business.logic.twophasecommit.interfaces;
+package vsp.banks.business.logic.bank.interfaces;
 
 import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
 import vsp.banks.data.entities.Account;
@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Created by alex on 1/17/16.
  */
-public interface IBankLogicImmutable {
+public interface IBanksLogicImmutable {
 
 
   /**
@@ -56,4 +56,7 @@ public interface IBankLogicImmutable {
    * @return list of transfers happened in bank.
    */
   List<Transfer> getTransfersOfBank(String gameId);
+
+
+  boolean transferIsPossible(String gameId, Transfer transfer) throws PlayerNotFoundException;
 }

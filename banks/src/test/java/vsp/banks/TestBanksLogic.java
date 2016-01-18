@@ -2,7 +2,7 @@ package vsp.banks;
 
 import org.testng.annotations.Test;
 import vsp.banks.business.logic.bank.BanksLogic;
-import vsp.banks.business.logic.bank.interfaces.IBankLogic;
+import vsp.banks.business.logic.bank.interfaces.IBanksLogic;
 import vsp.banks.data.values.Game;
 import vsp.banks.data.values.Place;
 import vsp.banks.data.entities.Player;
@@ -21,7 +21,7 @@ import static org.testng.Assert.assertTrue;
 @Test
 public class TestBanksLogic {
 
-  IBankLogic bankLogic;
+  IBanksLogic bankLogic;
 
 
   Place place = new Place("Wacholderallee");
@@ -30,13 +30,13 @@ public class TestBanksLogic {
   Player player3 = new Player("player3", "hans", "localhost/player/");
   Player notInGame = new Player("notInGame", "hans", "localhost/player/");
 
-  private IBankLogic setUpLogic() {
+  private IBanksLogic setUpLogic() {
     return new BanksLogic();
   }
 
   @Test
   public void test_bankLogic_setGame() {
-    IBankLogic logic = setUpLogic();
+    IBanksLogic logic = setUpLogic();
     Set<Player> players = new HashSet<>(Arrays.asList(player1, player2, player3));
     Game game = new Game("game1", "localhost/games/game1", players, null);
     logic.setGame(game);
@@ -45,7 +45,7 @@ public class TestBanksLogic {
 
   @Test
   public void test_bankLogic_registerPlayer() {
-    IBankLogic logic = setUpLogic();
+    IBanksLogic logic = setUpLogic();
     Set<Player> players = new HashSet<>(Arrays.asList(player1, player2, player3));
     Game game = new Game("game1", "localhost/games/game1", players, null);
     logic.setGame(game);

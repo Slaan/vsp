@@ -38,10 +38,4 @@ public interface ICloneServiceAdapter {
    */
   boolean lockPlayer(String uri, String bankId, Player playerId);
 
-  /**
-   *
-   * @param uri
-   * @return
-   */
-  boolean registerCloneService(String uri);
 }

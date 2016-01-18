@@ -1,16 +1,14 @@
 package vsp.banks.access;
 
-import com.google.gson.Gson;
-import vsp.banks.business.logic.twophasecommit.interfaces.IBankLogicImmutable;
+import vsp.banks.business.logic.bank.interfaces.IBanksLogic;
+import vsp.banks.business.logic.bank.interfaces.IBanksLogicImmutable;
 import vsp.banks.business.logic.twophasecommit.interfaces.ITwoPhaseCommit;
 import vsp.banks.data.entities.Account;
-import vsp.banks.business.logic.bank.interfaces.IBankLogic;
 import vsp.banks.data.values.Event;
 import vsp.banks.data.values.Game;
 import vsp.banks.data.values.Transfer;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static spark.Spark.*;
 import static vsp.banks.data.values.StatusCodes.*;
@@ -19,7 +17,7 @@ import static vsp.banks.data.values.StatusCodes.*;
  */
 public class Facade extends AbstractFacade {
 
-  private IBankLogicImmutable bankServiceLogic;
+  private IBanksLogicImmutable bankLogic;
 
   private ITwoPhaseCommit twoPhaseCommit;
 
@@ -27,14 +25,15 @@ public class Facade extends AbstractFacade {
    * Creates the RESTful API for banks.
    * @param logic is the business logic of this application.
    */
-  public Facade(IBankLogic logic, ITwoPhaseCommit twoPhaseCommit) {
-    this.bankServiceLogic = logic;
+  public Facade(IBanksLogic logic, ITwoPhaseCommit twoPhaseCommit) {
+    this.bankLogic = logic;
     this.twoPhaseCommit = twoPhaseCommit;
     bindAllMethods();
   }
 
   @Override
   public void bindAllMethods() {
+    bindPostServiceUri();
     bindGetBanks();
     bindPutBank();
     bindGetTransfer();
@@ -47,11 +46,31 @@ public class Facade extends AbstractFacade {
   }
 
   /**
+   * Registers given service replicates.
+   *
+   * <code>POST /service</code>
+   */
+  public void bindPostServiceUri() {
+    post("/service", (request, response) -> {
+      String urisAsString = request.body();
+      String[] uriList = jsonConverter.fromJson(urisAsString, String[].class);
+      Set<String> uris = new HashSet<>(Arrays.asList(uriList));
+      response.status(created);
+      if (!this.twoPhaseCommit.registerCloneServices(uris)) {
+        response.status(conflict);
+        response.body("Uri already exists.");
+      }
+      uris = this.twoPhaseCommit.getCloneServices();
+      return jsonConverter.toJson(uris);
+    });
+  }
+
+  /**
    * Fetches all banks.
    * <code>GET /banks</code>
    */
   public void bindGetBanks() {
-    get("/banks/", (request, response) -> {
+    get("/banks", (request, response) -> {
       // no op
       return "";
     });
@@ -65,7 +84,7 @@ public class Facade extends AbstractFacade {
   public void bindPutBank() {
     put("/banks/:gameId", (request, response) -> {
       Game game = this.jsonConverter.fromJson(request.body(), Game.class);
-      this.bankServiceLogic.setGame(game);
+      this.twoPhaseCommit.setGame(game);
       response.status(ok);
       return "";
     });
@@ -78,7 +97,7 @@ public class Facade extends AbstractFacade {
   public void bindGetTransfer() {
     get("banks/:gameId/transfers", (request, response) -> {
       String gameId = request.params(":gameId");
-      List<Transfer> transfers = this.bankServiceLogic.getTransfersOfBank(gameId);
+      List<Transfer> transfers = this.bankLogic.getTransfersOfBank(gameId);
       return this.jsonConverter.toJson(transfers);
     });
   }
@@ -94,12 +113,8 @@ public class Facade extends AbstractFacade {
       int amount = Integer.parseInt(request.params(":amount"));
       String reason = request.body();
       Transfer transfer = Transfer.bankToPlayer(toPlayer, amount, reason, null);
-      if (this.bankServiceLogic.transferIsPossible(gameId, transfer)) {
-        //
-      }
-
-      this.bankServiceLogic.applyTransferInGame(gameId, transfer);
-      List<Event> events = this.bankServiceLogic.getEventsOfPlayer(gameId, toPlayer);
+      this.twoPhaseCommit.applyTransferInGame(gameId, transfer);
+      List<Event> events = this.bankLogic.getEventsOfPlayer(gameId, toPlayer);
       return this.jsonConverter.toJson(events);
     });
   }
@@ -116,8 +131,8 @@ public class Facade extends AbstractFacade {
       int amount = Integer.parseInt(request.params(":amount"));
       String reason = request.body();
       Transfer transfer = new Transfer(fromPlayerId, toPlayerId, amount, reason, "");
-      if (this.bankServiceLogic.applyTransferInGame(gameId, transfer)) {
-        List<Event> events = this.bankServiceLogic.getEventsOfPlayer(gameId, fromPlayerId);
+      if (this.twoPhaseCommit.applyTransferInGame(gameId, transfer)) {
+        List<Event> events = this.bankLogic.getEventsOfPlayer(gameId, fromPlayerId);
         response.status(ok);
         return this.jsonConverter.toJson(events);
       }
@@ -137,8 +152,8 @@ public class Facade extends AbstractFacade {
       int amount = Integer.parseInt(request.params(":amount"));
       String reason = request.body();
       Transfer transfer = Transfer.playerToBank(fromId, amount, reason, "");
-      if (this.bankServiceLogic.applyTransferInGame(gameId, transfer)) {
-        List<Event> events = this.bankServiceLogic.getEventsOfPlayer(gameId, fromId);
+      if (this.twoPhaseCommit.applyTransferInGame(gameId, transfer)) {
+        List<Event> events = this.bankLogic.getEventsOfPlayer(gameId, fromId);
         response.status(ok);
         return this.jsonConverter.toJson(events);
       }
@@ -154,9 +169,8 @@ public class Facade extends AbstractFacade {
   public void bindGetBankPlayers() {
     get("/banks/:gameId/players", (request, response) -> {
       String gameId = request.params(":gameId");
-      Set<Account> accounts = this.bankServiceLogic.getAccounts(gameId);
-      String accountsAsJson = this.jsonConverter.toJson(accounts);
-      return accountsAsJson;
+      Set<Account> accounts = this.bankLogic.getAccounts(gameId);
+      return this.jsonConverter.toJson(accounts);
     });
   }
 
@@ -168,7 +182,7 @@ public class Facade extends AbstractFacade {
     post("/banks/:gameId/players", (request, response) -> {
       String gameId = request.params(":gameId");
       Account account = jsonConverter.fromJson(request.body(), Account.class);
-      if (bankServiceLogic.registerPlayerForGame(gameId, account)) {
+      if (twoPhaseCommit.registerPlayerForGame(gameId, account)) {
         response.status(created);
         return "";
       }
@@ -185,7 +199,7 @@ public class Facade extends AbstractFacade {
     get("/banks/:gameId/players/:playerId", (request, response) -> {
       String gameId = request.params(":gameId");
       String playerId = request.params(":playerId");
-      Account account = bankServiceLogic.getAccount(gameId, playerId);
+      Account account = bankLogic.getAccount(gameId, playerId);
       response.status(ok);
       return account.getSaldo();
     });

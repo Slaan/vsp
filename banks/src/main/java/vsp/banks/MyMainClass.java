@@ -1,8 +1,11 @@
 package vsp.banks;
 
+import vsp.banks.access.CommitFacade;
+import vsp.banks.business.adapter.CloneServiceAdapter;
 import vsp.banks.business.logic.bank.BanksLogic;
 import vsp.banks.business.discovery.YellowPages;
 import vsp.banks.access.Facade;
+import vsp.banks.business.logic.twophasecommit.TwoPhaseCommitLogic;
 
 public class MyMainClass {
 
@@ -25,7 +28,11 @@ public class MyMainClass {
     }
     // Dependency Injections
     BanksLogic serviceLogic = new BanksLogic();
-    Facade banksController = new Facade(serviceLogic);
+    CloneServiceAdapter cloneServiceAdapter = new CloneServiceAdapter();
+
+    CommitFacade commitFacade = new CommitFacade(serviceLogic);
+    TwoPhaseCommitLogic twoPhaseCommit = new TwoPhaseCommitLogic(serviceLogic, cloneServiceAdapter);
+    Facade banksController = new Facade(serviceLogic, twoPhaseCommit);
   }
 
 }

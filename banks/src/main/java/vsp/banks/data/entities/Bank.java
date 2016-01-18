@@ -22,6 +22,8 @@ public class Bank {
 
   private Map<Account, List<Event>> events;
 
+  private boolean isLocked;
+
   /**
    * The bank is matched exactly one game. It administrates
    * transfers and accounts.
@@ -29,8 +31,9 @@ public class Bank {
   public Bank(Game game) {
     checkNotNull(game);
     this.game = game;
-    accounts = new HashSet<>();
-    transfers = new ArrayList<>();
+    this.accounts = new HashSet<>();
+    this.transfers = new ArrayList<>();
+    this.isLocked = false;
   }
 
   /**
@@ -66,6 +69,19 @@ public class Bank {
     String ownId = this.game.getGameid();
     String otherId = game.getGameid();
     return ownId.equals(otherId);
+  }
+
+  public boolean isLocked() {
+    return isLocked;
+  }
+
+  public boolean lock() {
+    return this.isLocked = true;
+  }
+
+  public boolean unlock() {
+    this.isLocked = false;
+    return false;
   }
 
   /**

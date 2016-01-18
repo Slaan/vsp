@@ -1,52 +1,35 @@
 package vsp.banks.business.logic.twophasecommit.interfaces;
 
-import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
-import vsp.banks.data.entities.Player;
-import vsp.banks.data.values.Transfer;
+import vsp.banks.business.logic.bank.interfaces.IBanksLogicMutable;
 
 import java.util.Set;
 
 /**
  * Created by alex on 1/17/16.
  */
-public interface ITwoPhaseCommit {
+public interface ITwoPhaseCommit extends IBanksLogicMutable {
 
   /**
    *
    * @param bankId
    * @return
    */
-  boolean lockAllServices(String bankId);
+  boolean lockAllBanksOnAllServices(String bankId);
 
   /**
    *
    * @param bankId
    * @return
    */
-  boolean unlockAllServices(String bankId);
-
-  /**
-   *
-   * @param bankId
-   * @param transfer
-   * @return
-   */
-  boolean applyTransfer(String bankId, Transfer transfer) throws PlayerNotFoundException;
-
-  /**
-   *
-   * @param bankId
-   * @param playerId
-   * @return
-   */
-  boolean addPlayer(String bankId, Player playerId);
+  boolean unlockAllBanksOnAllServices(String bankId);
 
   /**
    *
    * @param uri
    * @return
    */
-  boolean registerCloneService(String uri);
+  boolean registerCloneServices(Set<String> uri);
 
   Set<String> getCloneServices();
+
 }
