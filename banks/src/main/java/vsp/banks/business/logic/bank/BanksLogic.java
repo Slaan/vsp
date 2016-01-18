@@ -22,14 +22,13 @@ public class BanksLogic implements IBanksLogic {
 
   @Override
   public void setGame(Game game) {
-    for (Bank bank : banks) {
-      if (bank.hasGameId(game)) {
-        bank.setGame(game);
-        return;
-      }
+    try {
+      Bank bank = findBankByGameId(game.getGameid());
+      bank.setGame(game);
+    } catch (BankNotFoundException e) {
+      Bank bank = new Bank(game);
+      banks.add(bank);
     }
-    Bank bank = new Bank(game);
-    banks.add(bank);
   }
 
   @Override

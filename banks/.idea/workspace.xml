@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="55e820c9-6449-48f1-b350-1c5681692c8d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/business/logic/bank/exceptions/BankNotFoundException.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/business/logic/bank/BanksLogic.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/business/logic/bank/BanksLogic.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/business/logic/bank/interfaces/IBanksLogic.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/business/logic/bank/interfaces/IBanksLogic.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/business/logic/bank/interfaces/IBanksLogicImmutable.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/business/logic/bank/interfaces/IBanksLogicImmutable.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/business/logic/bank/interfaces/IBanksLogicMutable.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/business/logic/bank/interfaces/IBanksLogicMutable.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/vsp/banks/data/entities/Bank.java" afterPath="$PROJECT_DIR$/src/main/java/vsp/banks/data/entities/Bank.java" />
     </list>
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
@@ -176,8 +171,8 @@
           <file leaf-file-name="BanksLogic.java" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/business/logic/bank/BanksLogic.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-0.2171665">
-                  <caret line="29" column="5" selection-start-line="29" selection-start-column="5" selection-end-line="29" selection-end-column="5" />
+                <state vertical-scroll-proportion="0.46535677">
+                  <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -1590,6 +1585,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="5" column="17" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1800,6 +1798,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.3809524">
           <caret line="26" column="25" selection-start-line="26" selection-start-column="25" selection-end-line="26" selection-end-column="25" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1994,8 +1995,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/vsp/banks/business/logic/bank/BanksLogic.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.2171665">
-          <caret line="29" column="5" selection-start-line="29" selection-start-column="5" selection-end-line="29" selection-end-column="5" />
+        <state vertical-scroll-proportion="0.46535677">
+          <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
