@@ -60,7 +60,7 @@ public class Facade extends AbstractFacade {
         response.status(conflict);
         response.body("Uri already exists.");
       }
-      uris = this.twoPhaseCommit.getCloneServices();
+      uris = this.twoPhaseCommit.getUris();
       return jsonConverter.toJson(uris);
     });
   }

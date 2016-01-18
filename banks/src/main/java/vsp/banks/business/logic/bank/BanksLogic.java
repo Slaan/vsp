@@ -82,8 +82,10 @@ public class BanksLogic implements IBanksLogic {
     return null;
   }
 
-  public boolean isLocked(String gameId) {
-    return false;
+  @Override
+  public boolean isLocked(String gameId) throws BankNotFoundException {
+    Bank bank = findBankByGameId(gameId);
+    return bank.isLocked();
   }
 
   @Override

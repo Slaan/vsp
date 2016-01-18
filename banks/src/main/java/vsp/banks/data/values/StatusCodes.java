@@ -11,6 +11,8 @@ public final class StatusCodes {
 
   public static final int ok = 200;
   public static final int created = 201;
+  public static final int noContent = 204;
+
   public static final int forbidden = 403;
   public static final int conflict = 409;
 

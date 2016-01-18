@@ -1,5 +1,6 @@
 package vsp.banks.business.logic.twophasecommit.interfaces;
 
+import vsp.banks.business.logic.bank.exceptions.BankNotFoundException;
 import vsp.banks.business.logic.bank.interfaces.IBanksLogicMutable;
 
 import java.util.Set;
@@ -11,17 +12,17 @@ public interface ITwoPhaseCommit extends IBanksLogicMutable {
 
   /**
    *
-   * @param bankId
+   * @param gameId
    * @return
    */
-  boolean lockAllBanksOnAllServices(String bankId);
+  boolean lockBankOnAllServices(String gameId) throws BankNotFoundException;
 
   /**
    *
-   * @param bankId
+   * @param gameId
    * @return
    */
-  boolean unlockAllBanksOnAllServices(String bankId);
+  boolean unlockBankOnAllServices(String gameId) throws BankNotFoundException;
 
   /**
    *
@@ -30,6 +31,10 @@ public interface ITwoPhaseCommit extends IBanksLogicMutable {
    */
   boolean registerCloneServices(Set<String> uri);
 
-  Set<String> getCloneServices();
+  /**
+   *
+   * @return
+   */
+  Set<String> getUris();
 
 }

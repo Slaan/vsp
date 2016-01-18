@@ -9,19 +9,6 @@ import vsp.banks.data.values.Transfer;
 /**
  * Created by alex on 11/18/15.
  */
-public interface IBanksLogic extends IBanksLogicImmutable, IBanksLogicMutable {
+public interface IBanksLogic extends IBanksLogicImmutable, IBanksLogicLockableMutable {
 
-  /**
-   *
-   * @param gameId
-   * @return
-   */
-  boolean lock(String gameId) throws BankNotFoundException;
-
-  /**
-   *
-   * @param gameId
-   * @return
-   */
-  boolean unlock(String gameId) throws BankNotFoundException;
 }

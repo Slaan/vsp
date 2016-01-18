@@ -1,8 +1,11 @@
 package vsp.banks.business.logic.twophasecommit;
 
-import vsp.banks.business.adapter.interfaces.ICloneServiceAdapter;
+import vsp.banks.business.adapter.CloneService;
+import vsp.banks.business.adapter.interfaces.ICloneService;
+import vsp.banks.business.logic.bank.exceptions.BankNotFoundException;
 import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
 import vsp.banks.business.logic.bank.interfaces.IBanksLogic;
+import vsp.banks.business.logic.bank.interfaces.IBanksLogicLockableMutable;
 import vsp.banks.business.logic.twophasecommit.interfaces.ITwoPhaseCommit;
 import vsp.banks.data.entities.Account;
 import vsp.banks.data.values.Game;
@@ -11,39 +14,40 @@ import vsp.banks.data.values.Transfer;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static vsp.banks.helper.ObjectHelper.checkNotNull;
+import static vsp.banks.helper.StringHelper.checkNotEmpty;
 
 /**
  * Created by alex on 1/17/16.
  */
 public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
 
-  Set<String> cloneServices;
+  /**
+   * Don't use his set raw. Work with it via. <code>getAllServices()</code>.
+   */
+  Set<ICloneService> cloneServices;
+
+  String ownUri;
 
   IBanksLogic logic;
 
-  ICloneServiceAdapter cloneServiceAdapter;
-
-  public TwoPhaseCommitLogic(IBanksLogic logic, ICloneServiceAdapter cloneServiceAdapter) {
-    checkNotNull(logic, cloneServiceAdapter);
+  public TwoPhaseCommitLogic(IBanksLogic logic, String ownUri) {
+    checkNotNull(logic, ownUri);
+    checkNotEmpty(ownUri);
     this.logic = logic;
-    this.cloneServiceAdapter = cloneServiceAdapter;
+    this.ownUri = ownUri;
   }
 
   @Override
-  public boolean lockAllBanksOnAllServices(String gameId) {
-    if (!this.logic.lock(gameId)) {
-      return false;
-    }
-    Set<String> locked = new HashSet<>();
-    for (String uri : this.cloneServices) {
-      if (cloneServiceAdapter.lockBank(uri, gameId)) {
-        locked.add(uri);
-      } else {
-        // unlock all banks, which were locked
-        // when not able to lock a single bank
-        unlockBank(locked, gameId);
-        this.logic.unlock(gameId);
+  public boolean lockBankOnAllServices(String gameId) throws BankNotFoundException {
+    Set<IBanksLogicLockableMutable> lockedServices = new HashSet<>();
+    for (IBanksLogicLockableMutable service : this.getAllServices()) {
+      if (!service.lock(gameId)) {
+        // when we can not lock a single service, unlock all
+        // e.g.:
+        //  lockedServices.unlock(..)
         return false;
       }
     }
@@ -51,20 +55,28 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
   }
 
   @Override
-  public boolean unlockAllBanksOnAllServices(String bankId) {
-    unlockBank(cloneServices, bankId);
-    this.logic.unlock(bankId);
+  public boolean unlockBankOnAllServices(String bankId) throws BankNotFoundException {
+
     return true;
   }
 
   @Override
-  public Set<String> getCloneServices() {
-    return new HashSet<>(cloneServices);
+  public Set<String> getUris() {
+    Set<String> uris = this.cloneServices.stream().map(ICloneService::getUri).collect(toSet());
+    uris.add(this.ownUri);
+    return uris;
   }
 
   @Override
   public void setGame(Game game) {
+    try {
+      this.logic.lock(game.getGameid());
+      lockBankOnAllServices(game.getGameid());
+    } catch (BankNotFoundException e) {
+      e.printStackTrace();
+    } finally {
 
+    }
   }
 
   @Override
@@ -74,34 +86,42 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
 
   @Override
   public boolean applyTransferInGame(String gameId, Transfer transfer)
-      throws PlayerNotFoundException {
+      throws PlayerNotFoundException, BankNotFoundException {
     if (!logic.transferIsPossible(gameId, transfer)) {
       return false;
     }
-    if (!lockAllBanksOnAllServices(gameId)) {
-      return false;
-    }
-    for (String cloneService : this.cloneServices) {
-      this.cloneServiceAdapter.applyTransfer(cloneService, gameId, transfer);
-    }
-    this.logic.applyTransferInGame(gameId, transfer);
-    this.unlockAllBanksOnAllServices(gameId);
+    lockBankOnAllServices(gameId);
+    getAllServices().stream().forEach(iBanksLogicLockableMutable -> {
+
+    });
+    unlockBankOnAllServices(gameId)
     return true;
   }
 
   @Override
   public synchronized boolean registerCloneServices(Set<String> uris) {
-    return cloneServices.addAll(uris);
+    Set<ICloneService> newCloneServices;
+    newCloneServices = uris.stream().map(uri -> new CloneService(uri)).collect(toSet());
+    return this.cloneServices.addAll(newCloneServices);
+  }
+
+  private boolean unlockAll(Set<IBanksLogicLockableMutable> asdf, String gameId)
+      throws BankNotFoundException {
+    for (IBanksLogicLockableMutable asd : asdf) {
+      if (asd.unlock(gameId)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**
-   * Unlocks all services
-   * @param urisToUnlock
-   * @param bankId
+   * Get all remote and local services.
+   * @return a set of all service replications.
    */
-  private void unlockBank(Set<String> urisToUnlock, String bankId) {
-    for (String uriToUnlock : urisToUnlock) {
-      cloneServiceAdapter.unlockBank(uriToUnlock, bankId);
-    }
+  private Set<IBanksLogicLockableMutable> getAllServices() {
+    Set<IBanksLogicLockableMutable> services = new HashSet<>(this.cloneServices);
+    services.add(logic);
+    return services;
   }
 }

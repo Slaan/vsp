@@ -49,7 +49,7 @@ public interface IBanksLogicImmutable {
    * @param gameId
    * @return
    */
-  boolean isLocked(String gameId);
+  boolean isLocked(String gameId) throws BankNotFoundException;
 
   /**
    * Returns all transfers of given game.

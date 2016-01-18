@@ -103,9 +103,11 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.mashape.unirest:unirest-java:1.4.7'
 
-
+    testCompile 'org.mockito:mockito-core:2.0.2-beta'
     testCompile 'org.assertj:assertj-core:3.1.0'
-    testCompile 'org.testng:testng:6.9.6'
+    testCompile('org.testng:testng:6.9.9') {
+        exclude group:'junit', module:'junit'
+    }
     testCompile 'com.jayway.restassured:rest-assured:2.5.0'
 }
 
