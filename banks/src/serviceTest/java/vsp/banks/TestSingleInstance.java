@@ -1,13 +1,11 @@
 package vsp.banks;
 
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import vsp.banks.access.CommitFacade;
-import vsp.banks.access.Facade;
 import vsp.banks.business.logic.bank.BanksLogic;
 import vsp.banks.business.logic.bank.exceptions.BankNotFoundException;
 import vsp.banks.business.logic.bank.exceptions.NotFoundException;
-import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
 import vsp.banks.business.logic.bank.interfaces.IBanksLogicImmutable;
 import vsp.banks.business.logic.twophasecommit.TwoPhaseCommitLogic;
 import vsp.banks.business.logic.twophasecommit.interfaces.DebugTwoPhaseCommit;
@@ -22,8 +20,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
+import static spark.Spark.stop;
 
 /**
  * Created by alex on 1/18/16.
@@ -33,28 +31,33 @@ public class TestSingleInstance {
 
   IBanksLogicImmutable serviceLogic;
 
-  CommitFacade commitFacade;
-
   ITwoPhaseCommit twoPhaseCommit;
   DebugTwoPhaseCommit twoPhaseCommitDebug;
-
-  Facade banksController;
 
   Player player1 = new Player("player1", "bob", "localhost/player/1");
   Player player2 = new Player("player2", "alice", "localhost/player/2");
   Player player3 = new Player("player3", "hans", "localhost/player/3");
 
+  /**
+   * Setup test entites.
+   */
   @BeforeClass
   public void setUp() {
     BanksLogic serviceLogic = new BanksLogic();
     this.serviceLogic = serviceLogic;
-    commitFacade = new CommitFacade(serviceLogic);
-    TwoPhaseCommitLogic twoPhaseCommitLogic = new TwoPhaseCommitLogic(serviceLogic, "localhost:4567");
+    TwoPhaseCommitLogic twoPhaseCommitLogic =
+        new TwoPhaseCommitLogic(serviceLogic, "localhost:4567");
     twoPhaseCommit = twoPhaseCommitLogic;
     twoPhaseCommitDebug = twoPhaseCommitLogic;
-    banksController = new Facade(serviceLogic, twoPhaseCommit);
   }
 
+  /**
+   * Tear down running application.
+   */
+  @AfterClass
+  public void tearDown() {
+    stop();
+  }
 
   @Test(groups = "setGameAndRegisterAccounts")
   public void test_singleInstance_setGameAndRegisterAccounts() {
@@ -140,5 +143,35 @@ public class TestSingleInstance {
     }
     assertEquals(serviceLogic.getAccount("game1", "player1").getSaldo(), 5000);
     assertEquals(serviceLogic.getAccount("game1", "player2").getSaldo(), 5000);
+  }
+
+  @Test(dependsOnGroups = {"setGameAndRegisterAccounts", "lockAndUnlock"})
+  public void test_commitFacadeAndCloneService_applyTransferInGame_BankToPlayer_and_PlayerToBank()
+      throws NotFoundException {
+    assertEquals(serviceLogic.getAccount("game1", "player1").getSaldo(), 5000);
+
+    Transfer transfer = Transfer.bankToPlayer("player1", 5000, "no reason", "event");
+    if (!twoPhaseCommit.applyTransferInGame("game1", transfer)) {
+      fail("There is actually enough money on account of 'player1'.");
+    }
+    assertEquals(serviceLogic.getAccount("game1", "player1").getSaldo(), 10000);
+
+    transfer = Transfer.playerToBank("player1", 10000, "no reason", "event");
+    if (!twoPhaseCommit.applyTransferInGame("game1", transfer)) {
+      fail("There is actually enough money on account of 'player1'.");
+    }
+    assertEquals(serviceLogic.getAccount("game1", "player1").getSaldo(), 0);
+
+    transfer = Transfer.playerToBank("player1", 1, "no reason", "event");
+    if (twoPhaseCommit.applyTransferInGame("game1", transfer)) {
+      fail("There is NOT ENOUGH money on account of 'player1'.");
+    }
+    assertEquals(serviceLogic.getAccount("game1", "player1").getSaldo(), 0);
+
+    transfer = Transfer.bankToPlayer("player1", 5000, "no reason", "event");
+    if (!twoPhaseCommit.applyTransferInGame("game1", transfer)) {
+      fail("There is actually enough money on account of 'player1'.");
+    }
+    assertEquals(serviceLogic.getAccount("game1", "player1").getSaldo(), 5000);
   }
 }

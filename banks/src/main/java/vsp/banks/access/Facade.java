@@ -1,6 +1,7 @@
 package vsp.banks.access;
 
 import vsp.banks.business.logic.bank.exceptions.BankNotFoundException;
+import vsp.banks.business.logic.bank.exceptions.NotFoundException;
 import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
 import vsp.banks.business.logic.bank.interfaces.IBanksLogic;
 import vsp.banks.business.logic.bank.interfaces.IBanksLogicImmutable;
@@ -56,15 +57,13 @@ public class Facade extends AbstractFacade {
    */
   public void bindPostServiceUri() {
     post("/service", (request, response) -> {
-      String urisAsString = request.body();
-      String[] uriList = jsonConverter.fromJson(urisAsString, String[].class);
-      Set<String> uris = new HashSet<>(Arrays.asList(uriList));
+      String uri = request.body();
       response.status(created);
-      if (!this.twoPhaseCommit.registerCloneServices(uris)) {
+      if (!this.twoPhaseCommit.registerCloneServices(uri)) {
         response.status(conflict);
         response.body("Uri already exists.");
       }
-      uris = this.twoPhaseCommit.getUris();
+      Set<String> uris = this.twoPhaseCommit.getUris();
       return jsonConverter.toJson(uris);
     });
   }
@@ -119,15 +118,15 @@ public class Facade extends AbstractFacade {
       Transfer transfer = Transfer.bankToPlayer(toPlayer, amount, reason, null);
       try {
         if (this.twoPhaseCommit.applyTransferInGame(gameId, transfer)) {
-          response.status(forbidden);
-          return "";
+          response.status(created);
+          List<Event> events = this.bankLogic.getEventsOfPlayer(gameId, toPlayer);
+          return this.jsonConverter.toJson(events);
         }
-      } catch (BankNotFoundException | PlayerNotFoundException exception) {
+        response.status(forbidden);
+      } catch (NotFoundException exception) {
         response.status(notFound);
-        return "";
       }
-      List<Event> events = this.bankLogic.getEventsOfPlayer(gameId, toPlayer);
-      return this.jsonConverter.toJson(events);
+      return "";
     });
   }
 
@@ -143,12 +142,16 @@ public class Facade extends AbstractFacade {
       int amount = Integer.parseInt(request.params(":amount"));
       String reason = request.body();
       Transfer transfer = new Transfer(fromPlayerId, toPlayerId, amount, reason, "");
-      if (this.twoPhaseCommit.applyTransferInGame(gameId, transfer)) {
-        List<Event> events = this.bankLogic.getEventsOfPlayer(gameId, fromPlayerId);
-        response.status(ok);
-        return this.jsonConverter.toJson(events);
+      try {
+        if (this.twoPhaseCommit.applyTransferInGame(gameId, transfer)) {
+          List<Event> events = this.bankLogic.getEventsOfPlayer(gameId, fromPlayerId);
+          response.status(created);
+          return this.jsonConverter.toJson(events);
+        }
+        response.status(forbidden);
+      } catch (NotFoundException exception) {
+        response.status(notFound);
       }
-      response.status(forbidden);
       return "";
     });
   }
@@ -164,12 +167,16 @@ public class Facade extends AbstractFacade {
       int amount = Integer.parseInt(request.params(":amount"));
       String reason = request.body();
       Transfer transfer = Transfer.playerToBank(fromId, amount, reason, "");
-      if (this.twoPhaseCommit.applyTransferInGame(gameId, transfer)) {
-        List<Event> events = this.bankLogic.getEventsOfPlayer(gameId, fromId);
-        response.status(ok);
-        return this.jsonConverter.toJson(events);
+      try {
+        if (this.twoPhaseCommit.applyTransferInGame(gameId, transfer)) {
+          List<Event> events = this.bankLogic.getEventsOfPlayer(gameId, fromId);
+          response.status(created);
+          return this.jsonConverter.toJson(events);
+        }
+        response.status(forbidden);
+      } catch (NotFoundException exception) {
+        response.status(notFound);
       }
-      response.status(forbidden);
       return "";
     });
   }

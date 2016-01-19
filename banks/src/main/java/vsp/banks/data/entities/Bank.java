@@ -71,15 +71,15 @@ public class Bank {
     return ownId.equals(otherId);
   }
 
-  private synchronized void setLock(boolean isLocked) {
-    this.isLocked = isLocked;
-  }
-
   /**
    * Checks if given gameId is equals to banks games.
    */
   public boolean hasGameId(String game) {
     return this.game.getGameid().equals(game);
+  }
+
+  private synchronized void setLock(boolean isLocked) {
+    this.isLocked = isLocked;
   }
 
   public synchronized boolean isLocked() {

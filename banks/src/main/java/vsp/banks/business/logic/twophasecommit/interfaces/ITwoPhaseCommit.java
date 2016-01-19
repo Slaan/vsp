@@ -8,7 +8,8 @@ import java.util.Set;
 /**
  * Created by alex on 1/17/16.
  */
-public interface ITwoPhaseCommit extends IBanksLogicMutable, DebugTwoPhaseCommit {
+public interface ITwoPhaseCommit extends IBanksLogicMutable, DebugTwoPhaseCommit,
+    IRegisterServices {
 
   /**
    * Locks a bank on all services. No matter if remote or local.
@@ -31,16 +32,5 @@ public interface ITwoPhaseCommit extends IBanksLogicMutable, DebugTwoPhaseCommit
    */
   boolean isLocked(String gameId) throws BankNotFoundException;
 
-  /**
-   * Registers all given uris to sync with.
-   * @param uris to register.
-   * @return true, if and only if there is at least one uri which has been added.
-   */
-  boolean registerCloneServices(Set<String> uris);
-
-  /**
-   * Returns all registered uris.
-   */
-  Set<String> getUris();
 
 }

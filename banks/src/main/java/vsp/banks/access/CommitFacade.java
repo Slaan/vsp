@@ -35,9 +35,10 @@ public class CommitFacade extends AbstractFacade {
 
   @Override
   public void bindAllMethods() {
-    bindPutGame();
     bindPostBankLock();
+    bindGetBankLock();
     bindDeleteBankLock();
+    bindPutGame();
     bindPostTransfer();
     bindPostBankAccount();
   }
@@ -62,6 +63,12 @@ public class CommitFacade extends AbstractFacade {
     });
   }
 
+  /**
+   * GET /replicate/banks/{gameId}/lock.
+   *  when locked     -> ok.
+   *  when not locked -> conflict.
+   *  when not bank with gameId -> notFound.
+   */
   public void bindGetBankLock() {
     get("/replicate/banks/:gameId/lock", (request, response) -> {
       String gameId = request.params(":gameId");

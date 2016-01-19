@@ -1,6 +1,7 @@
 package vsp.banks;
 
 import com.jayway.restassured.RestAssured;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -23,12 +24,15 @@ import java.util.Set;
 
 import static com.jayway.restassured.RestAssured.given;
 import static org.testng.Assert.*;
+import static spark.Spark.halt;
+import static spark.Spark.stop;
 import static vsp.banks.data.values.StatusCodes.*;
 
 /**
  * Created by alex on 1/18/16.
  */
-@Test public class TestCommitFacade {
+@Test(groups = "TestCommitFacade")
+public class TestCommitFacade {
 
   IBanksLogic banksLogic;
 
@@ -36,6 +40,9 @@ import static vsp.banks.data.values.StatusCodes.*;
 
   ICloneService cloneService;
 
+  /**
+   * Setup test entites.
+   */
   @BeforeClass
   public void setUp() throws BankNotFoundException {
     RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -59,6 +66,11 @@ import static vsp.banks.data.values.StatusCodes.*;
     banksLogic.registerPlayerForGame("game1", account2);
   }
 
+  @AfterClass
+  public void tearDown() {
+    stop();
+  }
+
   @Test
   public void test_commitFacade_lock_and_unlock() {
     given().put("/replicate/banks/" + "game1" + "/lock").then().statusCode(ok);
@@ -70,12 +82,16 @@ import static vsp.banks.data.values.StatusCodes.*;
   }
 
   @Test
-  public void test_commitFacadeAndCloneService_lock_and_unlock() {
+  public void test_commitFacadeAndCloneService_lockUnlockAndIsLocked() {
     try {
       assertTrue(cloneService.lock("game1"));
+      assertTrue(cloneService.isLocked("game1"));
+      assertTrue(cloneService.isLocked("game1"));
       assertFalse(cloneService.lock("game1"));
+      assertTrue(cloneService.isLocked("game1"));
       assertFalse(cloneService.lock("game1"));
       assertTrue(cloneService.unlock("game1"));
+      assertFalse(cloneService.isLocked("game1"));
       assertFalse(cloneService.unlock("game1"));
       assertTrue(cloneService.lock("game1"));
       assertTrue(cloneService.unlock("game1"));

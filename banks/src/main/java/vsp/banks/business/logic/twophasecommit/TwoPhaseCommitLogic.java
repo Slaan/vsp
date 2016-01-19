@@ -7,6 +7,8 @@ import vsp.banks.business.logic.bank.exceptions.NotFoundException;
 import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
 import vsp.banks.business.logic.bank.interfaces.IBanksLogic;
 import vsp.banks.business.logic.bank.interfaces.IBanksLogicLockableMutable;
+import vsp.banks.business.logic.twophasecommit.exceptions.ServiceInconsistentException;
+import vsp.banks.business.logic.twophasecommit.exceptions.ServiceLostException;
 import vsp.banks.business.logic.twophasecommit.interfaces.ITwoPhaseCommit;
 import vsp.banks.data.entities.Account;
 import vsp.banks.data.values.Game;
@@ -124,12 +126,13 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
 
   @Override
   public void setGame(Game game) {
+    checkNotNull(game);
     try {
       if (tryToLockBankOnAllServices(game.getGameid())) {
         handleToManyLockTries();
       }
     } catch (BankNotFoundException exception) {
-
+      // no op
     } finally {
       for (IBanksLogicLockableMutable service : getAllServices()) {
         service.setGame(game);
@@ -145,6 +148,8 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
   @Override
   public boolean registerPlayerForGame(String gameId, Account playerAccount)
       throws BankNotFoundException {
+    checkNotNull(gameId, playerAccount);
+    checkNotEmpty(gameId);
     if (!tryToLockBankOnAllServices(gameId)) {
       handleToManyLockTries();
     }
@@ -163,6 +168,8 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
   @Override
   public boolean applyTransferInGame(String gameId, Transfer transfer)
       throws NotFoundException {
+    checkNotNull(gameId, transfer);
+    checkNotEmpty(gameId);
     if (!logic.transferIsPossible(gameId, transfer)) {
       return false;
     }
@@ -171,6 +178,7 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
     }
     for (IBanksLogicLockableMutable replicate : this.getAllServices()) {
       if (!replicate.applyTransferInGame(gameId, transfer)) {
+        unlockBankOnAllServices(gameId);
         return false;
       }
     }
@@ -181,10 +189,21 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
   }
 
   @Override
-  public synchronized boolean registerCloneServices(Set<String> uris) {
-    Set<ICloneService> newCloneServices;
-    newCloneServices = uris.stream().map(uri -> new CloneService(uri)).collect(toSet());
-    return this.remoteCloneServices.addAll(newCloneServices);
+  public boolean deleteCloneService(String uri) {
+    ICloneService service = new CloneService(uri);
+    if (this.remoteCloneServices.remove(service)) {
+      // remove
+    }
+    return false;
+  }
+
+  @Override
+  public synchronized boolean registerCloneServices(String uri) {
+    if (this.remoteCloneServices.add(new CloneService(uri))) {
+      System.out.println("Registered replicate: " + uri);
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -213,14 +232,14 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
   }
 
   private void handleToManyLockTries() {
-    throw new RuntimeException("Tried " + maxTriesToLock + " times to lock resource.");
+    throw new ServiceLostException("Tried " + maxTriesToLock + " times to lock resource.");
   }
 
   private void handleLockedNotAbleToUnlock() {
-    throw new RuntimeException("Couldn't unlock replicates which were locked by me.");
+    throw new ServiceInconsistentException("Couldn't unlock replicates which were locked by me.");
   }
 
   private void handleInconsistency() {
-    throw new RuntimeException("Found inconsistent replicate!");
+    throw new ServiceInconsistentException("Found inconsistent replicate!");
   }
 }
