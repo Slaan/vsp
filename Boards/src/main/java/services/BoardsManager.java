@@ -1,9 +1,6 @@
 package services;
 
 import entities.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,8 +50,8 @@ public class BoardsManager {
    * @param game   Game the Board was created for
    */
   public void createBoardForGame(String gameId, Game game) {
-    Board board = new Board();
-    board.getFields().add(new Field(new Place("Los")));
+    Board board = new Board("/boards/"+gameId);
+    board.newField("Los", "someBroker", gameId);
     boardsMap.put(gameId, board);
     games.add(game);
   }
@@ -186,28 +183,25 @@ public class BoardsManager {
    * @param place  place that will be grabbed
    * @return Place
    */
-  public Place getPlaceByGameId(String gameId, String place) {
+  public Place getPlaceByGameId(String gameId, int place) {
     //TODO throw Exception if place isn't found in game
     Board board = boardsMap.get(gameId);
-    Place result = null;
-    for (Field f : board.getFields()) {
-      if (f.getPlace().getName().equals(place)) {
-        result = f.getPlace();
-      }
-    }
-    return result;
+    return board.getFields().get(place).getPlace();
   }
 
   /**
    * Adds a new Place to the Board belonging to a certain Game.
-   *
    * @param gameId    gameId of the Game the place will be added to
    * @param place     not used currently
    * @param placeBody Place that will be added
+   * @return uriString
    */
-  public void putPlace(String gameId, String place, Place placeBody) {
+  public String putPlace(String gameId, int place, Place placeBody) {
     Board board = boardsMap.get(gameId);
+    String uri = "/boards/" + gameId + "/places/" + board.getFields().size();
+    placeBody.setUri(uri);
     board.getFields().add(new Field(placeBody));
+    return uri;
   }
 
 }

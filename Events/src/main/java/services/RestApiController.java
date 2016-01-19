@@ -4,9 +4,12 @@ import entities.Event;
 import entities.Exceptions.EventIdNotFoundException;
 import entities.Exceptions.GameIdNotFoundException;
 import entities.Subscription;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -45,9 +48,13 @@ import java.util.List;
   @RequestMapping(method = RequestMethod.POST, value = "/events")
   @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<String> createEvent(@RequestParam(value = "gameid") String gameid,
-      @RequestBody Event event) {
+      @RequestBody Event event, UriComponentsBuilder b) {
     int id = eventManager.postEvent(gameid, event);
-    return new ResponseEntity<>("/events/" + id, HttpStatus.OK);
+    String uri = "";
+    UriComponents uriComponents = b.path(uri).build();
+    HttpHeaders headers = new HttpHeaders();
+    headers.setLocation(uriComponents.toUri());
+    return new ResponseEntity<>("/events/" + id, headers, HttpStatus.CREATED);
   }
 
   @RequestMapping(method = RequestMethod.GET, value = "/events/{id}") @ResponseStatus(HttpStatus.OK)
@@ -70,8 +77,14 @@ import java.util.List;
   }
 
   @RequestMapping(method = RequestMethod.POST, value = "/events/subscriptions")
-  @ResponseStatus(HttpStatus.OK) public void postForSubscription(@RequestBody Subscription sub) {
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseEntity postForSubscription(@RequestBody Subscription sub, UriComponentsBuilder b) {
     subscriptionManager.addSubscription(sub);
+    String uri = "";
+    UriComponents uriComponents = b.path(uri).build();
+    HttpHeaders headers = new HttpHeaders();
+    headers.setLocation(uriComponents.toUri());
+    return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
   }
 
   @RequestMapping(method = RequestMethod.DELETE, value = "/events/subscriptions/{id}")

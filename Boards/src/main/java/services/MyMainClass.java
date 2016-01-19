@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
   public static void main(String[] args) {
     SpringApplication.run(MyMainClass.class, args);
-    new YellowPageRegisterThread().run();
+    //new YellowPageRegisterThread().run();
   }
 
 }

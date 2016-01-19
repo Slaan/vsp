@@ -10,56 +10,70 @@ import java.util.Map;
 /**
  * Created by Daniel Hofmeister on 13.12.2015.
  */
-@JsonIgnoreProperties
-public class Board {
+@JsonIgnoreProperties public class Board {
 
-    private List<Field> fields = new ArrayList<>();
-    private Map<String,Integer> positions = new HashMap<>();
+  private List<Field> fields = new ArrayList<>();
+  private Map<String, Integer> positions = new HashMap<>();
+  private String uri;
 
-    public Board() {}
+  public Board(String uri) {
+    this.uri = uri;
+  }
 
-    public List<Field> getFields() {
-        return fields;
-    }
+  public void newField(String name, String broker, String gameId) {
+    fields.add(new Field(new Place(name,broker,"/boards/"+gameId+"/places/"+fields.size())));
+  }
 
-    public void setFields(List<Field> fields) {
-        this.fields = fields;
-    }
+  public String getUri() {
+    return uri;
+  }
 
-    public Map<String, Integer> getPositions() {
-        return positions;
-    }
+  public void setUri(String uri) {
+    this.uri = uri;
+  }
 
-    public void setPositions(Map<String, Integer> positions) {
-        this.positions = positions;
-    }
+  public List<Field> getFields() {
+    return fields;
+  }
 
-    @Override
-    public String toString() {
-        return "Board{" +
-                "fields=" + fields +
-                ", positions=" + positions +
-                '}';
-    }
+  public void setFields(List<Field> fields) {
+    this.fields = fields;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Board)) return false;
+  public Map<String, Integer> getPositions() {
+    return positions;
+  }
 
-        Board board = (Board) o;
+  public void setPositions(Map<String, Integer> positions) {
+    this.positions = positions;
+  }
 
-        if (fields != null ? !fields.equals(board.fields) : board.fields != null) return false;
-        return !(positions != null ? !positions.equals(board.positions) : board.positions != null);
+  @Override public String toString() {
+    return "Board{" +
+        "fields=" + fields +
+        ", positions=" + positions +
+        '}';
+  }
 
-    }
+  @Override public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (!(o instanceof Board))
+      return false;
 
-    @Override
-    public int hashCode() {
-        int result = fields != null ? fields.hashCode() : 0;
-        result = 31 * result + (positions != null ? positions.hashCode() : 0);
-        return result;
-    }
+    Board board = (Board) o;
+
+    if (fields != null ? !fields.equals(board.fields) : board.fields != null)
+      return false;
+    return !(positions != null ? !positions.equals(board.positions) : board.positions != null);
+
+  }
+
+  @Override public int hashCode() {
+    int result = fields != null ? fields.hashCode() : 0;
+    result = 31 * result + (positions != null ? positions.hashCode() : 0);
+    return result;
+  }
 }
 
 

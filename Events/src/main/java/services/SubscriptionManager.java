@@ -27,7 +27,7 @@ public class SubscriptionManager {
   }
 
   /**
-   * Adds a Subscription for an interesent towards an Event
+   * Adds a Subscription for an interested party towards an Event
    * @param sub
    */
   public void addSubscription(Subscription sub) {
