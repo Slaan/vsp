@@ -18,7 +18,7 @@ public class MyMainClass {
     // default mapping of spark-rest
     port(4567);
 
-    String ownUri = "myOwnUri";
+    String ownUri = "localhost:4567";
     if (args.length == 1) {
       String host = args[0];
       YellowPages yp = new YellowPages(host);

@@ -66,10 +66,10 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
   }
 
   /**
-   * Locks
-   * @param gameId
-   * @return
-   * @throws BankNotFoundException
+   * Tries to lock bank identified by gameId on all services.
+   * @param gameId to identify bank.
+   * @return true when successfully locked bank on all services.
+   * @throws BankNotFoundException when the bank does not exist.
    */
   public boolean tryToLockBankOnAllServices(String gameId) throws BankNotFoundException {
     int triesToLock = 0;

@@ -13,17 +13,21 @@ import vsp.banks.business.logic.twophasecommit.TwoPhaseCommitLogic;
 @Test
 public class TestSingleInstance {
 
-  BanksLogic logic;
+  BanksLogic serviceLogic;
 
+  CommitFacade commitFacade;
 
+  TwoPhaseCommitLogic twoPhaseCommit;
+
+  Facade banksController;
 
   @BeforeClass
   public void setUp() {
-    BanksLogic serviceLogic = new BanksLogic();
+    this.serviceLogic = new BanksLogic();
 
-    CommitFacade commitFacade = new CommitFacade(serviceLogic);
-    TwoPhaseCommitLogic twoPhaseCommit = new TwoPhaseCommitLogic(serviceLogic, "localhost:4567");
-    Facade banksController = new Facade(serviceLogic, twoPhaseCommit);
+    commitFacade = new CommitFacade(serviceLogic);
+    twoPhaseCommit = new TwoPhaseCommitLogic(serviceLogic, "localhost:4567");
+    banksController = new Facade(serviceLogic, twoPhaseCommit);
   }
 
 
