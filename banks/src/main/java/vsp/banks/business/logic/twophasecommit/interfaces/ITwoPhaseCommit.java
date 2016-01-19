@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  * Created by alex on 1/17/16.
  */
-public interface ITwoPhaseCommit extends IBanksLogicMutable {
+public interface ITwoPhaseCommit extends IBanksLogicMutable, DebugTwoPhaseCommit {
 
   /**
    * Locks a bank on all services. No matter if remote or local.
@@ -23,6 +23,13 @@ public interface ITwoPhaseCommit extends IBanksLogicMutable {
    * @return true, if and only if successfully unlocked on all banks.
    */
   boolean unlockBankOnAllServices(String gameId) throws BankNotFoundException;
+
+  /**
+   * Checks if given bank is locked on all services.
+   * @param gameId of bank to check.
+   * @return true, if and only if bank is on all services locked.
+   */
+  boolean isLocked(String gameId) throws BankNotFoundException;
 
   /**
    * Registers all given uris to sync with.

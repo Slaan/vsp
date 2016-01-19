@@ -43,14 +43,6 @@ public interface IBanksLogicImmutable {
    */
   List<Event> getEventsOfPlayer(String gameId, String playerId);
 
-
-  /**
-   * Checks if bank service is locked or not.
-   * @param gameId of bank to check.
-   * @return true, if and only if bank is locked.
-   */
-  boolean isLocked(String gameId) throws BankNotFoundException;
-
   /**
    * Returns all transfers of given game.
    *

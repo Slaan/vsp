@@ -29,6 +29,8 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
 
   public static final int maxTimeToWaitInMs = 5000;
 
+  public static final int minTimeToWaitInMs = 0;
+
   /**
    * This set contains only remote replicates.
    * To get all replicates use <code>getAllServices()</code>
@@ -49,6 +51,7 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
     checkNotEmpty(ownUri);
     this.logic = logic;
     this.ownUri = ownUri;
+    this.remoteCloneServices = new HashSet<>();
   }
 
   @Override
@@ -61,6 +64,7 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
         }
         return false;
       }
+      lockedServices.add(service);
     }
     return true;
   }
@@ -79,7 +83,7 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
       }
       triesToLock++;
       Random random = new Random(System.currentTimeMillis());
-      int timeToWait = random.nextInt(this.maxTimeToWaitInMs);
+      int timeToWait = (this.minTimeToWaitInMs + random.nextInt(this.maxTimeToWaitInMs));
       try {
         Thread.sleep(timeToWait);
       } catch (InterruptedException e) {
@@ -91,8 +95,19 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
 
   @Override
   public boolean unlockBankOnAllServices(String bankId) throws BankNotFoundException {
-    for (IBanksLogicLockableMutable replicate : this.getAllServices()) {
-      if (!replicate.unlock(bankId)) {
+    for (IBanksLogicLockableMutable service : this.getAllServices()) {
+      if (!service.unlock(bankId)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  @Override
+  public boolean isLocked(String gameId) throws BankNotFoundException {
+    for (IBanksLogicLockableMutable service : this.getAllServices()) {
+      // Note: This might be a bug.
+      if (!service.isLocked(gameId)) {
         return false;
       }
     }
@@ -119,22 +134,30 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
       for (IBanksLogicLockableMutable service : getAllServices()) {
         service.setGame(game);
       }
+      try {
+        unlockBankOnAllServices(game.getGameid());
+      } catch (BankNotFoundException e) {
+        handleLockedNotAbleToUnlock();
+      }
     }
   }
 
   @Override
   public boolean registerPlayerForGame(String gameId, Account playerAccount)
       throws BankNotFoundException {
-    if (tryToLockBankOnAllServices(gameId)) {
+    if (!tryToLockBankOnAllServices(gameId)) {
       handleToManyLockTries();
     }
     for (IBanksLogicLockableMutable service : this.getAllServices()) {
-      service.registerPlayerForGame(gameId, playerAccount);
+      if (!service.registerPlayerForGame(gameId, playerAccount)) {
+        this.unlockBankOnAllServices(gameId);
+        return false;
+      }
     }
     if (!this.unlockBankOnAllServices(gameId)) {
       handleLockedNotAbleToUnlock();
     }
-    return false;
+    return true;
   }
 
   @Override
@@ -143,12 +166,12 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
     if (!logic.transferIsPossible(gameId, transfer)) {
       return false;
     }
-    if (tryToLockBankOnAllServices(gameId)) {
+    if (!tryToLockBankOnAllServices(gameId)) {
       handleToManyLockTries();
     }
     for (IBanksLogicLockableMutable replicate : this.getAllServices()) {
       if (!replicate.applyTransferInGame(gameId, transfer)) {
-        handleInconsistency();
+        return false;
       }
     }
     if (!unlockBankOnAllServices(gameId)) {
@@ -174,6 +197,7 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
   private boolean unlockAll(Set<IBanksLogicLockableMutable> services, String gameId)
       throws BankNotFoundException {
     for (IBanksLogicLockableMutable service : services) {
+      // wot, wtf does this not need a negation?!
       if (service.unlock(gameId)) {
         return false;
       }
@@ -181,11 +205,8 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
     return true;
   }
 
-  /**
-   * Get all remote and local services.
-   * @return a set of all service replications.
-   */
-  private Set<IBanksLogicLockableMutable> getAllServices() {
+  @Override
+  public Set<IBanksLogicLockableMutable> getAllServices() {
     Set<IBanksLogicLockableMutable> services = new HashSet<>(this.remoteCloneServices);
     services.add(logic);
     return services;

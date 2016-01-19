@@ -12,9 +12,7 @@ import vsp.banks.data.entities.Account;
 import vsp.banks.data.values.Game;
 import vsp.banks.data.values.Transfer;
 
-import static spark.Spark.delete;
-import static spark.Spark.post;
-import static spark.Spark.put;
+import static spark.Spark.*;
 import static vsp.banks.data.values.StatusCodes.*;
 /**
  * Created by alex on 1/17/16.
@@ -55,6 +53,21 @@ public class CommitFacade extends AbstractFacade {
       response.status(ok);
       try {
         if (!bankLogic.lock(gameId)) {
+          response.status(conflict);
+        }
+      } catch (BankNotFoundException exception) {
+        response.status(notFound);
+      }
+      return "";
+    });
+  }
+
+  public void bindGetBankLock() {
+    get("/replicate/banks/:gameId/lock", (request, response) -> {
+      String gameId = request.params(":gameId");
+      response.status(ok);
+      try {
+        if (!bankLogic.isLocked(gameId)) {
           response.status(conflict);
         }
       } catch (BankNotFoundException exception) {

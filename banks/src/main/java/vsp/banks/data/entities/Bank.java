@@ -71,6 +71,10 @@ public class Bank {
     return ownId.equals(otherId);
   }
 
+  private synchronized void setLock(boolean isLocked) {
+    this.isLocked = isLocked;
+  }
+
   /**
    * Checks if given gameId is equals to banks games.
    */
@@ -89,7 +93,7 @@ public class Bank {
    */
   public synchronized boolean lock() {
     if (!isLocked()) {
-      this.isLocked = true;
+      setLock(true);
       return true;
     }
     return false;
@@ -102,7 +106,7 @@ public class Bank {
    */
   public synchronized boolean unlock() {
     if (isLocked()) {
-      this.isLocked = false;
+      setLock(false);
       return true;
     }
     return false;
@@ -179,5 +183,34 @@ public class Bank {
     }
     noteTransfer(transfer);
     return true;
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (this == other) {
+      return true;
+    }
+    if (!(other instanceof Bank)) {
+      return false;
+    }
+    Bank bank = (Bank) other;
+    return game != null ? game.equals(bank.game) : bank.game == null;
+
+  }
+
+  @Override
+  public int hashCode() {
+    return game != null ? game.hashCode() : 0;
+  }
+
+  @Override
+  public String toString() {
+    return "Bank{"
+        + "game=" + game
+        + ", accounts=" + accounts
+        + ", transfers=" + transfers
+        + ", events=" + events
+        + ", isLocked=" + isLocked
+        + '}';
   }
 }

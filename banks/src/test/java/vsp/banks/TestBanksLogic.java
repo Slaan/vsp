@@ -3,6 +3,7 @@ package vsp.banks;
 import org.testng.annotations.Test;
 import vsp.banks.business.logic.bank.BanksLogic;
 import vsp.banks.business.logic.bank.exceptions.BankNotFoundException;
+import vsp.banks.business.logic.bank.exceptions.NotFoundException;
 import vsp.banks.business.logic.bank.interfaces.IBanksLogic;
 import vsp.banks.data.entities.Account;
 import vsp.banks.data.entities.Player;
@@ -80,11 +81,21 @@ public class TestBanksLogic {
       logic.registerPlayerForGame(game.getGameid(), playerAcc1);
       logic.registerPlayerForGame(game.getGameid(), playerAcc2);
       assertTrue(!logic.isLocked("game1"), "A game should be unlocked at creation.");
-      logic.lock("game1");
+      if (!logic.lock("game1")) {
+        fail("Bank isn't locked after lock().");
+      }
+      if (logic.lock("game1")) {
+        fail("Bank is already locked.");
+      }
       assertTrue(logic.isLocked("game1"), "Bank isn't locked after lock().");
-      logic.unlock("game1");
+      if (!logic.unlock("game1")) {
+        fail("Bank isn't unlocked after unlock().");
+      }
+      if (logic.unlock("game1")) {
+        fail("Bank is already unlocked.");
+      }
       assertTrue(!logic.isLocked("game1"), "Bank isn't unlocked after unlock().");
-    } catch (BankNotFoundException e) {
+    } catch (NotFoundException e) {
       fail("Did not found existing bank.");
     }
   }

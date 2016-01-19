@@ -59,7 +59,7 @@ public class BanksLogic implements IBanksLogic {
   }
 
   @Override
-  public synchronized boolean lock(String gameId) throws BankNotFoundException {
+  public boolean lock(String gameId) throws BankNotFoundException {
     Bank bank = findBankByGameId(gameId);
     return bank.lock();
   }
@@ -106,4 +106,23 @@ public class BanksLogic implements IBanksLogic {
     throw new BankNotFoundException("Bank with gameId '" + gameId + "' not found.");
   }
 
+  @Override
+  public boolean equals(Object other) {
+    if (this == other) {
+      return true;
+    }
+    if (!(other instanceof BanksLogic)) {
+      return false;
+    }
+
+    BanksLogic that = (BanksLogic) other;
+
+    return banks != null ? banks.equals(that.banks) : that.banks == null;
+
+  }
+
+  @Override
+  public int hashCode() {
+    return banks != null ? banks.hashCode() : 0;
+  }
 }

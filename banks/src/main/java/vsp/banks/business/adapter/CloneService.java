@@ -131,6 +131,24 @@ public class CloneService implements ICloneService {
   }
 
   @Override
+  public boolean isLocked(String gameId) throws BankNotFoundException {
+    String requestUri = this.getUri() + "/replicate/banks/" + gameId + "/lock";
+    try {
+      int statusCode = Unirest.get(requestUri).asString().getStatus();
+      if (statusCode == ok) {
+        return true;
+      } else if (statusCode == conflict) {
+        return false;
+      } else if (statusCode == notFound) {
+        throw new BankNotFoundException("Bank with gameId " + gameId + " not found.");
+      }
+    } catch (UnirestException e) {
+      e.printStackTrace();
+    }
+    throw logErr(requestUri, gameId, null, null);
+  }
+
+  @Override
   public String getUri() {
     return "http://" + uri;
   }
@@ -164,4 +182,5 @@ public class CloneService implements ICloneService {
     exceptionMessage += asJson + "\n";
     return new RuntimeException(exceptionMessage);
   }
+
 }
