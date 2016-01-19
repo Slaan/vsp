@@ -13,6 +13,7 @@ import vsp.banks.data.values.Game;
 import vsp.banks.data.values.Transfer;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
@@ -24,9 +25,12 @@ import static vsp.banks.helper.StringHelper.checkNotEmpty;
  */
 public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
 
+  public static final int maxTriesToLock = 15;
+
+  public static final int maxTimeToWaitInMs = 5000;
+
   /**
    * This set contains only remote replicates.
-   *
    * To get all replicates use <code>getAllServices()</code>
    */
   Set<ICloneService> remoteCloneServices;
@@ -35,6 +39,11 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
 
   IBanksLogic logic;
 
+  /**
+   * Creates a new instance of a two phase commit instance.
+   * @param logic as local bank service.
+   * @param ownUri to tell other services on request. This uri contains the port.
+   */
   public TwoPhaseCommitLogic(IBanksLogic logic, String ownUri) {
     checkNotNull(logic, ownUri);
     checkNotEmpty(ownUri);
@@ -47,13 +56,37 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
     Set<IBanksLogicLockableMutable> lockedServices = new HashSet<>();
     for (IBanksLogicLockableMutable service : this.getAllServices()) {
       if (!service.lock(gameId)) {
-        // when we can not lock a single service, unlock all
-        // e.g.:
-        //  lockedServices.unlock(..)
+        if (!unlockAll(lockedServices, gameId)) {
+          handleLockedNotAbleToUnlock();
+        }
         return false;
       }
     }
     return true;
+  }
+
+  /**
+   * Locks
+   * @param gameId
+   * @return
+   * @throws BankNotFoundException
+   */
+  public boolean tryToLockBankOnAllServices(String gameId) throws BankNotFoundException {
+    int triesToLock = 0;
+    while (triesToLock < maxTriesToLock) {
+      if (lockBankOnAllServices(gameId)) {
+        return true;
+      }
+      triesToLock++;
+      Random random = new Random(System.currentTimeMillis());
+      int timeToWait = random.nextInt(this.maxTimeToWaitInMs);
+      try {
+        Thread.sleep(timeToWait);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+    return false;
   }
 
   @Override
@@ -68,7 +101,8 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
 
   @Override
   public Set<String> getUris() {
-    Set<String> uris = this.remoteCloneServices.stream().map(ICloneService::getUri).collect(toSet());
+    Set<String> uris;
+    uris = this.remoteCloneServices.stream().map(ICloneService::getUri).collect(toSet());
     uris.add(this.ownUri);
     return uris;
   }
@@ -76,23 +110,29 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
   @Override
   public void setGame(Game game) {
     try {
-      this.logic.lock(game.getGameid());
-      lockBankOnAllServices(game.getGameid());
-    } catch (BankNotFoundException e) {
-      e.printStackTrace();
-    } finally {
+      if (tryToLockBankOnAllServices(game.getGameid())) {
+        handleToManyLockTries();
+      }
+    } catch (BankNotFoundException exception) {
 
+    } finally {
+      for (IBanksLogicLockableMutable service : getAllServices()) {
+        service.setGame(game);
+      }
     }
   }
 
   @Override
   public boolean registerPlayerForGame(String gameId, Account playerAccount)
       throws BankNotFoundException {
-    if (!this.lockBankOnAllServices(gameId)) {
-
+    if (tryToLockBankOnAllServices(gameId)) {
+      handleToManyLockTries();
+    }
+    for (IBanksLogicLockableMutable service : this.getAllServices()) {
+      service.registerPlayerForGame(gameId, playerAccount);
     }
     if (!this.unlockBankOnAllServices(gameId)) {
-
+      handleLockedNotAbleToUnlock();
     }
     return false;
   }
@@ -103,9 +143,8 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
     if (!logic.transferIsPossible(gameId, transfer)) {
       return false;
     }
-    if (!lockBankOnAllServices(gameId)) {
-      // TODO: How handle no lockable ?!
-      // relock five times
+    if (tryToLockBankOnAllServices(gameId)) {
+      handleToManyLockTries();
     }
     for (IBanksLogicLockableMutable replicate : this.getAllServices()) {
       if (!replicate.applyTransferInGame(gameId, transfer)) {
@@ -113,15 +152,9 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
       }
     }
     if (!unlockBankOnAllServices(gameId)) {
-      String exceptionMessage;
-      exceptionMessage = "Couldn't unlock replicates which were locked by this service before";
-      throw new RuntimeException(exceptionMessage);
+      handleLockedNotAbleToUnlock();
     }
     return true;
-  }
-
-  private void handleInconsistency() {
-    throw new RuntimeException("Found inconsistent replicate!");
   }
 
   @Override
@@ -156,5 +189,17 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
     Set<IBanksLogicLockableMutable> services = new HashSet<>(this.remoteCloneServices);
     services.add(logic);
     return services;
+  }
+
+  private void handleToManyLockTries() {
+    throw new RuntimeException("Tried " + maxTriesToLock + " times to lock resource.");
+  }
+
+  private void handleLockedNotAbleToUnlock() {
+    throw new RuntimeException("Couldn't unlock replicates which were locked by me.");
+  }
+
+  private void handleInconsistency() {
+    throw new RuntimeException("Found inconsistent replicate!");
   }
 }
