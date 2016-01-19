@@ -25,9 +25,11 @@ public class Facade extends AbstractFacade {
 
   /**
    * Creates the RESTful API for banks.
-   * @param logic is the business logic of this application.
+   * @param logic of bank.
+   * @param twoPhaseCommit to make changes on all banks.
    */
   public Facade(IBanksLogic logic, ITwoPhaseCommit twoPhaseCommit) {
+    super();
     this.bankLogic = logic;
     this.twoPhaseCommit = twoPhaseCommit;
     bindAllMethods();

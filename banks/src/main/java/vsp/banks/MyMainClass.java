@@ -7,12 +7,17 @@ import vsp.banks.business.discovery.YellowPages;
 import vsp.banks.access.Facade;
 import vsp.banks.business.logic.twophasecommit.TwoPhaseCommitLogic;
 
+import static spark.Spark.port;
+
 public class MyMainClass {
 
   /**
    * Main function. Entry point of application.
    */
   public static void main(String[] args) {
+    // default mapping of spark-rest
+    port(4567);
+
     String ownUri = "myOwnUri";
     if (args.length == 1) {
       String host = args[0];

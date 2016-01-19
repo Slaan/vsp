@@ -71,10 +71,22 @@ public class Bank {
     return ownId.equals(otherId);
   }
 
+  /**
+   * Checks if given gameId is equals to banks games.
+   */
+  public boolean hasGameId(String game) {
+    return this.game.getGameid().equals(game);
+  }
+
   public synchronized boolean isLocked() {
     return isLocked;
   }
 
+  /**
+   * Locks if and only if, bank is not locked.
+   * This function is thread-safe.
+   * @return true when successfully locked.
+   */
   public synchronized boolean lock() {
     if (!isLocked()) {
       this.isLocked = true;
@@ -83,19 +95,17 @@ public class Bank {
     return false;
   }
 
+  /**
+   * Unlocks if and only if, bank is locked.
+   * This function is thread-safe.
+   * @return true when successfully unlocked.
+   */
   public synchronized boolean unlock() {
     if (isLocked()) {
       this.isLocked = false;
       return true;
     }
     return false;
-  }
-
-  /**
-   * Checks if given gameId is equals to banks games.
-   */
-  public boolean hasGameId(String game) {
-    return this.game.getGameid().equals(game);
   }
 
   /**

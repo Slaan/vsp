@@ -26,7 +26,7 @@ public class Transfer {
   private String event;
 
   /**
-   * Checks invariant of this
+   * Checks invariant of transfers.
    */
   private void checkInvariant() {
     RuntimeException exception = new RuntimeException(this.toString());
@@ -144,13 +144,13 @@ public class Transfer {
 
   @Override
   public String toString() {
-    return "Transfer{" +
-        "type=" + type +
-        ", from='" + from + '\'' +
-        ", to='" + to + '\'' +
-        ", amount=" + amount +
-        ", reason='" + reason + '\'' +
-        ", event='" + event + '\'' +
-        '}';
+    return "Transfer{"
+        + "type=" + type
+        + ", from='" + from + '\''
+        + ", to='" + to + '\''
+        + ", amount=" + amount
+        + ", reason='" + reason + '\''
+        + ", event='" + event + '\''
+        + '}';
   }
 }

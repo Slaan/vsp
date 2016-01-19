@@ -45,9 +45,9 @@ public interface IBanksLogicImmutable {
 
 
   /**
-   *
-   * @param gameId
-   * @return
+   * Checks if bank service is locked or not.
+   * @param gameId of bank to check.
+   * @return true, if and only if bank is locked.
    */
   boolean isLocked(String gameId) throws BankNotFoundException;
 

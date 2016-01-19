@@ -3,12 +3,10 @@ package vsp.banks.business.adapter;
 import com.google.gson.Gson;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.sun.xml.internal.bind.v2.model.annotation.RuntimeAnnotationReader;
 import vsp.banks.business.adapter.interfaces.ICloneService;
 import vsp.banks.business.converter.TransferConverter;
 import vsp.banks.business.logic.bank.exceptions.BankNotFoundException;
 import vsp.banks.business.logic.bank.exceptions.NotFoundException;
-import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
 import vsp.banks.data.dtos.TransferCommitDto;
 import vsp.banks.data.entities.Account;
 import vsp.banks.data.values.Game;
@@ -27,6 +25,10 @@ public class CloneService implements ICloneService {
 
   private Gson jsonConverter;
 
+  /**
+   * This is an adapter to given uri. It communicates with a 'CommitFacade' of the service.
+   * @param uri of clone service.
+   */
   public CloneService(String uri) {
     this.uri = uri;
     this.transferConverter = new TransferConverter();
@@ -50,7 +52,7 @@ public class CloneService implements ICloneService {
     } catch (UnirestException e) {
       e.printStackTrace();
     }
-    throw logError(requestUri, gameId, null, null);
+    throw logErr(requestUri, gameId, null, null);
   }
 
   @Override
@@ -70,7 +72,7 @@ public class CloneService implements ICloneService {
     } catch (UnirestException e) {
       e.printStackTrace();
     }
-    throw logError(requestUri, gameId, null, null);
+    throw logErr(requestUri, gameId, null, null);
   }
 
   @Override
@@ -86,7 +88,7 @@ public class CloneService implements ICloneService {
     } catch (UnirestException e) {
       e.printStackTrace();
     }
-    throw logError(requestUri, game.getGameid(), game, gameAsJson);
+    throw logErr(requestUri, game.getGameid(), game, gameAsJson);
   }
 
   @Override
@@ -104,7 +106,7 @@ public class CloneService implements ICloneService {
     } catch (UnirestException e) {
       e.printStackTrace();
     }
-    throw logError(requestUri, gameId, playerAccount, accountAsJson);
+    throw logErr(requestUri, gameId, playerAccount, accountAsJson);
   }
 
   @Override
@@ -125,7 +127,7 @@ public class CloneService implements ICloneService {
     } catch (UnirestException e) {
       e.printStackTrace();
     }
-    throw logError(requestUri, gameId, transfer, transferAsJson);
+    throw logErr(requestUri, gameId, transfer, transferAsJson);
   }
 
   @Override
@@ -153,7 +155,7 @@ public class CloneService implements ICloneService {
   /**
    * This method simplifies error call.
    */
-  private RuntimeException logError(String requestUri, String gameId, Object object, String asJson){
+  private RuntimeException logErr(String requestUri, String gameId, Object object, String asJson) {
     String exceptionMessage;
     exceptionMessage = "Unexpected with gameId: " + gameId + "\n";
     exceptionMessage += " Object:" + object + "\n";

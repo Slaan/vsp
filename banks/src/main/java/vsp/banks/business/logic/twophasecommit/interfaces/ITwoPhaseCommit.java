@@ -11,29 +11,28 @@ import java.util.Set;
 public interface ITwoPhaseCommit extends IBanksLogicMutable {
 
   /**
-   *
-   * @param gameId
-   * @return
+   * Locks a bank on all services. No matter if remote or local.
+   * @param gameId of bank to lock.
+   * @return true, if and only if successfully locked on all banks.
    */
   boolean lockBankOnAllServices(String gameId) throws BankNotFoundException;
 
   /**
-   *
-   * @param gameId
-   * @return
+   * Unlocks a bank on all services. No matter if remote or local.
+   * @param gameId of bank to unlock.
+   * @return true, if and only if successfully unlocked on all banks.
    */
   boolean unlockBankOnAllServices(String gameId) throws BankNotFoundException;
 
   /**
-   *
-   * @param uri
-   * @return
+   * Registers all given uris to sync with.
+   * @param uris to register.
+   * @return true, if and only if there is at least one uri which has been added.
    */
-  boolean registerCloneServices(Set<String> uri);
+  boolean registerCloneServices(Set<String> uris);
 
   /**
-   *
-   * @return
+   * Returns all registered uris.
    */
   Set<String> getUris();
 

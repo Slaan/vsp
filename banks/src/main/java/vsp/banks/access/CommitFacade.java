@@ -25,6 +25,9 @@ public class CommitFacade extends AbstractFacade {
 
   TransferConverter transferConverter;
 
+  /**
+   * Creates a new instance of a commit facade.
+   */
   public CommitFacade(IBanksLogic logic) {
     super();
     this.bankLogic = logic;
@@ -62,8 +65,8 @@ public class CommitFacade extends AbstractFacade {
   }
 
   /**
-   * DELETE /bank/lock
-   *  when successful -> 200
+   * DELETE /replicate/banks/{gameId}/lock.
+   *  when successful -> 200.
    */
   public void bindDeleteBankLock() {
     delete("/replicate/banks/:gameId/lock", (request, response) -> {
@@ -80,6 +83,10 @@ public class CommitFacade extends AbstractFacade {
     });
   }
 
+  /**
+   * PUT /replicate/banks/{gameId}.
+   *  when created -> ok.
+   */
   public void bindPutGame() {
     put("/replicate/banks/:gameId", (request, response) -> {
       Game game = this.jsonConverter.fromJson(request.body(), Game.class);
@@ -88,6 +95,12 @@ public class CommitFacade extends AbstractFacade {
     });
   }
 
+  /**
+   * POST /replicate/banks/{gameId}/transfer.
+   *  when couldn't apply -> forbidden.
+   *  when successfully -> created.
+   *  when bank with gameId not found -> notFound.
+   */
   public void bindPostTransfer() {
     post("/replicate/banks/:gameId/transfer", (request, response) -> {
       String gameId = request.params(":gameId");
@@ -106,6 +119,11 @@ public class CommitFacade extends AbstractFacade {
     });
   }
 
+  /**
+   * POST /banks/{gameId}/players.
+   *  when player already exists -> conflict.
+   *  when player account created -> created.
+   */
   public void bindPostBankAccount() {
     post("/banks/:gameId/players", (request, response) -> {
       String gameId = request.params(":gameId");

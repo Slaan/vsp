@@ -27,7 +27,7 @@ public class TransferCommitDto {
   private String event;
 
   /**
-   * Checks invariant of this
+   * Checks invariant of transfers.
    */
   private void checkInvariant() {
     if (type.equals(TransferType.bankToPlayer) && (!from.isEmpty() || to.isEmpty())) {
@@ -144,13 +144,13 @@ public class TransferCommitDto {
 
   @Override
   public String toString() {
-    return "TransferCommitDto{" +
-        "type=" + type +
-        ", from='" + from + '\'' +
-        ", to='" + to + '\'' +
-        ", amount=" + amount +
-        ", reason='" + reason + '\'' +
-        ", event='" + event + '\'' +
-        '}';
+    return "TransferCommitDto{"
+        + "type=" + type
+        + ", from='" + from + '\''
+        + ", to='" + to + '\''
+        + ", amount=" + amount
+        + ", reason='" + reason + '\''
+        + ", event='" + event + '\''
+        + '}';
   }
 }

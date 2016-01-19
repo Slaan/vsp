@@ -105,6 +105,7 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
     }
     if (!lockBankOnAllServices(gameId)) {
       // TODO: How handle no lockable ?!
+      // relock five times
     }
     for (IBanksLogicLockableMutable replicate : this.getAllServices()) {
       if (!replicate.applyTransferInGame(gameId, transfer)) {
@@ -139,8 +140,8 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
    */
   private boolean unlockAll(Set<IBanksLogicLockableMutable> services, String gameId)
       throws BankNotFoundException {
-    for (IBanksLogicLockableMutable asd : services) {
-      if (asd.unlock(gameId)) {
+    for (IBanksLogicLockableMutable service : services) {
+      if (service.unlock(gameId)) {
         return false;
       }
     }
