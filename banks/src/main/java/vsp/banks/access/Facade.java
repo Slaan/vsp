@@ -69,6 +69,25 @@ public class Facade extends AbstractFacade {
   }
 
   /**
+   * Registers given service replicates.
+   *
+   * <code>Delete /service</code>
+   * Body contains the uri.
+   */
+  public void bindDeleteServiceUri() {
+    post("/service", (request, response) -> {
+      String uri = request.body();
+      response.status(created);
+      if (!this.twoPhaseCommit.registerCloneServices(uri)) {
+        response.status(conflict);
+        response.body("Uri already exists.");
+      }
+      Set<String> uris = this.twoPhaseCommit.getUris();
+      return jsonConverter.toJson(uris);
+    });
+  }
+
+  /**
    * Fetches all banks.
    * <code>GET /banks</code>
    */

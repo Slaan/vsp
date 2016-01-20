@@ -88,6 +88,10 @@ public class BanksLogic implements IBanksLogic {
     return bank.isLocked();
   }
 
+  public boolean isRemote() {
+    return false;
+  }
+
   @Override
   public List<Transfer> getTransfersOfBank(String gameId) throws BankNotFoundException {
     Bank bank = findBankByGameId(gameId);

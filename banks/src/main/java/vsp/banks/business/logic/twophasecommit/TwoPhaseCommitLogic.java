@@ -4,7 +4,6 @@ import vsp.banks.business.adapter.CloneService;
 import vsp.banks.business.adapter.interfaces.ICloneService;
 import vsp.banks.business.logic.bank.exceptions.BankNotFoundException;
 import vsp.banks.business.logic.bank.exceptions.NotFoundException;
-import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
 import vsp.banks.business.logic.bank.interfaces.IBanksLogic;
 import vsp.banks.business.logic.bank.interfaces.IBanksLogicLockableMutable;
 import vsp.banks.business.logic.twophasecommit.exceptions.ServiceInconsistentException;
@@ -29,9 +28,9 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
 
   public static final int maxTriesToLock = 15;
 
-  public static final int maxTimeToWaitInMs = 5000;
+  public static final int maxTimeToWaitInMs = 7 * 1000;
 
-  public static final int minTimeToWaitInMs = 0;
+  public static final int minTimeToWaitInMs = 100;
 
   /**
    * This set contains only remote replicates.
@@ -40,6 +39,8 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
   Set<ICloneService> remoteCloneServices;
 
   String ownUri;
+
+  String lastUri;
 
   IBanksLogic logic;
 
@@ -61,6 +62,7 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
     Set<IBanksLogicLockableMutable> lockedServices = new HashSet<>();
     for (IBanksLogicLockableMutable service : this.getAllServices()) {
       if (!service.lock(gameId)) {
+
         if (!unlockAll(lockedServices, gameId)) {
           handleLockedNotAbleToUnlock();
         }
@@ -192,15 +194,17 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
   public boolean deleteCloneService(String uri) {
     ICloneService service = new CloneService(uri);
     if (this.remoteCloneServices.remove(service)) {
-      // remove
+      System.out.println("[" + this.ownUri + "] Removed service with uri: " + uri);
+      return true;
     }
     return false;
   }
 
+
   @Override
   public synchronized boolean registerCloneServices(String uri) {
     if (this.remoteCloneServices.add(new CloneService(uri))) {
-      System.out.println("Registered replicate: " + uri);
+      System.out.println("[" + this.ownUri + "] Registered replicate: " + uri);
       return true;
     }
     return false;
@@ -232,7 +236,11 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
   }
 
   private void handleToManyLockTries() {
-    throw new ServiceLostException("Tried " + maxTriesToLock + " times to lock resource.");
+    this.deleteCloneService(lastUri);
+    for (ICloneService replicate : this.remoteCloneServices) {
+
+    }
+    throw new ServiceLostException("Tried " + maxTriesToLock + " times to lock resource.", lastUri);
   }
 
   private void handleLockedNotAbleToUnlock() {
@@ -241,5 +249,15 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
 
   private void handleInconsistency() {
     throw new ServiceInconsistentException("Found inconsistent replicate!");
+  }
+
+  /**
+   * Notes uri of service, if it's a remote service.
+   */
+  private void noteUri(IBanksLogicLockableMutable service) {
+    if (service.isRemote()) {
+      ICloneService cloneService = (ICloneService) service;
+      this.lastUri = cloneService.getUri();
+    }
   }
 }

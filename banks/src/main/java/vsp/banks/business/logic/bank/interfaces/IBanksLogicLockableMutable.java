@@ -14,4 +14,10 @@ public interface IBanksLogicLockableMutable extends IBankLock, IBanksLogicMutabl
    * @return true, if and only if bank is locked.
    */
   boolean isLocked(String gameId) throws BankNotFoundException;
+
+  /**
+   * @return true, if and only if bank is a remote service.
+   */
+  boolean isRemote();
+
 }

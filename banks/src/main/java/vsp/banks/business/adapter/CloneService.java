@@ -148,6 +148,10 @@ public class CloneService implements ICloneService {
     throw logErr(requestUri, gameId, null, null);
   }
 
+  public boolean isRemote() {
+    return true;
+  }
+
   @Override
   public String getUri() {
     return "http://" + uri;

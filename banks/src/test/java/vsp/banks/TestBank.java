@@ -35,7 +35,6 @@ public class TestBank {
     return new Bank(game);
   }
 
-
   @Test
   public void test_bank_register() {
     Bank bank = setUp();

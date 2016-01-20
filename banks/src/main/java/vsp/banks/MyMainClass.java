@@ -22,7 +22,7 @@ public class MyMainClass {
    */
   public static void main(String[] args) {
     // default mapping of spark-rest
-    int port = 4569;
+    int port = 4567;
     port(port);
 
     String ownUri = getIp();
@@ -47,16 +47,16 @@ public class MyMainClass {
     Facade banksController = new Facade(serviceLogic, twoPhaseCommit);
 
     // Register replicates
-    if (port == 4567) {
-      twoPhaseCommit.registerCloneServices("localhost:4568");
-      twoPhaseCommit.registerCloneServices("localhost:4569");
-    } else if (port == 4568) {
-      twoPhaseCommit.registerCloneServices("localhost:4567");
-      twoPhaseCommit.registerCloneServices("localhost:4569");
-    } else if (port == 4569) {
-      twoPhaseCommit.registerCloneServices("localhost:4567");
-      twoPhaseCommit.registerCloneServices("localhost:4568");
-    }
+    //    if (port == 4567) {
+    //      twoPhaseCommit.registerCloneServices("localhost:4568");
+    //      twoPhaseCommit.registerCloneServices("localhost:4569");
+    //    } else if (port == 4568) {
+    //      twoPhaseCommit.registerCloneServices("localhost:4567");
+    //      twoPhaseCommit.registerCloneServices("localhost:4569");
+    //    } else if (port == 4569) {
+    //      twoPhaseCommit.registerCloneServices("localhost:4567");
+    //      twoPhaseCommit.registerCloneServices("localhost:4568");
+    //    }
   }
 
 }

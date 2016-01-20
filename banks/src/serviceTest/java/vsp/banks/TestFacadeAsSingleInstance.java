@@ -32,7 +32,7 @@ import static spark.Spark.stop;
 /**
  * Created by alex on 1/19/16.
  */
-// @Test(dependsOnGroups = "TestCommitFacade")
+//@Test(dependsOnGroups = "TestCommitFacade")
 @Test
 public class TestFacadeAsSingleInstance {
 

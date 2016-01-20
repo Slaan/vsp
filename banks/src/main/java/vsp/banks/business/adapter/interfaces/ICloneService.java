@@ -14,4 +14,10 @@ public interface ICloneService extends IBanksLogicLockableMutable {
    * @return uri of service.
    */
   String getUri();
+
+  /**
+   * Removes the replicate on this replicate.
+   * @param uriOfServiceToDelete is the identifier of the replicate to delete.
+   */
+  void deleteService(String uriOfServiceToDelete);
 }

@@ -98,6 +98,11 @@ sourceSets {
     }*/
 }
 
+configurations {
+    serviceTestCompile.extendsFrom testCompile
+    serviceTestRuntime.extendsFrom testRuntime
+}
+
 dependencies {
     compile 'com.sparkjava:spark-core:2.3'
     compile 'com.google.code.gson:gson:2.3.1'
@@ -115,9 +120,9 @@ dependencies {
  * Setup docker task
  */
 docker {
-    url = 'https://192.168.99.100:2376'
+    url = 'https://192.168.99.100:2375'
     if (OperatingSystem.current().isLinux()) {
-      url = 'https://127.0.0.1:2376'
+      url = 'http://127.0.0.1:2375'
     }
     // set path to the certificate directory on your machine
     certPath = new File(System.properties['user.home'],'/.docker/machine/machines/default')
@@ -134,7 +139,6 @@ docker {
 /**
  * Setup Tests
  */
-
 test {
     // enable TestNG support (default is JUnit)
     useTestNG()
@@ -166,7 +170,7 @@ task createDockerfile(type: Dockerfile, dependsOn: [copyDist]) {
     from 'java:8'
     maintainer 'Alex Mante "alex.mantel@haw-hamburg.de"'
     environmentVariable('JAVA_OPTS', '-Dspring.profiles.active=docker')
-    exposePort(8080)
+    exposePort(4567)
     entryPoint("/banks/bin/banks")
     // Copy contents from the build output's .tar file into container
     // the ADD command in docker takes a .tar file and extracts it into
@@ -191,9 +195,9 @@ task buildImage(type: DockerBuildImage, dependsOn: [createDockerfile]) {
 /**
  * Start and Stop Tasks for ReservationAPI-Server
  */
-task createBanksServiceContainer(type: DockerCreateContainer) {
+task createBanksServiceContainer(type: DockerCreateContainer, dependsOn: [buildImage]) {
     imageId = "banks"
-    portBindings = ["8080:8080"]
+    portBindings = ["4567:4567"]
     containerName = "banks"
 }
 
@@ -206,7 +210,7 @@ task removeBanksServiceContainer(type: DockerRemoveContainer) {
 }
 
 task stopBanksServiceContainer(type: DockerStopContainer) {
-    targetContainerId { createBanksServiceContainer.getContainerId() }
+    targetContainerId { createBanksServiceContainer.getContainerId }
     finalizedBy removeBanksServiceContainer
 }
 
@@ -219,6 +223,15 @@ setupApplicationLandscape.doLast {
     println("Waited milliseconds.")
 }
 
+sourceSets {
+    serviceTest {
+        java.srcDir file('src/serviceTest/java')
+        resources.srcDir file('src/serviceTest/resources')
+        compileClasspath = sourceSets.main.output + configurations.testRuntime
+        runtimeClasspath = output + compileClasspath
+    }
+}
+
 /**
  * This task executes all service tests. The supporting Netflix services
  * are required to start our own services, so it is made sure these are available and properly started. 
@@ -227,26 +240,8 @@ task serviceTest(type: Test, dependsOn: [setupApplicationLandscape]) {
     useTestNG()
     testClassesDir = sourceSets.serviceTest.output.classesDir
     classpath = sourceSets.serviceTest.runtimeClasspath
-    finalizedBy stopBanksServiceContainer
-}
-
-/**
- * Executes service test without starting docker container.
- */
-task apiTest(type: Test, dependsOn: [build]) {
-    useTestNG()
-    testClassesDir = sourceSets.serviceTest.output.classesDir
-    classpath = sourceSets.serviceTest.runtimeClasspath
-}
-
-/**
- * This task executes all Consumer Driven Tests. The supporting Netflix services
- * are required to start our own services, so it is made sure these are available and properly started.
- */
-task consumerDrivenTest(type: Test) {
-    include '**/*CDTests.class'
-    reports.html.destination = file("$reports.html.destination/cdt")
-    reports.junitXml.destination = file("$reports.junitXml.destination/cdt")
+    finalizedBy clean
+    // finalizedBy stopBanksServiceContainer
 }
 
 /**
