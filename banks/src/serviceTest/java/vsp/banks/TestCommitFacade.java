@@ -7,6 +7,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import vsp.banks.access.CommitFacade;
 import vsp.banks.business.adapter.CloneService;
+import vsp.banks.business.adapter.exceptions.NetworkException;
 import vsp.banks.business.adapter.interfaces.ICloneService;
 import vsp.banks.business.logic.bank.BanksLogic;
 import vsp.banks.business.logic.bank.exceptions.BankNotFoundException;
@@ -44,7 +45,7 @@ public class TestCommitFacade {
    * Setup test entites.
    */
   @BeforeClass
-  public void setUp() throws BankNotFoundException {
+  public void setUp() throws BankNotFoundException, NetworkException {
     RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     RestAssured.port = 4567;
 
@@ -97,18 +98,20 @@ public class TestCommitFacade {
       assertTrue(cloneService.unlock("game1"));
     } catch (BankNotFoundException e) {
       e.printStackTrace();
+    } catch (NetworkException e) {
+      e.printStackTrace();
     }
   }
 
   @Test(expectedExceptions = BankNotFoundException.class)
   public void test_commitFacadeAndCloneService_lock_and_unlock_expectBanksNotFoundException()
-      throws BankNotFoundException {
+          throws BankNotFoundException, NetworkException {
     cloneService.lock("thisBankDoesNotExist");
   }
 
   @Test
   public void test_commitFacadeAndCloneService_applyTransferInGame_PlayerToPlayer()
-      throws NotFoundException, InterruptedException {
+          throws NotFoundException, InterruptedException, NetworkException {
     Transfer transfer = new Transfer("player1", "player2", 3000, "no reason", "no event");
     if (!cloneService.applyTransferInGame("game1", transfer)) {
       fail("There is actually enough money on account of 'player1'.");
@@ -147,7 +150,7 @@ public class TestCommitFacade {
 
   @Test
   public void test_commitFacadeAndCloneService_applyTransferInGame_BankToPlayer_and_PlayerToBank()
-      throws NotFoundException {
+          throws NotFoundException, NetworkException {
     assertEquals(banksLogic.getAccount("game1", "player1").getSaldo(), 5000);
 
     Transfer transfer = Transfer.bankToPlayer("player1", 5000, "no reason", "event");
@@ -176,7 +179,8 @@ public class TestCommitFacade {
   }
 
   @Test
-  public void test_commitFacadeAndCloneService_setGame() throws BankNotFoundException {
+  public void test_commitFacadeAndCloneService_setGame() throws BankNotFoundException,
+          NetworkException {
     Player player1 = new Player("player1", "bob", "localhost/player/");
     Player player2 = new Player("player2", "alice", "localhost/player/");
     Player player3 = new Player("player3", "hans", "localhost/player/");

@@ -1,5 +1,6 @@
 package vsp.banks.business.adapter.interfaces;
 
+import vsp.banks.business.adapter.exceptions.NetworkException;
 import vsp.banks.business.logic.bank.interfaces.IBankLock;
 import vsp.banks.business.logic.bank.interfaces.IBanksLogicLockableMutable;
 import vsp.banks.business.logic.bank.interfaces.IBanksLogicMutable;
@@ -10,7 +11,7 @@ import vsp.banks.business.logic.bank.interfaces.IBanksLogicMutable;
 public interface ICloneService extends IBanksLogicLockableMutable {
 
   /**
-   * Get uri of clone service.
+   * Get uri of clone service. Without http.
    * @return uri of service.
    */
   String getUri();
@@ -19,5 +20,5 @@ public interface ICloneService extends IBanksLogicLockableMutable {
    * Removes the replicate on this replicate.
    * @param uriOfServiceToDelete is the identifier of the replicate to delete.
    */
-  void deleteService(String uriOfServiceToDelete);
+  void deleteService(String uriOfServiceToDelete) throws NetworkException;
 }

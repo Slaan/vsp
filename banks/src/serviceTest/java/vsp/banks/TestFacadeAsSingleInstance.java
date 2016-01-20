@@ -36,15 +36,9 @@ import static spark.Spark.stop;
 @Test
 public class TestFacadeAsSingleInstance {
 
-  IBanksLogicImmutable serviceLogic;
-
-  CommitFacade commitFacade;
-
-  Facade banksController;
-
   Gson jsonConverter;
 
-  String uri = "localhost:4567";
+  String uri = "https://vs-docker.informatik.haw-hamburg.de/ports/13425";
 
   Player player1 = new Player("player1", "bob", "localhost/player/1");
   Player player2 = new Player("player2", "alice", "localhost/player/2");
@@ -56,7 +50,6 @@ public class TestFacadeAsSingleInstance {
   @BeforeClass
   public void setUp() {
     jsonConverter = new Gson();
-    this.uri = "http://" + uri;
   }
 
   @AfterClass

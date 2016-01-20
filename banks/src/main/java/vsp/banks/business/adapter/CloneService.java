@@ -3,6 +3,7 @@ package vsp.banks.business.adapter;
 import com.google.gson.Gson;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import vsp.banks.business.adapter.exceptions.NetworkException;
 import vsp.banks.business.adapter.interfaces.ICloneService;
 import vsp.banks.business.converter.TransferConverter;
 import vsp.banks.business.logic.bank.exceptions.BankNotFoundException;
@@ -36,8 +37,8 @@ public class CloneService implements ICloneService {
   }
 
   @Override
-  public boolean lock(String gameId) throws BankNotFoundException {
-    String requestUri = this.getUri() + "/replicate/banks/" + gameId + "/lock";
+  public boolean lock(String gameId) throws BankNotFoundException, NetworkException {
+    String requestUri = this.getUriWithHttp() + "/replicate/banks/" + gameId + "/lock";
     try {
       int statusCode = Unirest.put(requestUri).asJson().getStatus();
       if (statusCode == ok) {
@@ -48,16 +49,18 @@ public class CloneService implements ICloneService {
       }
       if (statusCode == notFound) {
         throw new BankNotFoundException(requestUri);
+      } else if (statusCode >= 500) {
+        throwNetworkException();
       }
     } catch (UnirestException e) {
-      e.printStackTrace();
+      throwNetworkException();
     }
     throw logErr(requestUri, gameId, null, null);
   }
 
   @Override
-  public boolean unlock(String gameId) throws BankNotFoundException {
-    String requestUri = this.getUri() + "/replicate/banks/" + gameId + "/lock";
+  public boolean unlock(String gameId) throws BankNotFoundException, NetworkException {
+    String requestUri = this.getUriWithHttp() + "/replicate/banks/" + gameId + "/lock";
     try {
       int statusCode = Unirest.delete(requestUri).asJson().getStatus();
       if (statusCode == ok) {
@@ -68,33 +71,51 @@ public class CloneService implements ICloneService {
       }
       if (statusCode == notFound) {
         throw new BankNotFoundException(requestUri);
+      } else if (statusCode >= 500) {
+        throwNetworkException();
       }
     } catch (UnirestException e) {
-      e.printStackTrace();
+      throwNetworkException();
     }
     throw logErr(requestUri, gameId, null, null);
   }
 
   @Override
-  public void setGame(Game game) {
-    String requestUri = getUri() + "/replicate/banks/" + game.getGameid();
+  public void deleteService(String uriOfServiceToDelete) throws NetworkException {
+    try {
+      int status = Unirest.delete(this.getUriWithHttp() + "/replicate")
+              .body(uriOfServiceToDelete).asBinary().getStatus();
+      if (status == ok) {
+        // no op
+      } else {
+        System.err.println("[" + this.uri + "] Couldn't remove replicate " + uriOfServiceToDelete);
+      }
+    } catch (UnirestException e) {
+      throwNetworkException();
+    }
+  }
+
+  @Override
+  public void setGame(Game game) throws NetworkException {
+    String requestUri = getUriWithHttp() + "/replicate/banks/" + game.getGameid();
     String gameAsJson = jsonConverter.toJson(game);
     try {
       int statusCode = Unirest.put(requestUri).body(gameAsJson).asJson().getStatus();
       if (statusCode == ok) {
         return;
+      } else if (statusCode >= 500) {
+        throwNetworkException();
       }
-      throw new RuntimeException("No ok received.");
     } catch (UnirestException e) {
-      e.printStackTrace();
+      throwNetworkException();
     }
     throw logErr(requestUri, game.getGameid(), game, gameAsJson);
   }
 
   @Override
   public boolean registerPlayerForGame(String gameId, Account playerAccount)
-      throws BankNotFoundException {
-    String requestUri = getUri() + "/banks/" + gameId + "/players";
+          throws BankNotFoundException, NetworkException {
+    String requestUri = getUriWithHttp() + "/banks/" + gameId + "/players";
     String accountAsJson = this.jsonConverter.toJson(playerAccount);
     try {
       int statusCode = Unirest.post(requestUri).body(accountAsJson).asString().getStatus();
@@ -102,19 +123,21 @@ public class CloneService implements ICloneService {
         return true;
       } else if (statusCode == conflict) {
         return false;
+      } else if (statusCode >= 500) {
+        throwNetworkException();
       }
     } catch (UnirestException e) {
-      e.printStackTrace();
+      throwNetworkException();
     }
     throw logErr(requestUri, gameId, playerAccount, accountAsJson);
   }
 
   @Override
   public boolean applyTransferInGame(String gameId, Transfer transfer)
-      throws NotFoundException {
+          throws NotFoundException, NetworkException {
     TransferCommitDto dto = this.transferConverter.entityToDto(transfer);
     String transferAsJson = this.jsonConverter.toJson(dto);
-    String requestUri = getUri() + "/replicate/banks/" + gameId + "/transfer";
+    String requestUri = getUriWithHttp() + "/replicate/banks/" + gameId + "/transfer";
     try {
       int statusCode = Unirest.post(requestUri).body(transferAsJson).asString().getStatus();
       if (statusCode == forbidden) {
@@ -123,16 +146,18 @@ public class CloneService implements ICloneService {
         throw new NotFoundException(requestUri);
       } else if (statusCode == created) {
         return true;
+      } else if (statusCode >= 500) {
+        throwNetworkException();
       }
     } catch (UnirestException e) {
-      e.printStackTrace();
+      throwNetworkException();
     }
     throw logErr(requestUri, gameId, transfer, transferAsJson);
   }
 
   @Override
-  public boolean isLocked(String gameId) throws BankNotFoundException {
-    String requestUri = this.getUri() + "/replicate/banks/" + gameId + "/lock";
+  public boolean isLocked(String gameId) throws BankNotFoundException, NetworkException {
+    String requestUri = this.getUriWithHttp() + "/replicate/banks/" + gameId + "/lock";
     try {
       int statusCode = Unirest.get(requestUri).asString().getStatus();
       if (statusCode == ok) {
@@ -141,9 +166,11 @@ public class CloneService implements ICloneService {
         return false;
       } else if (statusCode == notFound) {
         throw new BankNotFoundException("Bank with gameId " + gameId + " not found.");
+      } else if (statusCode >= 500) {
+        throwNetworkException();
       }
     } catch (UnirestException e) {
-      e.printStackTrace();
+      throwNetworkException();
     }
     throw logErr(requestUri, gameId, null, null);
   }
@@ -152,9 +179,13 @@ public class CloneService implements ICloneService {
     return true;
   }
 
+  public String getUriWithHttp() {
+    return "http://" + uri;
+  }
+
   @Override
   public String getUri() {
-    return "http://" + uri;
+    return this.uri;
   }
 
   @Override
@@ -167,6 +198,10 @@ public class CloneService implements ICloneService {
     }
     CloneService that = (CloneService) other;
     return uri != null ? uri.equals(that.uri) : that.uri == null;
+  }
+
+  private void throwNetworkException() throws NetworkException {
+    throw new NetworkException("", this.getUri());
   }
 
   @Override

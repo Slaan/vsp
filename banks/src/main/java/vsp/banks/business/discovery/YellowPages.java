@@ -32,6 +32,5 @@ public class YellowPages {
         .field("service", service)
         .field("uri", uri)
         .asJson();
-    Unirest.shutdown();
   }
 }

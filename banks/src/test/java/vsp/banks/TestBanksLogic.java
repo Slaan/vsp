@@ -1,6 +1,7 @@
 package vsp.banks;
 
 import org.testng.annotations.Test;
+import vsp.banks.business.adapter.exceptions.NetworkException;
 import vsp.banks.business.logic.bank.BanksLogic;
 import vsp.banks.business.logic.bank.exceptions.BankNotFoundException;
 import vsp.banks.business.logic.bank.exceptions.NotFoundException;
@@ -36,7 +37,7 @@ public class TestBanksLogic {
   }
 
   @Test
-  public void test_bankLogic_setGame() {
+  public void test_bankLogic_setGame() throws NetworkException {
     IBanksLogic logic = setUpLogic();
     Set<Player> players = new HashSet<>(Arrays.asList(player1, player2, player3));
     Game game = new Game("game1", "localhost/games/game1", players, null);
@@ -45,7 +46,7 @@ public class TestBanksLogic {
   }
 
   @Test
-  public void test_bankLogic_registerPlayer() {
+  public void test_bankLogic_registerPlayer() throws NetworkException {
     IBanksLogic logic = setUpLogic();
     Set<Player> players = new HashSet<>(Arrays.asList(player1, player2, player3));
     Game game = new Game("game1", "localhost/games/game1", players, null);
@@ -68,7 +69,7 @@ public class TestBanksLogic {
   }
 
   @Test
-  public void test_bankLogic_lock_and_unlock() {
+  public void test_bankLogic_lock_and_unlock() throws NetworkException {
     IBanksLogic logic = setUpLogic();
     Set<Player> players = new HashSet<>(Arrays.asList(player1, player2, player3));
     Game game = new Game("game1", "localhost/games/game1", players, null);

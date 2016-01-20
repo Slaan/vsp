@@ -1,5 +1,6 @@
 package vsp.banks.business.logic.bank.interfaces;
 
+import vsp.banks.business.adapter.exceptions.NetworkException;
 import vsp.banks.business.logic.bank.exceptions.BankNotFoundException;
 import vsp.banks.business.logic.bank.exceptions.NotFoundException;
 import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
@@ -17,7 +18,7 @@ public interface IBanksLogicMutable {
    *
    * @param game to store.
    */
-  void setGame(Game game);
+  void setGame(Game game) throws NetworkException;
 
   /**
    * Registers a player.
@@ -26,7 +27,8 @@ public interface IBanksLogicMutable {
    * @param playerAccount to register.
    * @return true if and only if player wasn't already registered.
    */
-  boolean registerPlayerForGame(String gameId, Account playerAccount) throws BankNotFoundException;
+  boolean registerPlayerForGame(String gameId, Account playerAccount) throws BankNotFoundException,
+          NetworkException;
 
   /**
    * Takes an amount of money from one account and puts it into another.
@@ -39,6 +41,6 @@ public interface IBanksLogicMutable {
    * @return true if and only if enough money was on account and money has been withdrawn.
    */
   boolean applyTransferInGame(String gameId, Transfer transfer)
-      throws NotFoundException;
+          throws NotFoundException, NetworkException;
 
 }

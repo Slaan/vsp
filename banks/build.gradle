@@ -54,6 +54,12 @@ import com.bmuschko.gradle.docker.tasks.container.DockerRemoveContainer
 jar {
     baseName = 'banks'
     version = '0.0.1-SNAPSHOT'
+    manifest {
+        attributes 'Main-Class': 'vsp.banks.MyMainClass'
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 checkstyle {

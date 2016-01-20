@@ -1,8 +1,7 @@
 package vsp.banks.access;
 
-import vsp.banks.business.logic.bank.exceptions.BankNotFoundException;
+import vsp.banks.business.adapter.exceptions.NetworkException;
 import vsp.banks.business.logic.bank.exceptions.NotFoundException;
-import vsp.banks.business.logic.bank.exceptions.PlayerNotFoundException;
 import vsp.banks.business.logic.bank.interfaces.IBanksLogic;
 import vsp.banks.business.logic.bank.interfaces.IBanksLogicImmutable;
 import vsp.banks.business.logic.twophasecommit.interfaces.ITwoPhaseCommit;
@@ -11,7 +10,8 @@ import vsp.banks.data.values.Event;
 import vsp.banks.data.values.Game;
 import vsp.banks.data.values.Transfer;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 import static spark.Spark.*;
 import static vsp.banks.data.values.StatusCodes.*;
@@ -39,6 +39,7 @@ public class Facade extends AbstractFacade {
   @Override
   public void bindAllMethods() {
     bindPostServiceUri();
+    bindDeleteServiceUri();
     bindGetBanks();
     bindPutBank();
     bindGetTransfer();
@@ -56,7 +57,7 @@ public class Facade extends AbstractFacade {
    * <code>POST /service</code>
    */
   public void bindPostServiceUri() {
-    post("/service", (request, response) -> {
+    post("/replicate", (request, response) -> {
       String uri = request.body();
       response.status(created);
       if (!this.twoPhaseCommit.registerCloneServices(uri)) {
@@ -75,11 +76,11 @@ public class Facade extends AbstractFacade {
    * Body contains the uri.
    */
   public void bindDeleteServiceUri() {
-    post("/service", (request, response) -> {
+    delete("/replicate", (request, response) -> {
       String uri = request.body();
-      response.status(created);
-      if (!this.twoPhaseCommit.registerCloneServices(uri)) {
-        response.status(conflict);
+      response.status(ok);
+      if (!this.twoPhaseCommit.deleteCloneService(uri)) {
+        response.status(noContent);
         response.body("Uri already exists.");
       }
       Set<String> uris = this.twoPhaseCommit.getUris();
@@ -105,10 +106,17 @@ public class Facade extends AbstractFacade {
    */
   public void bindPutBank() {
     put("/banks/:gameId", (request, response) -> {
-      Game game = this.jsonConverter.fromJson(request.body(), Game.class);
-      this.twoPhaseCommit.setGame(game);
-      response.status(ok);
-      return "";
+      while (true) {
+        try {
+          Game game = this.jsonConverter.fromJson(request.body(), Game.class);
+          this.twoPhaseCommit.setGame(game);
+          response.status(ok);
+          return "";
+        } catch (NetworkException networkException) {
+          String uri = networkException.getUri();
+          this.twoPhaseCommit.deleteReplicateOnAllReplicates(uri);
+        }
+      }
     });
   }
 
@@ -130,22 +138,29 @@ public class Facade extends AbstractFacade {
    */
   public void bindPostBankTransferTo() {
     post("/banks/:gameId/transfer/to/:to/:amount", (request, response) -> {
-      String gameId = request.params(":gameId");
-      String toPlayer = request.params(":to");
-      int amount = Integer.parseInt(request.params(":amount"));
-      String reason = request.body();
-      Transfer transfer = Transfer.bankToPlayer(toPlayer, amount, reason, null);
-      try {
-        if (this.twoPhaseCommit.applyTransferInGame(gameId, transfer)) {
-          response.status(created);
-          List<Event> events = this.bankLogic.getEventsOfPlayer(gameId, toPlayer);
-          return this.jsonConverter.toJson(events);
+      while (true) {
+        try {
+          String gameId = request.params(":gameId");
+          String toPlayer = request.params(":to");
+          int amount = Integer.parseInt(request.params(":amount"));
+          String reason = request.body();
+          Transfer transfer = Transfer.bankToPlayer(toPlayer, amount, reason, null);
+          try {
+            if (this.twoPhaseCommit.applyTransferInGame(gameId, transfer)) {
+              response.status(created);
+              List<Event> events = this.bankLogic.getEventsOfPlayer(gameId, toPlayer);
+              return this.jsonConverter.toJson(events);
+            }
+            response.status(forbidden);
+          } catch (NotFoundException exception) {
+            response.status(notFound);
+          }
+          return "";
+        } catch (NetworkException networkException) {
+          String uri = networkException.getUri();
+          this.twoPhaseCommit.deleteReplicateOnAllReplicates(uri);
         }
-        response.status(forbidden);
-      } catch (NotFoundException exception) {
-        response.status(notFound);
       }
-      return "";
     });
   }
 
@@ -155,23 +170,30 @@ public class Facade extends AbstractFacade {
    */
   public void bindPostBankTransferFromTo() {
     post("/banks/:gameId/transfer/from/:from/to/:to/:amount", (request, response) -> {
-      String gameId = request.params(":gameId");
-      String fromPlayerId = request.params(":from");
-      String toPlayerId = request.params(":to");
-      int amount = Integer.parseInt(request.params(":amount"));
-      String reason = request.body();
-      Transfer transfer = new Transfer(fromPlayerId, toPlayerId, amount, reason, "");
-      try {
-        if (this.twoPhaseCommit.applyTransferInGame(gameId, transfer)) {
-          List<Event> events = this.bankLogic.getEventsOfPlayer(gameId, fromPlayerId);
-          response.status(created);
-          return this.jsonConverter.toJson(events);
+      while (true) {
+        try {
+          String gameId = request.params(":gameId");
+          String fromPlayerId = request.params(":from");
+          String toPlayerId = request.params(":to");
+          int amount = Integer.parseInt(request.params(":amount"));
+          String reason = request.body();
+          Transfer transfer = new Transfer(fromPlayerId, toPlayerId, amount, reason, "");
+          try {
+            if (this.twoPhaseCommit.applyTransferInGame(gameId, transfer)) {
+              List<Event> events = this.bankLogic.getEventsOfPlayer(gameId, fromPlayerId);
+              response.status(created);
+              return this.jsonConverter.toJson(events);
+            }
+            response.status(forbidden);
+          } catch (NotFoundException exception) {
+            response.status(notFound);
+          }
+          return "";
+        } catch (NetworkException networkException) {
+          String uri = networkException.getUri();
+          this.twoPhaseCommit.deleteReplicateOnAllReplicates(uri);
         }
-        response.status(forbidden);
-      } catch (NotFoundException exception) {
-        response.status(notFound);
       }
-      return "";
     });
   }
 
@@ -181,22 +203,29 @@ public class Facade extends AbstractFacade {
    */
   public void bindPostBankTransferFrom() {
     post("/banks/:gameId/transfer/from/:from/:amount", (request, response) -> {
-      String gameId = request.params(":gameId");
-      String fromId = request.params(":from");
-      int amount = Integer.parseInt(request.params(":amount"));
-      String reason = request.body();
-      Transfer transfer = Transfer.playerToBank(fromId, amount, reason, "");
-      try {
-        if (this.twoPhaseCommit.applyTransferInGame(gameId, transfer)) {
-          List<Event> events = this.bankLogic.getEventsOfPlayer(gameId, fromId);
-          response.status(created);
-          return this.jsonConverter.toJson(events);
+      while (true) {
+        try {
+          String gameId = request.params(":gameId");
+          String fromId = request.params(":from");
+          int amount = Integer.parseInt(request.params(":amount"));
+          String reason = request.body();
+          Transfer transfer = Transfer.playerToBank(fromId, amount, reason, "");
+          try {
+            if (this.twoPhaseCommit.applyTransferInGame(gameId, transfer)) {
+              List<Event> events = this.bankLogic.getEventsOfPlayer(gameId, fromId);
+              response.status(created);
+              return this.jsonConverter.toJson(events);
+            }
+            response.status(forbidden);
+          } catch (NotFoundException exception) {
+            response.status(notFound);
+          }
+          return "";
+        } catch (NetworkException networkException) {
+          String uri = networkException.getUri();
+          this.twoPhaseCommit.deleteReplicateOnAllReplicates(uri);
         }
-        response.status(forbidden);
-      } catch (NotFoundException exception) {
-        response.status(notFound);
       }
-      return "";
     });
   }
 
@@ -218,14 +247,21 @@ public class Facade extends AbstractFacade {
    */
   public void bindPostBankAccount() {
     post("/banks/:gameId/players", (request, response) -> {
-      String gameId = request.params(":gameId");
-      Account account = jsonConverter.fromJson(request.body(), Account.class);
-      if (twoPhaseCommit.registerPlayerForGame(gameId, account)) {
-        response.status(created);
-        return "";
+      while (true) {
+        try {
+          String gameId = request.params(":gameId");
+          Account account = jsonConverter.fromJson(request.body(), Account.class);
+          if (twoPhaseCommit.registerPlayerForGame(gameId, account)) {
+            response.status(created);
+            return "";
+          }
+          response.status(conflict);
+          return "";
+        } catch (NetworkException networkException) {
+          String uri = networkException.getUri();
+          this.twoPhaseCommit.deleteReplicateOnAllReplicates(uri);
+        }
       }
-      response.status(conflict);
-      return "";
     });
   }
 

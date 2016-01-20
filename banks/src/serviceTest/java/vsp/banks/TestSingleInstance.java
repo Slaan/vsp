@@ -3,6 +3,7 @@ package vsp.banks;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import vsp.banks.business.adapter.exceptions.NetworkException;
 import vsp.banks.business.logic.bank.BanksLogic;
 import vsp.banks.business.logic.bank.exceptions.BankNotFoundException;
 import vsp.banks.business.logic.bank.exceptions.NotFoundException;
@@ -60,7 +61,7 @@ public class TestSingleInstance {
   }
 
   @Test(groups = "setGameAndRegisterAccounts")
-  public void test_singleInstance_setGameAndRegisterAccounts() {
+  public void test_singleInstance_setGameAndRegisterAccounts() throws NetworkException {
     Set<Player> players = new HashSet<>(Arrays.asList(player1, player2, player3));
     Game game = new Game("game1", "localhost/games/game1", players, null);
     twoPhaseCommit.setGame(game);
@@ -89,7 +90,7 @@ public class TestSingleInstance {
   }
 
   @Test(dependsOnGroups = "setGameAndRegisterAccounts", groups = "lockAndUnlock")
-  public void test_singleInstance_lockAndUnlock() throws BankNotFoundException {
+  public void test_singleInstance_lockAndUnlock() throws BankNotFoundException, NetworkException {
     assertEquals(twoPhaseCommit.getUris().size(), 1);
     assertEquals(twoPhaseCommitDebug.getAllServices().size(), 1);
     String gameName = "game1";
@@ -108,7 +109,8 @@ public class TestSingleInstance {
   }
 
   @Test(dependsOnGroups = {"setGameAndRegisterAccounts", "lockAndUnlock"})
-  public void test_singleInstance_makeTransfers_playerToPlayer() throws NotFoundException {
+  public void test_singleInstance_makeTransfers_playerToPlayer() throws NotFoundException,
+          NetworkException {
     Transfer transfer = new Transfer("player1", "player2", 3000, "no reason", "no event");
     if (!twoPhaseCommit.applyTransferInGame("game1", transfer)) {
       fail("There is actually enough money on account of 'player1'.");
@@ -147,7 +149,7 @@ public class TestSingleInstance {
 
   @Test(dependsOnGroups = {"setGameAndRegisterAccounts", "lockAndUnlock"})
   public void test_commitFacadeAndCloneService_applyTransferInGame_BankToPlayer_and_PlayerToBank()
-      throws NotFoundException {
+          throws NotFoundException, NetworkException {
     assertEquals(serviceLogic.getAccount("game1", "player1").getSaldo(), 5000);
 
     Transfer transfer = Transfer.bankToPlayer("player1", 5000, "no reason", "event");

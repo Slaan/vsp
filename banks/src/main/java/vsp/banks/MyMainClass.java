@@ -12,9 +12,10 @@ import static spark.Spark.port;
 
 public class MyMainClass {
 
+  private static String yellowPageUrl = "http://vs-docker.informatik.haw-hamburg.de:8053/services";
 
   public static String getIp() {
-    return "192.168.178.61:4567";
+    return "localhost";
   }
 
   /**
@@ -27,8 +28,7 @@ public class MyMainClass {
 
     String ownUri = getIp();
     //    if (args.length == 1) {
-    //      String host = args[0];
-    //      YellowPages yp = new YellowPages(host);
+    //      YellowPages yp = new YellowPages(yellowPageUrl);
     //      try {
     //        String name = "Banks";
     //        String description = "desc";
@@ -42,21 +42,10 @@ public class MyMainClass {
     // Dependency Injections
     BanksLogic serviceLogic = new BanksLogic();
 
-    CommitFacade commitFacade = new CommitFacade(serviceLogic);
-    TwoPhaseCommitLogic twoPhaseCommit = new TwoPhaseCommitLogic(serviceLogic, ownUri);
-    Facade banksController = new Facade(serviceLogic, twoPhaseCommit);
-
-    // Register replicates
-    //    if (port == 4567) {
-    //      twoPhaseCommit.registerCloneServices("localhost:4568");
-    //      twoPhaseCommit.registerCloneServices("localhost:4569");
-    //    } else if (port == 4568) {
-    //      twoPhaseCommit.registerCloneServices("localhost:4567");
-    //      twoPhaseCommit.registerCloneServices("localhost:4569");
-    //    } else if (port == 4569) {
-    //      twoPhaseCommit.registerCloneServices("localhost:4567");
-    //      twoPhaseCommit.registerCloneServices("localhost:4568");
-    //    }
+    new CommitFacade(serviceLogic);
+    TwoPhaseCommitLogic twoPhaseCommit =
+            new TwoPhaseCommitLogic(serviceLogic, ownUri + ":" + port);
+    new Facade(serviceLogic, twoPhaseCommit);
   }
 
 }

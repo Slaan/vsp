@@ -1,13 +1,13 @@
 package vsp.banks.business.logic.twophasecommit;
 
 import vsp.banks.business.adapter.CloneService;
+import vsp.banks.business.adapter.exceptions.NetworkException;
 import vsp.banks.business.adapter.interfaces.ICloneService;
 import vsp.banks.business.logic.bank.exceptions.BankNotFoundException;
 import vsp.banks.business.logic.bank.exceptions.NotFoundException;
 import vsp.banks.business.logic.bank.interfaces.IBanksLogic;
 import vsp.banks.business.logic.bank.interfaces.IBanksLogicLockableMutable;
 import vsp.banks.business.logic.twophasecommit.exceptions.ServiceInconsistentException;
-import vsp.banks.business.logic.twophasecommit.exceptions.ServiceLostException;
 import vsp.banks.business.logic.twophasecommit.interfaces.ITwoPhaseCommit;
 import vsp.banks.data.entities.Account;
 import vsp.banks.data.values.Game;
@@ -26,11 +26,11 @@ import static vsp.banks.helper.StringHelper.checkNotEmpty;
  */
 public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
 
-  public static final int maxTriesToLock = 15;
+  public static final int lockTries = 100;
 
   public static final int maxTimeToWaitInMs = 7 * 1000;
 
-  public static final int minTimeToWaitInMs = 100;
+  public static final int minTimeToWaitInMs = 5 * 1000;
 
   /**
    * This set contains only remote replicates.
@@ -39,8 +39,6 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
   Set<ICloneService> remoteCloneServices;
 
   String ownUri;
-
-  String lastUri;
 
   IBanksLogic logic;
 
@@ -58,11 +56,11 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
   }
 
   @Override
-  public boolean lockBankOnAllServices(String gameId) throws BankNotFoundException {
+  public boolean lockBankOnAllServices(String gameId) throws BankNotFoundException,
+          NetworkException {
     Set<IBanksLogicLockableMutable> lockedServices = new HashSet<>();
     for (IBanksLogicLockableMutable service : this.getAllServices()) {
       if (!service.lock(gameId)) {
-
         if (!unlockAll(lockedServices, gameId)) {
           handleLockedNotAbleToUnlock();
         }
@@ -79,15 +77,17 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
    * @return true when successfully locked bank on all services.
    * @throws BankNotFoundException when the bank does not exist.
    */
-  public boolean tryToLockBankOnAllServices(String gameId) throws BankNotFoundException {
+  private boolean tryToLockBankOnAllServices(String gameId) throws BankNotFoundException,
+          NetworkException {
     int triesToLock = 0;
-    while (triesToLock < maxTriesToLock) {
+    while (triesToLock < lockTries) {
       if (lockBankOnAllServices(gameId)) {
         return true;
       }
       triesToLock++;
-      Random random = new Random(System.currentTimeMillis());
-      int timeToWait = (this.minTimeToWaitInMs + random.nextInt(this.maxTimeToWaitInMs));
+      Random random = new Random();
+      int timeToWait = random.nextInt() % this.maxTimeToWaitInMs;
+      timeToWait += minTimeToWaitInMs;
       try {
         Thread.sleep(timeToWait);
       } catch (InterruptedException e) {
@@ -98,7 +98,8 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
   }
 
   @Override
-  public boolean unlockBankOnAllServices(String bankId) throws BankNotFoundException {
+  public boolean unlockBankOnAllServices(String bankId) throws BankNotFoundException,
+          NetworkException {
     for (IBanksLogicLockableMutable service : this.getAllServices()) {
       if (!service.unlock(bankId)) {
         return false;
@@ -108,7 +109,7 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
   }
 
   @Override
-  public boolean isLocked(String gameId) throws BankNotFoundException {
+  public boolean isLocked(String gameId) throws BankNotFoundException, NetworkException {
     for (IBanksLogicLockableMutable service : this.getAllServices()) {
       // Note: This might be a bug.
       if (!service.isLocked(gameId)) {
@@ -127,11 +128,11 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
   }
 
   @Override
-  public void setGame(Game game) {
+  public void setGame(Game game) throws NetworkException {
     checkNotNull(game);
     try {
       if (tryToLockBankOnAllServices(game.getGameid())) {
-        handleToManyLockTries();
+//        handleTooManyLockTries();
       }
     } catch (BankNotFoundException exception) {
       // no op
@@ -149,11 +150,11 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
 
   @Override
   public boolean registerPlayerForGame(String gameId, Account playerAccount)
-      throws BankNotFoundException {
+          throws BankNotFoundException, NetworkException {
     checkNotNull(gameId, playerAccount);
     checkNotEmpty(gameId);
     if (!tryToLockBankOnAllServices(gameId)) {
-      handleToManyLockTries();
+      handleLockedNotAbleToUnlock();
     }
     for (IBanksLogicLockableMutable service : this.getAllServices()) {
       if (!service.registerPlayerForGame(gameId, playerAccount)) {
@@ -169,14 +170,14 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
 
   @Override
   public boolean applyTransferInGame(String gameId, Transfer transfer)
-      throws NotFoundException {
+          throws NotFoundException, NetworkException {
     checkNotNull(gameId, transfer);
     checkNotEmpty(gameId);
     if (!logic.transferIsPossible(gameId, transfer)) {
       return false;
     }
     if (!tryToLockBankOnAllServices(gameId)) {
-      handleToManyLockTries();
+      handleTooManyLockTries();
     }
     for (IBanksLogicLockableMutable replicate : this.getAllServices()) {
       if (!replicate.applyTransferInGame(gameId, transfer)) {
@@ -192,10 +193,15 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
 
   @Override
   public boolean deleteCloneService(String uri) {
-    ICloneService service = new CloneService(uri);
-    if (this.remoteCloneServices.remove(service)) {
-      System.out.println("[" + this.ownUri + "] Removed service with uri: " + uri);
-      return true;
+    for (ICloneService service : this.remoteCloneServices) {
+      if (service.getUri().equals(uri)) {
+        if (this.remoteCloneServices.remove(service)) {
+          System.out.println("[" + this.ownUri + "] Removed service with uri: " + uri);
+          return true;
+        } else {
+          throw new RuntimeException("This shouldn't happen");
+        }
+      }
     }
     return false;
   }
@@ -218,7 +224,7 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
    * @throws BankNotFoundException if and only if, no bank with
    */
   private boolean unlockAll(Set<IBanksLogicLockableMutable> services, String gameId)
-      throws BankNotFoundException {
+          throws BankNotFoundException, NetworkException {
     for (IBanksLogicLockableMutable service : services) {
       // wot, wtf does this not need a negation?!
       if (service.unlock(gameId)) {
@@ -235,29 +241,26 @@ public class TwoPhaseCommitLogic implements ITwoPhaseCommit {
     return services;
   }
 
-  private void handleToManyLockTries() {
-    this.deleteCloneService(lastUri);
-    for (ICloneService replicate : this.remoteCloneServices) {
-
+  @Override
+  public synchronized void deleteReplicateOnAllReplicates(String replicateUri) {
+    if (!this.deleteCloneService(replicateUri)) {
+      System.err.println("[" + ownUri + "] Didn't delete local '" + replicateUri + "'");
     }
-    throw new ServiceLostException("Tried " + maxTriesToLock + " times to lock resource.", lastUri);
+    for (ICloneService replicate : this.remoteCloneServices) {
+      try {
+        replicate.deleteService(replicateUri);
+      } catch (Exception exception) {
+        String logMessage = "[" + ownUri + "] Couldn't delete on remote service: ";
+        System.err.println(logMessage + replicate.getUri());
+      }
+    }
+  }
+
+  private void handleTooManyLockTries() {
+    throw new ServiceInconsistentException("Too many lock tries!");
   }
 
   private void handleLockedNotAbleToUnlock() {
     throw new ServiceInconsistentException("Couldn't unlock replicates which were locked by me.");
-  }
-
-  private void handleInconsistency() {
-    throw new ServiceInconsistentException("Found inconsistent replicate!");
-  }
-
-  /**
-   * Notes uri of service, if it's a remote service.
-   */
-  private void noteUri(IBanksLogicLockableMutable service) {
-    if (service.isRemote()) {
-      ICloneService cloneService = (ICloneService) service;
-      this.lastUri = cloneService.getUri();
-    }
   }
 }
